@@ -101,6 +101,10 @@ RUN cd /tmp/slendr; \
     R -e 'pak::local_install(".", dependencies = TRUE)'; \
     R -e 'slendr::setup_env(agree = TRUE, env = "venv")'
 
+# install Jupyter Lab and an R kernel
+RUN pip install --break-system-packages jupyterlab
+RUN R -e 'install.packages("IRkernel"); IRkernel::installspec()'
+
 ############################################################
 # final configuration steps
 ############################################################

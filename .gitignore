@@ -8,3 +8,4 @@ inst/pylib/__pycache__/
 inst/scripts/__pycache__/
 inst/extdata/models/introgression/__pycache__/
 tags
+.ipynb_checkpoints/

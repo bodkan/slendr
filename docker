@@ -42,6 +42,12 @@ ifndef PORT
 endif
 	docker run --rm -ti -p $(PORT):8787 -e RUNROOTLESS=true -e DISABLE_AUTH=true -v $(shell pwd):/project --name $(CONTAINER) $(IMAGE)
 
+jupyter:
+ifndef PORT
+	$(error PORT variable must be set explicitly)
+endif
+	docker run --rm -p $(PORT):$(PORT) -v $(shell pwd):/project --name $(CONTAINER) $(IMAGE) jupyter-lab --allow-root --ip=0.0.0.0 --port=$(PORT) --LabApp.token='' --no-browser
+
 build:
 	docker build --build-arg GITHUB_PAT=$(TOKEN) --build-arg VERSION=$(VERSION) -t $(IMAGE) .
 
