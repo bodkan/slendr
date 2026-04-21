@@ -24,9 +24,10 @@ check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   missing_slim <- slim && !is_slim_present()
   missing_python <- (
     python &&
-      Sys.getenv("SLENDR_UV") != "TRUE" &&
-      !is_slendr_condaenv_present() &&
+      (Sys.getenv("SLENDR_UV") != "TRUE" ||
+      !is_slendr_condaenv_present() ||
       !is_slendr_virtualenv_present()
+      )
     )
 
   fail <- missing_slim || missing_python
