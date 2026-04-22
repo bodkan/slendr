@@ -46,9 +46,9 @@ DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c(paste0("Python-", DEPS$pyt
       gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
     if (utils::compareVersion(slim_version, DEPS$slim) < 0)
       packageStartupMessage(
-        "You are running SLiM version ", slim_version,
-        " but at least version ", DEPS$slim,
-        "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
+        "You are running SLiM version ", slim_version, " but at least version ",
+        DEPS$slim, " is \nrequired. Please upgrade your SLiM installation.\n",
+        "--------------------"
       )
   }
 
