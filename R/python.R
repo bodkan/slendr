@@ -13,7 +13,7 @@
 #' @export
 init_env <- function(uv = FALSE, quiet = FALSE) {
   if (uv || Sys.getenv("SLENDR_UV") == "TRUE") {
-    reticulate::py_require(packages = DEPS$modules, python_version = deps$python)
+    reticulate::py_require(packages = DEPS$modules, python_version = DEPS$python)
   } else if (is_slendr_condaenv_present()) {
     reticulate::use_condaenv(DEPS$env)
   } else if (is_slendr_virtualenv_present()) {
