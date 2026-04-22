@@ -13,7 +13,7 @@ DEPS <- list(
   modules = readLines(normalizePath(system.file("deps/requirements.txt", package = "slendr"), winslash = "/", mustWork = TRUE)),
   slim = scan(normalizePath(system.file("deps/slim-version.txt", package = "slendr"), winslash = "/", mustWork = TRUE), what = character(), quiet = TRUE)
 )
-DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c("Python-", DEPS$python, .) %>% paste(collapse = "_")
+DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c(paste0("Python-", DEPS$python), .) %>% paste(collapse = "_")
 
 .onAttach <- function(libname, pkgname) {
   if (Sys.info()[["sysname"]] == "Windows") {
