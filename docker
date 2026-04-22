@@ -18,8 +18,8 @@ else
     PLATFORM ?= amd64
 endif
 
-IMAGE := bodkan/$(shell basename $(shell pwd))-$(VERSION):$(PLATFORM)
-CONTAINER := $(shell basename $(shell pwd))
+IMAGE := bodkan/slendr-$(VERSION):$(PLATFORM)
+CONTAINER := slendr
 
 # if present, extract GitHub access token
 TOKEN := $(shell if [ -f ~/.GITHUB_PAT ]; then more ~/.GITHUB_PAT; else echo ""; fi)
@@ -33,7 +33,7 @@ r:
 	docker run --rm -ti -v $(shell pwd):/project -w /project --name $(CONTAINER) $(IMAGE) R
 
 attach:
-	container_id=`docker ps | awk -v name="$$(basename "$$PWD")" '$$2 ~ name {print $$1}'`; \
+	container_id=`docker ps | awk -v name=slendr '$$2 ~ name {print $$1}'`; \
 	docker exec -it $$container_id /bin/bash
 
 rstudio:
