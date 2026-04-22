@@ -7,15 +7,13 @@ msp <- NULL
 tspop <- NULL
 # pylib <- NULL
 
-# define slendr's required Python dependencies and compose an environment name
-# that will be used specifically for them
-PYTHON_VERSION <- "3.12"
-PYTHON_DEPS <- c("msprime==1.4.1", "tskit==1.0.2", "pyslim==1.1.1", "tspop==0.0.2")
-PYTHON_ENV <-
-  PYTHON_DEPS %>%
-  gsub("==", "-", .) %>%
-  paste(collapse = "_") %>%
-  paste0("Python-", PYTHON_VERSION, "_", .)
+# read software dependencies and their versions
+DEPS <- list(
+  python = scan(normalizePath(system.file("deps/python-version.txt", package = "slendr"), winslash = "/", mustWork = TRUE), what = "character", quiet = TRUE),
+  modules = readLines(normalizePath(system.file("deps/requirements.txt", package = "slendr"), winslash = "/", mustWork = TRUE)),
+  slim = scan(normalizePath(system.file("deps/slim-version.txt", package = "slendr"), winslash = "/", mustWork = TRUE), what = character(), quiet = TRUE)
+)
+DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c("Python-", DEPS$python, .) %>% paste(collapse = "_")
 
 .onAttach <- function(libname, pkgname) {
   if (Sys.info()[["sysname"]] == "Windows") {
@@ -44,13 +42,12 @@ PYTHON_ENV <-
       "Alternatively, use the `slim_path` argument",
       " of the `slim()` function.\n--------------------")
   } else {
-    required_version <- "5.1"
     slim_version <- system(paste(slim_binary, "-v"), intern = TRUE) %>%
       gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
-    if (utils::compareVersion(slim_version, required_version) < 0)
+    if (utils::compareVersion(slim_version, DEPS$slim) < 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
-        " but at least version ", required_version,
+        " but at least version ", DEPS$slim,
         "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
       )
   }

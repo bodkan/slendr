@@ -1,0 +1,4 @@
+msprime==1.4.1
+tskit==1.0.2
+pyslim==1.1.1
+tspop==0.0.2
