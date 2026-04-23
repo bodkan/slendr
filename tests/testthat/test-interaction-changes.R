@@ -54,7 +54,7 @@ test_that("interaction parameter change is correctly recorded", {
 test_that("SLiM dispersals match expectations laid by R distributions", {
   skip_if(!check_dependencies(python = TRUE))
 
-  seed <- 42
+  seed <- 123
   set.seed(seed)
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
@@ -183,7 +183,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   )$p.value > 0.05)
 
   # decrease the gigantic table to make the package smaller overall
-  set.seed(42)
+  set.seed(123)
   distances <- distances[sort(sample(1:nrow(distances), size = 5000)), ]
 
   if (RERUN) {

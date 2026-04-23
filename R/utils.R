@@ -4,43 +4,6 @@ set_random_seed <- function(seed) {
   seed
 }
 
-#' Check that the required dependencies are available for slendr to work
-#'
-#' @param python Is the slendr Python environment required?
-#' @param slim Is SLiM required?
-#' @param quit Should the R interpreter quit if required slendr dependencies are
-#'   missing? This option (which is not turned on by default, being set to
-#'   \code{FALSE}) is used mainly in avoiding running slendr man page examples on
-#'   machines which lack dependencies. If set to \code{TRUE}, a logical value
-#'   is returned.
-#'
-#' @return If \code{quit = TRUE}, no values is returned, if \code{quit = FALSE},
-#'   a scalar logical value is returned indicating whether or not the dependencies
-#'   are present.
-#'
-#' @export
-check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
-  # check whether SLiM and Python are present (only if needed!)
-  missing_slim <- slim && !is_slim_present()
-  missing_python <- (
-    python &&
-      Sys.getenv("SLENDR_UV") != "TRUE" &&
-      !is_slendr_condaenv_present() &&
-      !is_slendr_virtualenv_present()
-    )
-
-  fail <- missing_slim || missing_python
-
-  if (fail) {
-    if (quit)
-      q()
-    else
-      return(FALSE)
-  } else {
-    return(invisible(TRUE))
-  }
-}
-
 # Internal implementation of expand_range() and shrink_range() functions
 shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
                              lock, verbose) {
@@ -727,13 +690,6 @@ ask_install <- function(module) {
                         title = paste("Python module", module,
                                       "is missing in the environment. Install?"))
   answer == 2
-}
-
-is_slendr_condaenv_present <- function() {
-  tryCatch({ PYTHON_ENV %in% reticulate::conda_list()$name }, error = function(cond) FALSE) }
-
-is_slendr_virtualenv_present <- function() {
-  tryCatch({ PYTHON_ENV %in% reticulate::virtualenv_list() }, error = function(cond) FALSE)
 }
 
 is_slim_present <- function() {

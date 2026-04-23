@@ -79,7 +79,7 @@ ENV HOME="/root"
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.fzf; ${HOME}/.fzf/install
 
 # compile SLiM
-RUN cd /tmp; wget https://github.com/MesserLab/SLiM/archive/refs/tags/v5.1.tar.gz -O slim.tar.gz; \
+RUN cd /tmp; wget https://github.com/MesserLab/SLiM/archive/refs/tags/v5.2.tar.gz -O slim.tar.gz; \
     tar xf slim.tar.gz; cd SLiM-*; mkdir build; cd build; cmake ..; make slim eidos
 
 # install all compiled software into $PATH
@@ -108,10 +108,6 @@ RUN R -e 'install.packages("IRkernel"); IRkernel::installspec()'
 ############################################################
 # final configuration steps
 ############################################################
-
-# clone shell configuration files into the container
-RUN cd ${HOME}; git clone https://github.com/bodkan/dotfiles .dotfiles/; rm -f .bashrc .profile; \
-    cd .dotfiles; ./install.sh
 
 # set the necessary R environment variables for the container
 RUN printf "PATH=$PATH\n" > ${HOME}/.Renviron

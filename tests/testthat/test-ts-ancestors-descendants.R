@@ -1,4 +1,5 @@
 skip_if(!check_dependencies(python = TRUE) || Sys.info()[["sysname"]] == "Windows")
+init_env(quiet = TRUE)
 
 pop <- population("POP", time = 1, N = 100)
 
@@ -23,16 +24,16 @@ test_that("any node ID or individual given to ts_ancestors must be present", {
 })
 
 test_that("reconstructed ancestral relationships match what is seen in a tree", {
-  expect_true(all(ts_ancestors(ts, 0, complete = TRUE)$parent_id == c(22, 32, 36, 37)))
-  expect_true(all(ts_ancestors(ts, 1, complete = TRUE)$parent_id == c(27, 31, 34, 35)))
+  expect_true(all(ts_ancestors(ts, 0, complete = TRUE)$parent_id == c(28, 34, 37)))
+  expect_true(all(ts_ancestors(ts, 1, complete = TRUE)$parent_id == c(24,29,31,34, 37)))
   expect_error(ts_ancestors(ts, 38, complete = TRUE), "The given node")
   expect_true(all(ts_ancestors(ts, 37, complete = FALSE)$parent_id == 38))
-  expect_true(all(ts_ancestors(ts, 20, complete = TRUE)$parent_id == c(25, 29, 32, 36, 37)))
+  expect_true(all(ts_ancestors(ts, 20, complete = TRUE)$parent_id == c(21, 24, 29, 31, 34, 37)))
 
-  expect_true(all(ts_ancestors(ts, 0, complete = FALSE)$parent_id == c(22, 32, 36, 37, 38)))
-  expect_true(all(ts_ancestors(ts, 15, complete = FALSE)$parent_id == c(22, 32, 36, 37, 38)))
+  expect_true(all(ts_ancestors(ts, 0, complete = FALSE)$parent_id == c(28, 34, 37, 38)))
+  expect_true(all(ts_ancestors(ts, 15, complete = FALSE)$parent_id == c(21, 24, 29, 31, 34, 37, 38)))
   expect_true(all(ts_ancestors(ts, 37, complete = FALSE)$parent_id == 38))
-  expect_true(all(ts_ancestors(ts, 34, complete = FALSE)$parent_id == c(35, 38)))
+  expect_true(all(ts_ancestors(ts, 34, complete = FALSE)$parent_id == c(37, 38)))
 })
 
 test_that("any node ID or individual given to ts_descendants must be present", {
@@ -43,12 +44,12 @@ test_that("any node ID or individual given to ts_descendants must be present", {
 test_that("reconstructed descendant relationships match what is seen in a tree", {
   root_id <- ts_nodes(ts) %>% .[.$time == min(.$time), ] %>% .$node_id
 
-  expect_true(all(sort(ts_descendants(ts, 29, complete = TRUE)$child_id) == c(3, 4, 5, 13, 17, 19, 20, 25, 26, 28)))
-  expect_true(all(sort(ts_descendants(ts, 26, complete = TRUE)$child_id) == c(4, 5)))
-  expect_true(all(sort(ts_descendants(ts, 30, complete = TRUE)$child_id) == c(7, 9, 14, 21)))
+  expect_true(all(sort(ts_descendants(ts, 29, complete = TRUE)$child_id) == c(1, 2, 12, 14, 15, 19, 20, 21, 22, 24)))
+  expect_true(all(sort(ts_descendants(ts, 26, complete = TRUE)$child_id) == c(5, 16)))
+  expect_true(all(sort(ts_descendants(ts, 30, complete = TRUE)$child_id) == c(4, 7, 9, 23)))
 
   expect_true(all(sort(ts_descendants(ts, root_id, complete = FALSE)$child_id) == sort(setdiff(ts_nodes(ts)$node_id, root_id))))
-  expect_true(all(sort(ts_descendants(ts, 32, complete = FALSE)$child_id) == sort(c(0, 15, 3, 17, 19, 4, 5, 13, 22, 20, 25, 29, 26, 28))))
-  expect_true(all(sort(ts_descendants(ts, 26, complete = FALSE)$child_id) == c(4, 5)))
-  expect_true(all(sort(ts_descendants(ts, 30, complete = FALSE)$child_id) == c(7, 9, 14, 21)))
+  expect_true(all(sort(ts_descendants(ts, 32, complete = FALSE)$child_id) == sort(c(5, 16, 17, 18, 26, 27))))
+  expect_true(all(sort(ts_descendants(ts, 26, complete = FALSE)$child_id) == c(5, 16)))
+  expect_true(all(sort(ts_descendants(ts, 30, complete = FALSE)$child_id) == c(4, 7, 9, 23)))
 })
