@@ -22,6 +22,8 @@ website: $(logo) README.md
 test:
 	R -e 'devtools::test()'
 
+cran: clean build check
+
 build: $(pkg)
 
 check: $(pkg)
