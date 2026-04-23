@@ -109,10 +109,6 @@ RUN R -e 'install.packages("IRkernel"); IRkernel::installspec()'
 # final configuration steps
 ############################################################
 
-# clone shell configuration files into the container
-RUN cd ${HOME}; git clone https://github.com/bodkan/dotfiles .dotfiles/; rm -f .bashrc .profile; \
-    cd .dotfiles; ./install.sh
-
 # set the necessary R environment variables for the container
 RUN printf "PATH=$PATH\n" > ${HOME}/.Renviron
 
