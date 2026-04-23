@@ -34,6 +34,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      GITHUB_WORKSPACE: ${{ github.workspace }}
 
     steps:
       - uses: actions/checkout@v4
@@ -182,19 +183,25 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           install.packages(c("magrittr", "reticulate"), repos = "http://cran.rstudio.com")
-          library(reticulate)
           library(magrittr)
-          install_miniconda()
-          PYTHON_VERSION <- "3.12"
-          PYTHON_DEPS <- c("msprime==1.4.1", "tskit==1.0.2", "pyslim==1.1.1", "tspop==0.0.2")
-          PYTHON_ENV <-
-            PYTHON_DEPS %>%
-            gsub("==", "-", .) %>%
-            paste(collapse = "_") %>%
-            paste0("Python-", PYTHON_VERSION, "_", .)
-          conda_create(envname = PYTHON_ENV, python_version = PYTHON_VERSION)
-          use_condaenv(PYTHON_ENV, required = TRUE)
-          conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS, pip = TRUE)
+
+          path <- file.path(Sys.getenv("GITHUB_WORKSPACE"), "inst/deps")
+          DEPS <- list(
+            python = scan(file.path(path, "python-version.txt"), what = "character", quiet = TRUE),
+            modules = readLines(file.path(path, "requirements.txt")),
+            slim = scan(file.path(path, "slim-version.txt"), what = character())
+          )
+          DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c(paste0("Python-", DEPS$python), .) %>% paste(collapse = "_")
+
+          reticulate::install_miniconda()
+
+          reticulate::conda_create(DEPS$env, python_version = DEPS$python)
+          reticulate::use_condaenv(DEPS$env, required = TRUE)
+
+          pip_only <- grepl("tspop|pyslim", DEPS$modules)
+          reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[!pip_only], pip = FALSE)
+          reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[pip_only], pip = TRUE)
+
         shell: Rscript {0}
 
         # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
