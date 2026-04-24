@@ -28,3 +28,4 @@ ubuntu_deps.txt
 Dockerfile
 docker
 tags
+.ipynb_checkpoints/
