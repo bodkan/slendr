@@ -53,7 +53,9 @@
 <li><p>The <code><a href="../reference/setup_env.html">setup_env()</a></code> function now accepts a new argument <code>env =</code> with the following behavior:</p></li>
 </ol><ul><li><p>When called as <code>setup_env(env = "conda")</code>, <em>slendr</em> downloads a conda-provided Python interpreter and creates a virtual environment with all of its Python dependencies. The <code>env = "conda"</code> mode is therefore equivalent to the plain (and still default) call <code><a href="../reference/setup_env.html">setup_env()</a></code>.</p></li>
 <li><p>Alternatively, running <code>setup_env(env = "venv")</code> will use a Python interpreter already available on the user’s system discovered by the reticulate package, and create a standard Python virtual environment using the built-in Python module <code>venv</code> containing all of <em>slendr</em>’s Python dependencies.</p></li>
-</ul><p>In either of the above cases, calling <code><a href="../reference/init_env.html">init_env()</a></code> will activate the Python virtual environment thus created, just like beforel</p>
+</ul><ol start="3" style="list-style-type: decimal"><li>Given the expanded possibilities offered by the <code>setup_env(env = "conda|venv")</code> options, the <code>pip = TRUE</code> argument of <code><a href="../reference/setup_env.html">setup_env()</a></code> is now deprecated.</li>
+</ol><p>In either of the above cases, calling <code><a href="../reference/init_env.html">init_env()</a></code> will activate the Python virtual environment thus created, just like before.</p>
+<p>Finally, please be aware of the Anaconda licensing-related issue described below. It has been highlighted recently by <a href="https://github.com/bodkan/slendr/issues/198" class="external-link">a user on GitHub</a>. No solution has been found yet, but I do intend to evaluate if (and how) has the problem evolved from Anaconda’s side since the problem first popped up.</p>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.4.0" id="slendr-140">

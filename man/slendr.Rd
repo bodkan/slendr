@@ -38,5 +38,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Martin Petr \email{contact@bodkan.net} (\href{https://orcid.org/0000-0003-4879-8421}{ORCID})
 
+Authors:
+\itemize{
+  \item Martin Petr \email{contact@bodkan.net} (\href{https://orcid.org/0000-0003-4879-8421}{ORCID})
+}
+
 }
 \keyword{internal}

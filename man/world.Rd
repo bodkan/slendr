@@ -29,10 +29,10 @@ abstract landscape not tied to any real-world geographic region (when
 \code{landscape = "blank"} or when \code{landscape} is a custom-defined
 geographic landscape), or implying WGS-84 (EPSG 4326) coordinate system
 when a real Earth landscape was defined (\code{landscape =
-  "naturalearth"}).}
+"naturalearth"}).}
 
 \item{scale}{If Natural Earth geographic data is used (i.e. \code{landscape =
-  "naturalearth"}), this parameter determines the resolution of the data
+"naturalearth"}), this parameter determines the resolution of the data
 used. The value "small" corresponds to 1:110m data and is provided with the
 package, values "medium" and "large" correspond to 1:50m and 1:10m
 respectively and will be downloaded from the internet. Default value is

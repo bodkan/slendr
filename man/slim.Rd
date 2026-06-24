@@ -75,7 +75,7 @@ world map was specified during model definition, simulation will proceed in
 a spatial mode.}
 
 \item{coalescent_only}{Should \code{initializeTreeSeq(retainCoalescentOnly =
-  <...>)} be set to \code{TRUE} (the default) or \code{FALSE}? See
+<...>)} be set to \code{TRUE} (the default) or \code{FALSE}? See
 "retainCoalescentOnly" in the SLiM manual for more detail.}
 
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
