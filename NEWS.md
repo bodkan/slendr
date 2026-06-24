@@ -36,9 +36,13 @@ environments of slendr:
 3. Given the expanded possibilities offered by the `setup_env(env = "conda|venv")`
 options, the `pip = TRUE` argument of `setup_env()` is now deprecated.
 
-
 In either of the above cases, calling `init_env()` will activate the Python
 virtual environment thus created, just like before.
+
+Finally, please be aware of the Anaconda licensing-related issue described below.
+It has been highlighted recently by [a user on GitHub](https://github.com/bodkan/slendr/issues/198).
+No solution has been found yet, but I do intend to evaluate if (and how) has the
+problem evolved from Anaconda's side since the problem first popped up.
 
 # _slendr_ 1.4.0
 
