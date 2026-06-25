@@ -1,4 +1,4 @@
-# _slendr_ (development version)
+# _slendr_ 1.5.0
 
 This release implements a number of important changes to installing and handling Python
 environments of slendr:
