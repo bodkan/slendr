@@ -366,8 +366,6 @@ test_that("all sampled populations must be present in the compiled model", {
 # that they are also consistent compared to implicit sampling.
 
 test_that("implicit and explicit sampling schedules are consistent (forward)", {
-  devtools::load_all(); init_env()
-
   a <- population("a", time = 1, N = 4)
   c <- population("c", time = 10, N = 10, parent = a)
   b <- population("b", time = 30, N = 3, parent = c)
@@ -399,7 +397,6 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
 })
 
 test_that("implicit and explicit sampling schedules are consistent (backward)", {
-  devtools::load_all(); init_env(uv=TRUE)
   a <- population("a", time = 100, N = 4)
   c <- population("c", time = 80, N = 10, parent = a)
   b <- population("b", time = 20, N = 3, parent = c)
@@ -407,23 +404,15 @@ test_that("implicit and explicit sampling schedules are consistent (backward)", 
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # implicit sampling
-  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0)
-  s1 <- ts_samples(ts1)
-
-  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0)
-  s2 <- ts_samples(ts2)
-
+  s1 <- msprime(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
+  s2 <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
   expect_equal(s1, s2)
 
   # explicit sampling
-  schedule <- schedule_sampling(model, times = 0, list(a, 4), list(b, 3), list(c, 10))
   schedule <- schedule_sampling(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
 
-  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
-  s1_explicit <- ts_samples(ts1)
-
-  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
-  s2_explicit <- ts_samples(ts2)
+  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule) %>% ts_samples
+  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule) %>% ts_samples
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)
