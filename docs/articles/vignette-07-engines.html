@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Simulations using SLiM and msprime engines">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -216,10 +216,10 @@ ancestry in <code>x1</code>, and only one individual from the rest.</p>
 set up correctly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model_nogf</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-engines_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-07-engines_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model_gf</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, proportions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-engines_files/figure-html/unnamed-chunk-5-2.png" class="r-plt" width="480"></p>
+<p><img src="vignette-07-engines_files/figure-html/unnamed-chunk-5-2.png" class="r-plt" alt="" width="480"></p>
 <p>Now we will run both models (with and without gene flow) in the two
 <em>slendr</em> backends, SLiM and msprime:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -271,7 +271,7 @@ two backends from the same demographic model is almost the same.</p>
 <pre><code><span><span class="co">#&gt; ╔════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence            ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │ 248,158║</span></span>
+<span><span class="co">#&gt; ║Trees          │ 247,511║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│   1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼────────╢</span></span>
@@ -279,26 +279,26 @@ two backends from the same demographic model is almost the same.</p>
 <span><span class="co">#&gt; ╟───────────────┼────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │  21,008║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │70.5 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │70.3 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤═══════╤════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows   │Size    │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═══════╪════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │972,815│29.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │969,372│29.6 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│131,789│12.6 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│131,429│12.5 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │      0│ 8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │256,674│ 9.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Mutations  │256,977│ 9.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │157,230│ 5.5 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │156,910│ 5.5 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      7│ 2.8 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      3│46.9 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      3│47.3 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │256,355│ 6.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Sites      │256,653│ 6.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧════════╧════════════╝</span></span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msprime_nogf</span></span></code></pre></div>
@@ -330,7 +330,7 @@ two backends from the same demographic model is almost the same.</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      6│414 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      2│  3.9 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  4.4 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │ 69,144│  1.6 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -427,7 +427,7 @@ processes at play).</p>
 <span>       title <span class="op">=</span> <span class="st">"f4(c, x1 or x2; b, outgroup)"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"f4 ~0 is consistent with no gene flow, negative value indicates gene flow with 'b'"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-engines_files/figure-html/msprime_slim_f4_distributions-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-07-engines_files/figure-html/msprime_slim_f4_distributions-1.png" class="r-plt" alt="" width="480"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_f4ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df_slim_f4ratio</span>, <span class="va">df_msprime_f4ratio</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>population <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"x1_"</span>, <span class="va">X</span><span class="op">)</span>,</span>
@@ -442,7 +442,7 @@ processes at play).</p>
 <span>       title <span class="op">=</span> <span class="st">"f4-ratio estimate of 'b' ancestry calculated from simulated data"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"f4-ratio = f4(a, outgroup; x1 or x2, c) / f4(a, outgroup; b, c)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-engines_files/figure-html/msprime_slim_f4ratio_distributions-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-07-engines_files/figure-html/msprime_slim_f4ratio_distributions-1.png" class="r-plt" alt="" width="480"></p>
 <p>Things seem to be looking good and behave as expected! A couple of
 observations:</p>
 <ul>
@@ -660,7 +660,7 @@ for the two time directions, and for the two simulation back ends:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">100</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-engines_files/figure-html/msprime_slim_afs-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-07-engines_files/figure-html/msprime_slim_afs-1.png" class="r-plt" alt="" width="480"></p>
 <p>Again, a couple of things to note:</p>
 <ul>
 <li><p>The two models that involve population contraction (be it in a

@@ -1,4 +1,4 @@
-pandoc: 3.8.3
+pandoc: 3.9.0.2
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -14,7 +14,7 @@ articles:
   vignette-09-paper: vignette-09-paper.html
   vignette-10-tracts: vignette-10-tracts.html
   vignette-11-extensions: vignette-11-extensions.html
-last_built: 2026-01-15T21:33Z
+last_built: 2026-06-25T21:13Z
 urls:
-  reference: https://bodkan.net/slendr/reference
-  article: https://bodkan.net/slendr/articles
+  reference: https://bodkan.github.io/slendr/reference
+  article: https://bodkan.github.io/slendr/articles

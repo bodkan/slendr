@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Traditional, non-spatial models">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +110,7 @@ events (note the missing <code>map</code> argument, which is set to
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># African ancestral population</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">100000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
@@ -170,7 +170,7 @@ numbers of individuals scheduled for tree-sequence recording from each
 lineage at each timepoint:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png" class="r-plt" alt="" width="360"></p>
 <p>Even the final step—execution of the model in SLiM—is the same, using
 the built-in <code><a href="../reference/slim.html">slim()</a></code> function:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -188,11 +188,11 @@ just for this purpose. We could run the exact same simulation with
 <code class="sourceCode R"><span><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p>In fact, because both SLiM and <em>msprime</em> back ends save
 outputs in a tree sequence format, we can analyse them using the same
-tools. See <a href="https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html">this
+tools. See <a href="https://bodkan.github.io/slendr/articles/vignette-05-tree-sequences.html">this
 vignette</a> for more information about tree sequence analysis with
 <em>slendr</em>, and for more discussion on alternative simulation back
 ends and more extensive examples of data analysis with tree sequences
-you can read <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html">this
+you can read <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html">this
 tutorial</a>.</p>
 <div class="section level2">
 <h2 id="extracting-parameters-from-a-model-or-tree-sequences">Extracting parameters from a model or tree sequences<a class="anchor" aria-label="anchor" href="#extracting-parameters-from-a-model-or-tree-sequences"></a>

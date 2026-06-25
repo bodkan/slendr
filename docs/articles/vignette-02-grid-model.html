@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Demes on a regular spatial grid">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,7 @@ two-dimensional abstract world map:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span></span>
 <span>  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,</span>
@@ -154,7 +154,7 @@ population:</p>
 we set up things correctly:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" class="r-plt" alt="" width="360"></p>
 <p>So far, the way the model is specified, each population would be
 stuck on its own circular “island”. We can change that by programming
 gene flow events using the <em>slendr</em> function
@@ -242,20 +242,20 @@ function.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │  5,000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │1.3 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │1.4 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │9,038│282.4 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │9,096│284.3 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│6,250│612.0 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│6,333│620.1 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │9,063│329.1 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │9,121│331.2 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│   25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
@@ -323,7 +323,7 @@ helper function:</p>
 background:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" class="r-plt" alt="" width="360"></p>
 <p>Next, we would probably set up some scenario of gene flow between
 subpopulations; perhaps we would be interested in studying how a
 selected allele spreads through the continent based on some factors of
@@ -345,7 +345,7 @@ customize the spatial layout in much more detail.</p>
 <span></span>
 <span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="va">xrange</span>, yrange <span class="op">=</span> <span class="va">yrange</span>, crs <span class="op">=</span> <span class="st">"EPSG:31970"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/map_america-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/map_america-1.png" class="r-plt" alt="" width="360"></p>
 <p>Let’s lay out demes in a more scattered, irregular fashion. For
 illustration purposes, we will define each population’s geographic range
 as a circle with the radius of 200 km. Importantly, note that we have
@@ -438,7 +438,7 @@ of interest, but the location of each subpopulation is.</p>
 quickly visualizing it:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" class="r-plt" alt="" width="360"></p>
 <p>We can also plot the spatial organization of our demes on a map in
 all of its glory, including all gene flow events (one arrow per each
 unidirectional gene flow). Note that we get a warning message stating
@@ -449,7 +449,7 @@ map:</p>
 <pre><code><span><span class="co">#&gt; Warning: All gene-flow event will be visualized at once. If you wish to visualize</span></span>
 <span><span class="co">#&gt; gene flows at a particular point in time, use the `time` argument.</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; Warning: Non-spatial populations in your model won't be visualized</span></span></code></pre>
-<p><img src="vignette-02-grid-model_files/figure-html/model_map_america-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/model_map_america-1.png" class="r-plt" alt="" width="360"></p>
 <p>Finally, we can simulate the tree sequence from the model! Notice
 that we are simulating data using <code><a href="../reference/msprime.html">msprime()</a></code>, which is
 effectively dropping the continuous space dimension of our model. In
@@ -462,7 +462,7 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     34,057║</span></span>
+<span><span class="co">#&gt; ║Trees          │     34,127║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 10,000,000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -475,7 +475,7 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │182,742│  5.6 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │183,101│  5.6 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│ 11,000│300.8 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
@@ -483,11 +483,11 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │ 74,344│  2.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │ 74,367│  2.0 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     11│605 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      1│ 10.5 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│ 13.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>

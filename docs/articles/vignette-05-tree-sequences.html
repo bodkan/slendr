@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tree-sequence processing and statistics">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,7 @@ will be entirely isolated and used just for the purpose of
 calling:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span></code></pre>
 <p>We can use another built-in function <code><a href="../reference/check_env.html">check_env()</a></code> to make
 sure that <em>slendr</em> installed and configured the correct
 environment for us:</p>
@@ -124,13 +124,13 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.4_tskit-1.0.0_pyslim-1.1.0_tspop-0.0.2/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.12.12 | packaged by conda-forge | (main, Oct 22 2025, 23:34:53) [Clang 19.1.7 ] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 17:06:14) [Clang 19.1.7 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
-<span><span class="co">#&gt;  - tskit: version 1.0.0 ✓ </span></span>
-<span><span class="co">#&gt;  - msprime: version 1.3.4 ✓ </span></span>
-<span><span class="co">#&gt;  - pyslim: version 1.1.0 ✓ </span></span>
+<span><span class="co">#&gt;  - tskit: version 1.0.2 ✓ </span></span>
+<span><span class="co">#&gt;  - msprime: version 1.4.1 ✓ </span></span>
+<span><span class="co">#&gt;  - pyslim: version 1.1.1 ✓ </span></span>
 <span><span class="co">#&gt;  - tspop: present ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
 outputs in R!</p>
@@ -190,7 +190,7 @@ correct:</p>
 <span>  <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  nrow <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/introgression_graph-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/introgression_graph-1.png" class="r-plt" alt="" width="480"></p>
 </div>
 </div>
 <div class="section level2">
@@ -290,7 +290,7 @@ in previous vignettes, in this case we will run the simulation with the
 <code><a href="../reference/msprime.html">msprime()</a></code> coalescent back end. After all, our model is
 non-spatial and using a coalescent simulator will be much more efficient
 than the forward simulation. Switching between the msprime and SLiM back
-ends of slendr is demonstrated in much more detail in a <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html">dedicated
+ends of slendr is demonstrated in much more detail in a <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html">dedicated
 vignette</a>.</p>
 <p>The simulation back end utilized by the <code><a href="../reference/msprime.html">msprime()</a></code>
 function (as well as the <code><a href="../reference/slim.html">slim()</a></code> function) produces a
@@ -332,7 +332,7 @@ downstream analysis.</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      1│  7.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│  7.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -345,8 +345,8 @@ it as such).</p>
 <h2 id="named-samples">Named samples<a class="anchor" aria-label="anchor" href="#named-samples"></a>
 </h2>
 <p>In addition to automatically named symbolic names, <em>slendr</em>
-also supports fully customized sample names (see <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">here</a>
-and <a href="https://bodkan.net/slendr/reference/schedule_sampling.html">here</a>
+also supports fully customized sample names (see <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">here</a>
+and <a href="https://bodkan.github.io/slendr/reference/schedule_sampling.html">here</a>
 for a bit more detail). This is particularly convenient for referring to
 simulated individuals by their “real-world names”.</p>
 </div>
@@ -398,7 +398,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpYkfc8U/file9ff298be2f4"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpQsozB2/file6c2f26ac8d91"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -441,7 +441,7 @@ only once, and only during loading):</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      1│  7.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│  7.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -482,7 +482,7 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      2│  7.7 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  8.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -525,7 +525,7 @@ this:</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      2│  7.7 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  8.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -581,7 +581,7 @@ running:</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      2│  7.9 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  8.3 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │621,331│ 14.8 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
@@ -633,7 +633,7 @@ disposal to analyze such trees. For instance we can use the powerful
 package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; ggtree v4.0.1 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
+<pre><code><span><span class="co">#&gt; ggtree v4.2.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Please cite:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -645,7 +645,7 @@ package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_point2.html" class="external-link">geom_point2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>subset <span class="op">=</span> <span class="op">!</span><span class="va">isTip</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># points for internal nodes</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_tiplab.html" class="external-link">geom_tiplab</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sample labels for tips</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggexpand.html" class="external-link">hexpand</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>    <span class="co"># make more space for the tip labels</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/plot_ggtree-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/plot_ggtree-1.png" class="r-plt" alt="" width="360"></p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/emmanuelparadis/ape" class="external-link">ape</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
@@ -659,8 +659,9 @@ to show how to use <em>slendr</em> to perform the main tree-sequence
 operations using a convenient R interface to <em>tskit</em>. However,
 you should always keep in mind that you are not restricted to a subset
 of <em>tskit</em> functionality that <em>slendr</em> translated to R
-(i.e. <a href="https://bodkan.net/slendr/reference/">all functions</a>
-with the prefix <code>ts_</code>). Thanks to the incredible R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>,
+(i.e. <a href="https://bodkan.github.io/slendr/reference/">all
+functions</a> with the prefix <code>ts_</code>). Thanks to the
+incredible R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>,
 you can access Python methods and object variables directly, using the
 <code>$</code> operator.</p>
 <p>As an example, instead of calling the function
@@ -894,7 +895,7 @@ simulated between):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span>, x <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_distributions-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_distributions-1.png" class="r-plt" alt="" width="360"></p>
 <p>This is exactly as we specified in the model configuration above,
 suggesting that our simulations work as they should. You can see that
 there is quite a bit of noise but that’s because we simulated only a
@@ -910,7 +911,7 @@ present-day DNA samples:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">0</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"time [years ago]"</span>, y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" class="r-plt" alt="" width="360"></p>
 <p>Again, this is a result consistent with empirical estimates of
 Neanderthal ancestry using ancient DNA data (see Petr <em>et al.</em>,
 PNAS 2019).</p>
@@ -924,9 +925,9 @@ software (see the linked paper which formally introduced these
 statistics in the first place), you can convert the tree-sequence data
 to a file format called EIGENSTRAT using the
 <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally
-handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
-<code>EIGENSTRAT</code> object which ties all individual
-<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/vignette-01-tutorial.html" class="external-link">tutorial</a>
+handled by the R package <a href="https://bodkan.github.io/admixr/" class="external-link"><em>admixr</em></a> and returns
+an <code>EIGENSTRAT</code> object which ties all individual
+<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.github.io/admixr/articles/vignette-01-tutorial.html" class="external-link">tutorial</a>
 to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
@@ -967,7 +968,7 @@ like this (<em>admixr</em> calls this proportion
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with admixr/ADMIXTOOLS"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with tskit"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_vs_admixr-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_vs_admixr-1.png" class="r-plt" alt="" width="360"></p>
 <p>The correspondence between the two looks good! 🎉 Again, note that
 the large amount of variance around the expected value of 3% ancestry is
 due to an extremely small amount of sequence data simulated here.</p>
@@ -1190,7 +1191,7 @@ we can see the results fit our expectations.</p>
 </h2>
 <p>These were only a couple of examples of statistical functions
 implemented in <em>tskit</em> for which we provide a native R interface
-in <em>slendr</em>. You can find more tree-sequence statistics in the <a href="https://bodkan.net/slendr/reference/index.html#section-tree-sequence-statistics">reference
+in <em>slendr</em>. You can find more tree-sequence statistics in the <a href="https://bodkan.github.io/slendr/reference/index.html#section-tree-sequence-statistics">reference
 manual</a> on the project website. Not <a href="https://tskit.dev/tskit/docs/stable/stats.html#available-statistics" class="external-link">all
 statistics</a> from the <em>tskit</em> library are implemented, but we
 intend to expand the selection provided by <em>slendr</em> in the near
@@ -1198,7 +1199,7 @@ future. If there is some functionality that you would like to use in
 your project missing in <em>slendr</em>, please don’t hesitate to let us
 now by creating an issue on our <a href="https://github.com/bodkan/slendr/issues" class="external-link">GitHub page</a>.</p>
 <p>Finally, if you would like to see more examples of <em>tskit</em>
-interface in action, take a look at the vignette which describes <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html">switching
+interface in action, take a look at the vignette which describes <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html">switching
 between the SLiM and <em>msprime</em> back ends</a> of the
 <em>slendr</em> package.</p>
 </div>

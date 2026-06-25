@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction and basic tutorial">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +130,7 @@ and tailor the simulation run to the user-defined model. Alternatively,
 <em>slendr</em> also supports executing standard population genetics
 models in a random-mating setting. This means that models do not need an
 explicit geographic map and can be simulated either with the same
-built-in SLiM back end script, or with a more efficient <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html"><em>msprime</em>
+built-in SLiM back end script, or with a more efficient <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html"><em>msprime</em>
 back end</a> which is also provided with the package.</p></li>
 </ol>
 <p>The most important design objective was to make the integration of
@@ -181,7 +181,7 @@ terminal. You can find more detailed installation instructions in <a href="vigne
 <span><span class="co"># activate the internal Python environment needed for simulation and</span></span>
 <span><span class="co"># tree-sequence processing</span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span></code></pre>
 <p>If some of its dependencies (such as SLiM or necessary Python
 modules) are missing, you will get an informative message on how to
 proceed.</p>
@@ -311,7 +311,7 @@ geographic regions in the context of the defined section of the world
 map:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span>, title <span class="op">=</span> <span class="st">"Geographic regions"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_europe_anatolia-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_europe_anatolia-1.png" class="r-plt" alt="" width="360"></p>
 <p>Note that the <code>map</code> object is no longer explicitly
 specified. It is not needed, because each other class of objects
 provided to the <code><a href="../reference/plot_map.html">plot_map()</a></code> function must carry it as a
@@ -355,7 +355,7 @@ restrict the spatial boundary of the African population to the
 <code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>, map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_afr-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_afr-1.png" class="r-plt" alt="" width="360"></p>
 </div>
 <div class="section level3">
 <h3 id="circular-population-ranges">Circular population ranges<a class="anchor" aria-label="anchor" href="#circular-population-ranges"></a>
@@ -384,7 +384,7 @@ the <code><a href="../reference/plot_map.html">plot_map()</a></code> function re
 ranges by default.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ooa</span>, intersect <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"'Intersected' population range"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa-1.png" class="r-plt" alt="" width="360"></p>
 </div>
 </div>
 <div class="section level2">
@@ -423,7 +423,7 @@ locations:</p>
 <p>Checking the result visually again, we see:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ooa</span>, title <span class="op">=</span> <span class="st">"Intermediate migration maps"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa_migration-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa_migration-1.png" class="r-plt" alt="" width="360"></p>
 <p>Let’s create a population of Eastern Hunter Gatherers (EHG), which
 split from the first non-Africans 28000 years ago:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
@@ -491,7 +491,7 @@ spatial maps (“snapshots”) of the expansion process across time:</p>
 <p>We can (and should) check the results visually:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ana-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ana-1.png" class="r-plt" alt="" width="360"></p>
 <p>To visually see what is really going on behind the scenes, you can
 also plot the raw, non-intersected form of the expansion with:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -516,7 +516,7 @@ to implementing gene flow between them.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">yam</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_yam_migr-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_yam_migr-1.png" class="r-plt" alt="" width="360"></p>
 </div>
 <div class="section level2">
 <h2 id="plotting-multiple-slendr-objects">Plotting multiple <em>slendr</em> objects<a class="anchor" aria-label="anchor" href="#plotting-multiple-slendr-objects"></a>
@@ -529,7 +529,7 @@ potential issues before the export of individual spatio-temporal maps.
 Obviously, this is a lot of multi-dimensional information:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_maps-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_maps-1.png" class="r-plt" alt="" width="360"></p>
 <p>Below you will see a better way to explore a <em>slendr</em> model
 interactively.</p>
 </div>
@@ -707,7 +707,7 @@ color represent snapshots in time when a demographic event affecting
 that population happens.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, proportions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" class="r-plt" alt="" width="360"></p>
 </div>
 <div class="section level2">
 <h2 id="interactive-exploration-of-spatio-temporal-models">Interactive exploration of spatio-temporal models<a class="anchor" aria-label="anchor" href="#interactive-exploration-of-spatio-temporal-models"></a>
@@ -748,7 +748,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    116║</span></span>
+<span><span class="co">#&gt; ║Trees          │    134║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│100,000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -761,15 +761,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18,665│583.3 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18,734│585.4 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12,810│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12,846│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18,345│664.5 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18,379│665.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -791,27 +791,27 @@ to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
 <li><p>You can tweak parameters influencing dispersal dynamics (how
 “clumpy” populations are, how far offspring can migrate from their
-parents, etc.) and change how those dynamics evolve over time. See <a href="https://bodkan.net/slendr/articles/vignette-03-interactions.html">this
+parents, etc.) and change how those dynamics evolve over time. See <a href="https://bodkan.github.io/slendr/articles/vignette-03-interactions.html">this
 vignette</a> for more information.</p></li>
 <li><p>You can use <em>slendr</em> to program non-spatial models, which
 means that any standard, Wright-Fisher demographic model can be
 simulated with only a few lines of R code and, for instance, plugged
 into an <a href="https://en.wikipedia.org/wiki/Approximate_Bayesian_computation" class="external-link">Approximate
 Bayesian Computation</a> pipeline or other analyses leveraging readily
-available R packages. You can find more in <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">this
-vignette</a> and a much more detailed example in a vignette about <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html">SLiM
+available R packages. You can find more in <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">this
+vignette</a> and a much more detailed example in a vignette about <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html">SLiM
 and <em>msprime</em> back ends</a>.</p></li>
 <li><p>You can build complex spatial models which are still abstract
 (not assuming any real geographic location), including traditional
 simulations of demes in a lattice structure. A complete example is shown
-<a href="https://bodkan.net/slendr/articles/vignette-02-grid-model.html">in
+<a href="https://bodkan.github.io/slendr/articles/vignette-02-grid-model.html">in
 this vignette</a>.</p></li>
 <li><p>Because SLiM saves data in the <code>.trees</code> tree-sequence
 file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
 for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
 to process simulated data at a massive scale right at your fingertips,
 all within the convenient environment of R. See a much more detailed
-example in a vignette about <a href="https://bodkan.net/slendr/articles/vignette-07-engines.html">this
+example in a vignette about <a href="https://bodkan.github.io/slendr/articles/vignette-07-engines.html">this
 vignette</a> for an extensive tutorial of this feature.</p></li>
 </ul>
 </div>

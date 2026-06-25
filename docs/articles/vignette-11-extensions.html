@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Extending models with custom SLiM code">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,13 +87,13 @@ of spatio-temporal demographic histories using SLiM. Our primary goal
 was to have the means to simulate arbitrarily complex spatial scenarios
 and simulate data which could be used for development of new spatial
 inference population genetic methods (and benchmarking of current
-methods). This functionality is briefly described in <a href="https://bodkan.net/slendr/articles/vignette-01-tutorial.html">vignette
-#1</a> and in more detail in <a href="https://bodkan.net/slendr/articles/vignette-06-locations.html">vignette
+methods). This functionality is briefly described in <a href="https://bodkan.github.io/slendr/articles/vignette-01-tutorial.html">vignette
+#1</a> and in more detail in <a href="https://bodkan.github.io/slendr/articles/vignette-06-locations.html">vignette
 #6</a>.</p>
 <p>After the spatial simulation features have been implemented, it
 turned out to be trivial to support also “traditional”, non-spatial
-demographic models, such as those described in <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">vignette
-#4</a> and <a href="https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html">vignette
+demographic models, such as those described in <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">vignette
+#4</a> and <a href="https://bodkan.github.io/slendr/articles/vignette-05-tree-sequences.html">vignette
 #5</a> – tree-like models with population divergences, gene-flow events,
 and popularion resize events, like you can see in any evolutionary
 biology textbook. Because non-spatial models can be often implemented
@@ -219,7 +219,7 @@ corresponding to a symbolic name of a <em>slendr</em> population (as
 used on the R side of things) using the Eidos function
 <code><a href="../reference/population.html">population()</a></code> provided by the built-in SLiM script of
 <em>slendr.</em> For instance, let’s assume we compiled a toy model of
-human demography from the <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">vignette
+human demography from the <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">vignette
 #4</a> and ran it in the SLiMgui using
 <code>slim(..., method = "gui")</code>. We can then open an Eidos
 console in the GUI and type the following:</p>
@@ -449,7 +449,7 @@ simulation.</li>
 </ul>
 <p>To demonstrate how these two functions might be used in practice,
 let’s say we wanted to build on the (by default purely neutral!) model
-of African and Eurasian history from <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">this
+of African and Eurasian history from <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">this
 vignette</a> discussed above, and say that we want to add a beneficial
 mutation to the “EUR” population at time 15 ky ago. We could utilize the
 few bits of Eidos code introduced so far to define the following
@@ -559,12 +559,12 @@ There’s a much better way to do this that’s directly supported by
 <em>slendr</em>’s R interface.</p>
 <p>Let’s say that we defined the following model of modern human
 demographic history in slendr. This is exactly the same example as the
-one we show in <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">vignette
+one we show in <a href="https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html">vignette
 #4</a>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span></code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># African ancestral population</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">90000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
@@ -591,7 +591,7 @@ one we show in <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatia
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6000</span>, end <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.65</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3500</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-11-extensions_files/figure-html/model_plot-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-11-extensions_files/figure-html/model_plot-1.png" class="r-plt" alt="" width="480"></p>
 <p>Let’s also assume we have the following “SLiM snippet file” (this
 line gets the path to an example SLiM extension packaged with
 <em>slendr</em>):</p>
@@ -888,7 +888,7 @@ such a strong proportion, it reaches fixation much faster.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">origin</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning: Removed 419 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre>
-<p><img src="vignette-11-extensions_files/figure-html/trajectories-1.png" class="r-plt" width="480"></p>
+<p><img src="vignette-11-extensions_files/figure-html/trajectories-1.png" class="r-plt" alt="" width="480"></p>
 </div>
 <div class="section level3">
 <h3 id="programming-slendrslim-extension-snippets-directly-in-r-scripts">Programming <em>slendr</em>/SLiM extension snippets directly in R
@@ -1008,11 +1008,11 @@ string directly instead of providing a path to a file):</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">load_traj</span><span class="op">(</span><span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;   tick  time freq_origin freq_target origin target</span></span>
 <span><span class="co">#&gt; 1 2501 15000       1e-04       1e-04    EUR    EUR</span></span>
-<span><span class="co">#&gt; 2 2502 14970       3e-04       3e-04    EUR    EUR</span></span>
-<span><span class="co">#&gt; 3 2503 14940       4e-04       4e-04    EUR    EUR</span></span>
+<span><span class="co">#&gt; 2 2502 14970       2e-04       2e-04    EUR    EUR</span></span>
+<span><span class="co">#&gt; 3 2503 14940       3e-04       3e-04    EUR    EUR</span></span>
 <span><span class="co">#&gt; 4 2504 14910       5e-04       5e-04    EUR    EUR</span></span>
-<span><span class="co">#&gt; 5 2505 14880       4e-04       4e-04    EUR    EUR</span></span>
-<span><span class="co">#&gt; 6 2506 14850       4e-04       4e-04    EUR    EUR</span></span></code></pre>
+<span><span class="co">#&gt; 5 2505 14880       2e-04       2e-04    EUR    EUR</span></span>
+<span><span class="co">#&gt; 6 2506 14850       2e-04       2e-04    EUR    EUR</span></span></code></pre>
 <div class="section level4">
 <h4 id="customizing-genomic-architecture-selective-sweep-simulations">Customizing genomic architecture (selective sweep simulations)<a class="anchor" aria-label="anchor" href="#customizing-genomic-architecture-selective-sweep-simulations"></a>
 </h4>
@@ -1064,7 +1064,7 @@ introgression:</p>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="va">nea</span>, <span class="va">afr</span>, <span class="va">eur</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>,</span>
 <span>  generation_time <span class="op">=</span> <span class="fl">30</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-11-extensions_files/figure-html/introgression_model-1.png" class="r-plt" width="360"></p>
+<p><img src="vignette-11-extensions_files/figure-html/introgression_model-1.png" class="r-plt" alt="" width="360"></p>
 <p>Now we put together SLiM extension code to set up a non-neutral
 <em>slendr</em> simulation:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
@@ -1207,14 +1207,7 @@ just load this data and directly visualize it:</p>
 <span><span class="va">window_length</span> <span class="op">&lt;-</span> <span class="fl">100e3</span></span></code></pre></div>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Code/__archive/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">40000000</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> "\t"</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (3): gene, pos, freq</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freqs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="va">pos</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">5e6</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1226,7 +1219,6 @@ just load this data and directly visualize it:</p>
 <span>       title <span class="op">=</span> <span class="st">"Proportion of Neanderthal ancestry in Europeans along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-11-extensions_files/figure-html/introgression_freqs-1.png" class="r-plt" width="480"></p>
 <p>The hypothesis clearly stands against the data!</p>
 <p>We shouldn’t forget that the default data structure of
 <em>slendr</em> is a tree sequence. This gives us much more flexibility
@@ -1238,44 +1230,22 @@ frequencies during the SLiM run (saved in <code>frequencies.tsv</code>),
 we could use the simulated tree sequence to quickly calculate the
 genetic divergence between Europeans and a Neanderthal in windows along
 the simulated genome.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load a tree sequence and extract the names of recorded individuals</span></span>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Code/__archive/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_names.html">ts_names</a></span><span class="op">(</span><span class="va">ts</span>, split <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">samples</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; $EUR</span></span>
-<span><span class="co">#&gt;   [1] "EUR_1"   "EUR_2"   "EUR_3"   "EUR_4"   "EUR_5"   "EUR_6"   "EUR_7"  </span></span>
-<span><span class="co">#&gt;   [8] "EUR_8"   "EUR_9"   "EUR_10"  "EUR_11"  "EUR_12"  "EUR_13"  "EUR_14" </span></span>
-<span><span class="co">#&gt;  [15] "EUR_15"  "EUR_16"  "EUR_17"  "EUR_18"  "EUR_19"  "EUR_20"  "EUR_21" </span></span>
-<span><span class="co">#&gt;  [22] "EUR_22"  "EUR_23"  "EUR_24"  "EUR_25"  "EUR_26"  "EUR_27"  "EUR_28" </span></span>
-<span><span class="co">#&gt;  [29] "EUR_29"  "EUR_30"  "EUR_31"  "EUR_32"  "EUR_33"  "EUR_34"  "EUR_35" </span></span>
-<span><span class="co">#&gt;  [36] "EUR_36"  "EUR_37"  "EUR_38"  "EUR_39"  "EUR_40"  "EUR_41"  "EUR_42" </span></span>
-<span><span class="co">#&gt;  [43] "EUR_43"  "EUR_44"  "EUR_45"  "EUR_46"  "EUR_47"  "EUR_48"  "EUR_49" </span></span>
-<span><span class="co">#&gt;  [50] "EUR_50"  "EUR_51"  "EUR_52"  "EUR_53"  "EUR_54"  "EUR_55"  "EUR_56" </span></span>
-<span><span class="co">#&gt;  [57] "EUR_57"  "EUR_58"  "EUR_59"  "EUR_60"  "EUR_61"  "EUR_62"  "EUR_63" </span></span>
-<span><span class="co">#&gt;  [64] "EUR_64"  "EUR_65"  "EUR_66"  "EUR_67"  "EUR_68"  "EUR_69"  "EUR_70" </span></span>
-<span><span class="co">#&gt;  [71] "EUR_71"  "EUR_72"  "EUR_73"  "EUR_74"  "EUR_75"  "EUR_76"  "EUR_77" </span></span>
-<span><span class="co">#&gt;  [78] "EUR_78"  "EUR_79"  "EUR_80"  "EUR_81"  "EUR_82"  "EUR_83"  "EUR_84" </span></span>
-<span><span class="co">#&gt;  [85] "EUR_85"  "EUR_86"  "EUR_87"  "EUR_88"  "EUR_89"  "EUR_90"  "EUR_91" </span></span>
-<span><span class="co">#&gt;  [92] "EUR_92"  "EUR_93"  "EUR_94"  "EUR_95"  "EUR_96"  "EUR_97"  "EUR_98" </span></span>
-<span><span class="co">#&gt;  [99] "EUR_99"  "EUR_100"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $NEA</span></span>
-<span><span class="co">#&gt; [1] "NEA_1"</span></span></code></pre>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># compute coordinates of sliding windows along the genome</span></span>
+<span><span class="va">samples</span></span>
+<span></span>
+<span><span class="co"># compute coordinates of sliding windows along the genome</span></span>
 <span><span class="va">windows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="va">n_genes</span> <span class="op">*</span> <span class="va">gene_length</span> <span class="op">-</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="va">window_length</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] 0e+00 1e+05 2e+05 3e+05 4e+05 5e+05</span></span></code></pre>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] 999400000 999500000 999600000 999700000 999800000 999900000</span></span></code></pre>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># compute divergence from the tree sequence in each window separately</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># compute divergence from the tree sequence in each window separately</span></span>
 <span><span class="va">divergence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">samples</span>, windows <span class="op">=</span> <span class="va">windows</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span><span class="op">$</span><span class="va">divergence</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute average divergence at each position in a gene, and a 95% C.I.</span></span>
 <span><span class="va">div_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pop <span class="op">=</span> <span class="st">"eur"</span>,</span>
@@ -1288,9 +1258,7 @@ the simulated genome.</p>
 <span>    ci_low <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    ci_up <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; `summarise()` has grouped output by 'pop'. You can override using the `.groups`</span></span>
-<span><span class="co">#&gt; argument.</span></span></code></pre>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">div_df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, ymin <span class="op">=</span> <span class="va">ci_low</span>, ymax <span class="op">=</span> <span class="va">ci_up</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1298,7 +1266,6 @@ the simulated genome.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"coordinate along a gene"</span>, y <span class="op">=</span> <span class="st">"divergence to Neanderthal"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Divergence of Europeans to a Neanderthal genome along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-11-extensions_files/figure-html/introgression_divergence-1.png" class="r-plt" width="480"></p>
 <p>Indeed, we clearly observe lower introgression levels (indicated by
 an increased European-Neanderthal divergence) around loci under
 selection and increased surviving introgression far from those loci,
