@@ -366,6 +366,8 @@ test_that("all sampled populations must be present in the compiled model", {
 # that they are also consistent compared to implicit sampling.
 
 test_that("implicit and explicit sampling schedules are consistent (forward)", {
+  devtools::load_all(); init_env()
+
   a <- population("a", time = 1, N = 4)
   c <- population("c", time = 10, N = 10, parent = a)
   b <- population("b", time = 30, N = 3, parent = c)
