@@ -96,15 +96,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
          "(This restriction only applies to coalescent simulations with msprime().)",
          call. = FALSE)
 
-  if (!is.null(samples)) {
-    samples <- process_sampling(samples, model, verbose)
-    if (!is.null(model$path)) {
-      sampling_path <- tempfile()
-      readr::write_tsv(samples, sampling_path)
-      sampling <- paste("--sampling-schedule", sampling_path)
-    }
-  } else
-    sampling <- ""
+  samples <- process_sampling(samples, model, verbose)
 
   random_seed <- set_random_seed(random_seed)
 
@@ -114,6 +106,10 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 
     script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
   } else {
+    sampling_path <- tempfile()
+    readr::write_tsv(samples, sampling_path)
+    sampling <- paste("--sampling-schedule", sampling_path)
+
     # verify checksums of serialized model configuration files
     checksums <- readr::read_tsv(file.path(model$path, "checksums.tsv"), progress = FALSE,
                                  col_types = "cc")
@@ -144,7 +140,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 
   resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
   geneflows <- if (is.null(model$geneflow)) data.frame() else model$geneflow
-  if (is.null(samples)) samples <- data.frame()
+  if (all(samples$n == "INF")) samples$n <- Inf
 
   ts_msprime <- script$simulate(
     sequence_length = sequence_length,
