@@ -355,3 +355,76 @@ test_that("all sampled populations must be present in the compiled model", {
     "data.frame"
   )
 })
+
+# Recently I discovered a strange issue, in which msprime simulations without
+# explicit sampling schedule produced a table with mismatched order of population
+# names vs sample names (SLiM runs were OK). I discovered this when preparing
+# SMBE26 poster based on the Example 1 from the slendr paper which used the
+# implicit sampling schedule for brevity (f4-ratio distributions showed no data,
+# but the introgression example in the vignette). Having fixed this in XXXXXX,
+# this test makes sure both msprime and SLiM sampling tables are consistent and
+# that they are also consistent compared to implicit sampling.
+
+test_that("implicit and explicit sampling schedules are consistent (forward)", {
+  a <- population("a", time = 1, N = 4)
+  c <- population("c", time = 10, N = 10, parent = a)
+  b <- population("b", time = 30, N = 3, parent = c)
+
+  model <- compile_model(list(a, b, c), generation_time = 1, simulation_length = 50)
+
+  # implicit sampling
+  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0)
+  s1 <- ts_samples(ts1)
+
+  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0)
+  s2 <- ts_samples(ts2)
+
+  expect_equal(s1, s2)
+
+  # explicit sampling
+  schedule <- schedule_sampling(model, times = 51, list(a, 4), list(b, 3), list(c, 10))
+
+  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  s1_explicit <- ts_samples(ts1)
+
+  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  s2_explicit <- ts_samples(ts2)
+
+  expect_equal(s1, s1_explicit)
+  expect_equal(s2, s2_explicit)
+
+  expect_equal(s1_explicit, s2_explicit)
+})
+
+test_that("implicit and explicit sampling schedules are consistent (backward)", {
+  devtools::load_all(); init_env(uv=TRUE)
+  a <- population("a", time = 100, N = 4)
+  c <- population("c", time = 80, N = 10, parent = a)
+  b <- population("b", time = 20, N = 3, parent = c)
+
+  model <- compile_model(list(a, b, c), generation_time = 1)
+
+  # implicit sampling
+  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0)
+  s1 <- ts_samples(ts1)
+
+  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0)
+  s2 <- ts_samples(ts2)
+
+  expect_equal(s1, s2)
+
+  # explicit sampling
+  schedule <- schedule_sampling(model, times = 0, list(a, 4), list(b, 3), list(c, 10))
+  schedule <- schedule_sampling(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
+
+  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  s1_explicit <- ts_samples(ts1)
+
+  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  s2_explicit <- ts_samples(ts2)
+
+  expect_equal(s1, s1_explicit)
+  expect_equal(s2, s2_explicit)
+
+  expect_equal(s1_explicit, s2_explicit)
+})
