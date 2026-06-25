@@ -167,6 +167,14 @@ def simulate(
   if debug:
       print(demography.debug())
 
+  # logging.info("Processing the sampling schedule")
+  # breakpoint()
+  # sample_set = [
+  #     msprime.SampleSet(
+  #        row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
+  #     ) for row in samples.itertuples(index=False)
+  # ]
+
   logging.info("Running the simulation and generating a tree sequence")
 
   ts = msprime.sim_ancestry(
