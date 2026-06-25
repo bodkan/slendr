@@ -1,4 +1,4 @@
-# _slendr_ (development version)
+# _slendr_ 1.5.0
 
 This release implements a number of important changes to installing and handling Python
 environments of slendr:
@@ -43,6 +43,10 @@ Finally, please be aware of the Anaconda licensing-related issue described below
 It has been highlighted recently by [a user on GitHub](https://github.com/bodkan/slendr/issues/198).
 No solution has been found yet, but I do intend to evaluate if (and how) has the
 problem evolved from Anaconda's side since the problem first popped up.
+
+- An issue in which _msprime_-based simulations with implicit sampling schedules
+  produced an incorrect ordering of the sample names column compared to the population
+  names column in `ts_samples()` has been fixed. ([#362011](https://github.com/bodkan/slendr/issues/362011)) ([#17199a](https://github.com/bodkan/slendr/issues/17199a))
 
 # _slendr_ 1.4.0
 
