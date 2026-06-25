@@ -73,8 +73,8 @@ test_that("non-serialized models give the same result as serialized models (no s
   expect_true(all(ts_table(ts_ser, "mutations")   == ts_table(ts_nonser, "mutations"), na.rm = TRUE))
 
   # check equivalence of simplification for both tree sequences
-  ts_ser_small    <- ts_simplify(ts_ser,    simplify_to = c("EUR_1", "ANA_1", "EHG_1"))
-  ts_nonser_small <- ts_simplify(ts_nonser, simplify_to = c("EUR_1", "ANA_1", "EHG_1"))
+  ts_ser_small    <- ts_simplify(ts_ser,    simplify_to = c("EUR_1", "EUR_12", "EUR_42"))
+  ts_nonser_small <- ts_simplify(ts_nonser, simplify_to = c("EUR_1", "EUR_12", "EUR_42"))
 
   expect_true(all(ts_samples(ts_nonser_small) == ts_samples(ts_ser_small)))
 
