@@ -44,6 +44,10 @@ It has been highlighted recently by [a user on GitHub](https://github.com/bodkan
 No solution has been found yet, but I do intend to evaluate if (and how) has the
 problem evolved from Anaconda's side since the problem first popped up.
 
+- An issue in which _msprime_-based simulations with implicit sampling schedules
+  produced an incorrect ordering of the sample names column compared to the population
+  names column in `ts_samples()` has been fixed. ([#362011](https://github.com/bodkan/slendr/issues/362011)) ([#17199a](https://github.com/bodkan/slendr/issues/17199a))
+
 # _slendr_ 1.4.0
 
 - An issue with plotting "truncated" backwards time models using `plot_model()` has been fixed.
