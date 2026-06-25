@@ -46,7 +46,7 @@ problem evolved from Anaconda's side since the problem first popped up.
 
 - An issue in which _msprime_-based simulations with implicit sampling schedules
   produced an incorrect ordering of the sample names column compared to the population
-  names column in `ts_samples()` has been fixed. ([#362011](https://github.com/bodkan/slendr/issues/362011)) ([#17199a](https://github.com/bodkan/slendr/issues/17199a))
+  names column in `ts_samples()` has been fixed. ([PR #199](https://github.com/bodkan/slendr/pull/199))
 
 # _slendr_ 1.4.0
 
