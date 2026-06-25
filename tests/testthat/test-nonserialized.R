@@ -60,7 +60,13 @@ test_that("non-serialized models give the same result as serialized models (no s
   expect_s3_class(ts_ser, "slendr_ts")
   expect_s3_class(ts_ser, "tskit.trees.TreeSequence")
 
+  ts_ser2 <- slim(model_ser, sequence_length = 10000, recombination_rate = 0, random_seed = 42) %>%
+    ts_mutate(mutation_rate = 0.0001, random_seed = 42)
+  expect_s3_class(ts_ser2, "slendr_ts")
+  expect_s3_class(ts_ser2, "tskit.trees.TreeSequence")
+
   expect_true(all(ts_samples(ts_nonser) == ts_samples(ts_ser)))
+  expect_equal(ts_samples(ts_ser), ts_samples(ts_ser2))
 
   # check equivalence of annotated tree-sequence tables
   expect_true(all(ts_nodes(ts_ser) == ts_nodes(ts_nonser), na.rm = TRUE))
