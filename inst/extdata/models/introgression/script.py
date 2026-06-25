@@ -19,7 +19,7 @@ import numpy
 import pandas
 import tskit
 
-VERSION = "slendr_1.4.0.9000"
+VERSION = "slendr_1.5.0"
 
 
 def simulate(
@@ -70,27 +70,6 @@ def simulate(
               derived=[pop.pop],
               ancestral=pop.parent
           )
-
-  if len(samples) == 0:
-      logging.info("No sampling schedule given, generating one automatically")
-      if direction == "forward":
-          end_time = oldest_time + orig_length
-      else:
-          end_time = oldest_time - orig_length
-      samples = pandas.DataFrame(
-          [
-            (pop.initial_size, pop.name, "-", length + 1, -1, -1, end_time, -1, -1)
-            for pop in demography.populations
-          ],
-          columns=["n", "pop", "name", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
-      )
-
-  logging.info("Loading the sampling schedule")
-  sample_set = [
-      msprime.SampleSet(
-         row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
-      ) for row in samples.itertuples(index=False)
-  ]
 
   logging.info("Setting up population resize events")
 
@@ -167,6 +146,21 @@ def simulate(
   if debug:
       print(demography.debug())
 
+  # if an implicit sampling schedule was provided, substitute INF values
+  # for final population sizes
+  if numpy.isinf(samples.n).all():
+      logging.info("Processing the implicitly generated sampling schedule")
+      for pop in demography.populations:
+        samples.loc[samples["pop"] == pop.name, "n"] = pop.initial_size
+      samples["n"] = samples["n"].astype("int")
+
+  logging.info("Preparing the sample sets")
+  sample_set = [
+      msprime.SampleSet(
+         row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
+      ) for row in samples.itertuples(index=False)
+  ]
+
   logging.info("Running the simulation and generating a tree sequence")
 
   ts = msprime.sim_ancestry(
@@ -193,7 +187,7 @@ def simulate(
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
-          "version": "slendr_1.4.0.9000",
+          "version": "slendr_1.5.0",
           "backend": "msprime",
           "description": description,
           "sampling": {
