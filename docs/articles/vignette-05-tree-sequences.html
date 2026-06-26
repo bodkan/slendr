@@ -398,7 +398,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpQsozB2/file6c2f26ac8d91"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpZ8foIG/file95484a0807ea"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -659,9 +659,8 @@ to show how to use <em>slendr</em> to perform the main tree-sequence
 operations using a convenient R interface to <em>tskit</em>. However,
 you should always keep in mind that you are not restricted to a subset
 of <em>tskit</em> functionality that <em>slendr</em> translated to R
-(i.e. <a href="https://bodkan.net/slendr/reference/">all
-functions</a> with the prefix <code>ts_</code>). Thanks to the
-incredible R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>,
+(i.e. <a href="https://bodkan.net/slendr/reference/">all functions</a>
+with the prefix <code>ts_</code>). Thanks to the incredible R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>,
 you can access Python methods and object variables directly, using the
 <code>$</code> operator.</p>
 <p>As an example, instead of calling the function
@@ -925,8 +924,8 @@ software (see the linked paper which formally introduced these
 statistics in the first place), you can convert the tree-sequence data
 to a file format called EIGENSTRAT using the
 <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally
-handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns
-an <code>EIGENSTRAT</code> object which ties all individual
+handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
+<code>EIGENSTRAT</code> object which ties all individual
 <code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/vignette-01-tutorial.html" class="external-link">tutorial</a>
 to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
