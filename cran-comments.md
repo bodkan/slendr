@@ -1,5 +1,4 @@
-A fix for a couple of "Found the following (possibly) invalid URLs..." NOTEs
-that recently popped on the CRAN Package Check Results page, plus other minor updates.
+Fixed various issues related to handling Python environments through the 'reticulate' R package and other minor bugfixes.
 
 # R CMD check results
 
