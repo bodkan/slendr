@@ -131,7 +131,7 @@ schedule_sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 
     Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
 
-Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](https://bodkan.github.io/slendr/articles/vignette-07-engines.html).
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](https://bodkan.net/slendr/articles/vignette-07-engines.html).
 
 The simulation back end utilized by the `msprime()` function (as well as the `slim()` function) produces a tree-sequence output which is immediately loaded and ready for a downstream analysis.
 
@@ -149,7 +149,7 @@ Note that we bind the individual sampling schedule data frames using the `rbind`
 
 ## Named samples
 
-In addition to automatically named symbolic names, _slendr_ also supports fully customized sample names (see [here](https://bodkan.github.io/slendr/articles/vignette-04-nonspatial-models.html) and [here](https://bodkan.github.io/slendr/reference/schedule_sampling.html) for a bit more detail). This is particularly convenient for referring to simulated individuals by their "real-world names".
+In addition to automatically named symbolic names, _slendr_ also supports fully customized sample names (see [here](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) and [here](https://bodkan.net/slendr/reference/schedule_sampling.html) for a bit more detail). This is particularly convenient for referring to simulated individuals by their "real-world names".
 
 ## R interface for *tskit* and *pyslim*
 
@@ -257,7 +257,7 @@ nodelabels()
 
 ## Accessing *tskit* functionality directly
 
-As we mentioned in the previous section, the goal of this vignette is to show how to use _slendr_ to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that _slendr_ translated to R (i.e. [all functions](https://bodkan.github.io/slendr/reference/) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
+As we mentioned in the previous section, the goal of this vignette is to show how to use _slendr_ to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that _slendr_ translated to R (i.e. [all functions](https://bodkan.net/slendr/reference/) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
 
 As an example, instead of calling the function `ts_coalesced()` on the tree-sequence as we did above, we could check that all trees are coalesced by running the following snippet instead (note that this is very inefficient and we're only doing the operation for the first one hundred trees):
 
@@ -349,7 +349,7 @@ Again, this is a result consistent with empirical estimates of Neanderthal ances
 
 ## ADMIXTOOLS analyses
 
-In case you would like to verify some *f*-statistics results using the venerable [ADMIXTOOLS](https://doi.org/10.1534/genetics.112.145037) software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the `ts_eigenstrat()` function. The file conversion is internally handled by the R package [*admixr*](https://bodkan.github.io/admixr/) and returns an `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together (see the [tutorial](https://bodkan.github.io/admixr/articles/vignette-01-tutorial.html) to *admixr* for an extensive overview). *admixr* is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.
+In case you would like to verify some *f*-statistics results using the venerable [ADMIXTOOLS](https://doi.org/10.1534/genetics.112.145037) software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the `ts_eigenstrat()` function. The file conversion is internally handled by the R package [*admixr*](https://bodkan.net/admixr/) and returns an `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together (see the [tutorial](https://bodkan.net/admixr/articles/vignette-01-tutorial.html) to *admixr* for an extensive overview). *admixr* is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.
 
 ```{r}
 snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
@@ -507,6 +507,6 @@ After sorting the table based on the value in the divergence column, we can see 
 
 ## More information
 
-These were only a couple of examples of statistical functions implemented in *tskit* for which we provide a native R interface in _slendr_. You can find more tree-sequence statistics in the [reference manual](https://bodkan.github.io/slendr/reference/index.html#section-tree-sequence-statistics) on the project website. Not [all statistics](https://tskit.dev/tskit/docs/stable/stats.html#available-statistics) from the *tskit* library are implemented, but we intend to expand the selection provided by _slendr_ in the near future. If there is some functionality that you would like to use in your project missing in _slendr_, please don't hesitate to let us now by creating an issue on our [GitHub page](https://github.com/bodkan/slendr/issues).
+These were only a couple of examples of statistical functions implemented in *tskit* for which we provide a native R interface in _slendr_. You can find more tree-sequence statistics in the [reference manual](https://bodkan.net/slendr/reference/index.html#section-tree-sequence-statistics) on the project website. Not [all statistics](https://tskit.dev/tskit/docs/stable/stats.html#available-statistics) from the *tskit* library are implemented, but we intend to expand the selection provided by _slendr_ in the near future. If there is some functionality that you would like to use in your project missing in _slendr_, please don't hesitate to let us now by creating an issue on our [GitHub page](https://github.com/bodkan/slendr/issues).
 
-Finally, if you would like to see more examples of *tskit* interface in action, take a look at the vignette which describes [switching between the SLiM and *msprime* back ends](https://bodkan.github.io/slendr/articles/vignette-07-engines.html) of the _slendr_ package.
+Finally, if you would like to see more examples of *tskit* interface in action, take a look at the vignette which describes [switching between the SLiM and *msprime* back ends](https://bodkan.net/slendr/articles/vignette-07-engines.html) of the _slendr_ package.
