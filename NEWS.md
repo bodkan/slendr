@@ -46,7 +46,11 @@ problem evolved from Anaconda's side since the problem first popped up.
 
 - An issue in which _msprime_-based simulations with implicit sampling schedules
   produced an incorrect ordering of the sample names column compared to the population
-  names column in `ts_samples()` has been fixed. ([PR #199](https://github.com/bodkan/slendr/pull/199))
+  names column in `ts_samples()` has been fixed. As a consequence of this fix,
+  implicit sampling (now always happening at "present-day") for _msprime_
+  simulations truly samples only individuals at the end of the simulation.
+  This has always been the case for SLiM (by definition of how sampling in the
+  SLiM engine was implemented), but not for _msprime_. ([PR #199](https://github.com/bodkan/slendr/pull/199))
 
 # _slendr_ 1.4.0
 
