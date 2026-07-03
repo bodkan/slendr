@@ -5,13 +5,17 @@
 #'
 #' @param uv Should an ephemeral Python environment be created via uv (instead
 #'   of activating a permanent virtual environment created via \code{setup_env})?
-#' @param quiet Should informative messages be printed to the console? Default
-#'   is \code{FALSE}.
+#' @param quiet Should informative messages be printed to the console? (DEPRECATED)
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-init_env <- function(uv = FALSE, quiet = FALSE) {
+init_env <- function(uv = FALSE, quiet = NULL) {
+  if (!is.null(quiet)) {
+    message("The `quiet` argument of `init_env()` has been deprecated (the function",
+            " is now \"quiet\" by default).")
+  }
+
   if (uv || Sys.getenv("SLENDR_UV") == "TRUE") {
     reticulate::py_require(packages = DEPS$modules, python_version = DEPS$python)
   } else if (is_slendr_condaenv_present()) {
@@ -64,9 +68,6 @@ init_env <- function(uv = FALSE, quiet = FALSE) {
     #   path = system.file("python", package = "slendr"),
     #   delay_load = TRUE
     # )
-
-    if (!quiet)
-      message("Python virtual environment for slendr has been activated.")
   }
 }
 
