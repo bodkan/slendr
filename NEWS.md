@@ -1,58 +1,26 @@
 # _slendr_ (development version)
 
+- The `quiet =` argument of `init_env()` is now deprecated, as the function is "quiet" by default. ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
+
 # _slendr_ 1.5.0
 
-This release implements a number of important changes to installing and handling Python
-environments of slendr:
+This release implements a number of important changes to installing and handling Python environments of slendr:
 
-1. We now support ephemeral Python virtual environments based on uv, [recently
-   introduced by the reticulate
-   package](https://posit.co/blog/reticulate-1-41). This is mostly useful as a
-   fallback option in situations in which standard process based on
-   `setup_env()` (described below) causes issues. In order to use this feature,
-   users no longer need to create a permanent Python virtual environment with
-   the `setup_env()` function. Instead, calling `init_env(uv = TRUE)` in place
-   of the usual `init_env()` call will instruct _slendr_ to create an ephemeral
-   Python environment with all the required Python modules via the
-   reticulate-based uv interface. In other words, only two R commands
-   `library(slendr); init_env(uv = TRUE)` are now all that is needed for all of
-   the msprime- and tskit-based functionality of slendr. In situations in which
-   having to set `uv = TRUE` in every `init_env()` call becomes frustrating,
-   the uv-based ephemeral environments can be made default by setting the
-   environment variable `SLENDR_UV="TRUE"`, eg. in the `~/.Renviron` file.
+1. We now support ephemeral Python virtual environments based on uv, [recently introduced by the reticulate package](https://posit.co/blog/reticulate-1-41). This is mostly useful as a fallback option in situations in which standard process based on `setup_env()` (described below) causes issues. In order to use this feature, users no longer need to create a permanent Python virtual environment with the `setup_env()` function. Instead, calling `init_env(uv = TRUE)` in place of the usual `init_env()` call will instruct _slendr_ to create an ephemeral Python environment with all the required Python modules via the reticulate-based uv interface. In other words, only two R commands `library(slendr); init_env(uv = TRUE)` are now all that is needed for all of the msprime- and tskit-based functionality of slendr. In situations in which having to set `uv = TRUE` in every `init_env()` call becomes frustrating, the uv-based ephemeral environments can be made default by setting the environment variable `SLENDR_UV="TRUE"`, eg. in the `~/.Renviron` file.
 
-2. The `setup_env()` function now accepts a new argument `env =` with the
-   following behavior:
+2. The `setup_env()` function now accepts a new argument `env =` with the following behavior:
 
-- When called as `setup_env(env = "conda")`, _slendr_ downloads a
-  conda-provided Python interpreter and creates a virtual environment with all
-  of its Python dependencies. The `env = "conda"` mode is therefore equivalent
-  to the plain (and still default) call `setup_env()`.
+- When called as `setup_env(env = "conda")`, _slendr_ downloads a conda-provided Python interpreter and creates a virtual environment with all of its Python dependencies. The `env = "conda"` mode is therefore equivalent to the plain (and still default) call `setup_env()`.
 
-- Alternatively, running `setup_env(env = "venv")` will use a Python
-  interpreter already available on the user's system discovered by the
-  reticulate package, and create a standard Python virtual environment using
-  the built-in Python module `venv` containing all of _slendr_'s Python
-  dependencies.
+- Alternatively, running `setup_env(env = "venv")` will use a Python interpreter already available on the user's system discovered by the reticulate package, and create a standard Python virtual environment using the built-in Python module `venv` containing all of _slendr_'s Python dependencies.
 
-3. Given the expanded possibilities offered by the `setup_env(env = "conda|venv")`
-options, the `pip = TRUE` argument of `setup_env()` is now deprecated.
+3. Given the expanded possibilities offered by the `setup_env(env = "conda|venv")` options, the `pip = TRUE` argument of `setup_env()` is now deprecated.
 
-In either of the above cases, calling `init_env()` will activate the Python
-virtual environment thus created, just like before.
+In either of the above cases, calling `init_env()` will activate the Python virtual environment thus created, just like before.
 
-Finally, please be aware of the Anaconda licensing-related issue described below.
-It has been highlighted recently by [a user on GitHub](https://github.com/bodkan/slendr/issues/198).
-No solution has been found yet, but I do intend to evaluate if (and how) has the
-problem evolved from Anaconda's side since the problem first popped up.
+Finally, please be aware of the Anaconda licensing-related issue described below. It has been highlighted recently by [a user on GitHub](https://github.com/bodkan/slendr/issues/198). No solution has been found yet, but I do intend to evaluate if (and how) has the problem evolved from Anaconda's side since the problem first popped up.
 
-- An issue in which _msprime_-based simulations with implicit sampling schedules
-  produced an incorrect ordering of the sample names column compared to the population
-  names column in `ts_samples()` has been fixed. As a consequence of this fix,
-  implicit sampling (now always happening at "present-day") for _msprime_
-  simulations truly samples only individuals at the end of the simulation.
-  This has always been the case for SLiM (by definition of how sampling in the
-  SLiM engine was implemented), but not for _msprime_. ([PR #199](https://github.com/bodkan/slendr/pull/199))
+- An issue in which _msprime_-based simulations with implicit sampling schedules produced an incorrect ordering of the sample names column compared to the population names column in `ts_samples()` has been fixed. As a consequence of this fix, implicit sampling (now always happening at "present-day") for _msprime_ simulations truly samples only individuals at the end of the simulation. This has always been the case for SLiM (by definition of how sampling in the SLiM engine was implemented), but not for _msprime_. ([PR #199](https://github.com/bodkan/slendr/pull/199))
 
 # _slendr_ 1.4.0
 
