@@ -114,7 +114,7 @@ msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
     script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
   } else {
     schedule_path <- tempfile()
-    readr::write_tsv(schedule, sampling_path)
+    readr::write_tsv(schedule, schedule_path)
     schedule <- paste("--sampling-schedule", schedule_path)
 
     # verify checksums of serialized model configuration files
