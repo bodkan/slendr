@@ -4,14 +4,13 @@
 \alias{init_env}
 \title{Activate the Python environment of slendr}
 \usage{
-init_env(uv = FALSE, quiet = FALSE)
+init_env(uv = FALSE, quiet = NULL)
 }
 \arguments{
 \item{uv}{Should an ephemeral Python environment be created via uv (instead
 of activating a permanent virtual environment created via \code{setup_env})?}
 
-\item{quiet}{Should informative messages be printed to the console? Default
-is \code{FALSE}.}
+\item{quiet}{Should informative messages be printed to the console? (DEPRECATED)}
 }
 \value{
 No return value, called for side effects
