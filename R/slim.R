@@ -24,7 +24,7 @@
 #' @param sequence_length Total length of the simulated sequence (in base-pairs)
 #' @param recombination_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
-#' @param samples A data frame of times at which a given number of individuals
+#' @param schedule A data frame of times at which a given number of individuals
 #'   should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
@@ -85,15 +85,15 @@
 #'
 #' # schedule the sampling of a couple of ancient and present-day individuals
 #' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-#' modern_samples <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
-#' ancient_samples <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
+#' modern <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
+#' ancient <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
 #'
 #' # sampling schedules are just data frames and can be merged easily
-#' samples <- rbind(modern_samples, ancient_samples)
+#' schedule <- rbind(modern, ancient)
 #'
 #' # run a simulation using the SLiM back end from a compiled slendr model object and return
 #' # a tree-sequence object as a result
-#' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+#' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, schedule = schedule)
 #'
 #' # simulated tree-sequence object can be saved to a file using ts_write()...
 #' ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
@@ -104,12 +104,19 @@
 #' ts
 #' @export
 slim <- function(
-    model, sequence_length, recombination_rate, samples = NULL, ts = TRUE, path = NULL,
+    model, sequence_length, recombination_rate, schedule = NULL, ts = TRUE, path = NULL,
     random_seed = NULL, method = c("batch", "gui"),
     verbose = FALSE, run = TRUE, slim_path = NULL, burnin = 0,
     max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
-    locations = NULL
+    locations = NULL, samples = NULL
 ) {
+  if (!is.null(samples)) {
+    warning("The `samples =` argument is now deprecated in favor of `schedule =`.\n",
+            "Your code will keep working for the foreseeable future, but please\n",
+            "update it accordingly.", call. = FALSE)
+    schedule <- samples
+  }
+
   method <- match.arg(method)
 
   random_seed <- set_random_seed(random_seed)
@@ -174,11 +181,12 @@ slim <- function(
   burnin <- round(burnin / model$generation_time)
 
   if (ts) {
-    sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-    sampling_df <- process_sampling(samples, model, verbose)
-    readr::write_tsv(sampling_df, sampling_path)
-  } else
-    sampling_path <- ""
+    schedule_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+    schedule_df <- process_sampling(schedule, model, verbose)
+    readr::write_tsv(sampling_df, schedule_path)
+  } else {
+    schedule_path <- ""
+  }
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   if (binary != "open -a SLiMgui" && Sys.which(binary) == "")
@@ -188,7 +196,7 @@ slim <- function(
 
   seed <- paste0(" -d SEED=", random_seed)
 
-  samples_arg <- if (sampling_path == "") "" else paste0(" -d \"SAMPLES_PATH='", sampling_path, "'\"")
+  schedule_arg <- if (sampling_path == "") "" else paste0(" -d \"SAMPLES_PATH='", schedule_path, "'\"")
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
@@ -198,7 +206,7 @@ slim <- function(
     modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     script_contents <- readLines(script_path) %>%
       gsub("\"MODEL_PATH\", \".\"", paste0("\"MODEL_PATH\", \"", model$path, "\""), .) %>%
-      gsub("\"SAMPLES_PATH\", \"\"", paste0("\"SAMPLES_PATH\", \"", sampling_path, "\""), .) %>%
+      gsub("\"SAMPLES_PATH\", \"\"", paste0("\"SAMPLES_PATH\", \"", schedule_path, "\""), .) %>%
       gsub("optional_arg\\(\"TS\", \"\"\\)", sprintf("defineConstant(\"TS\", %s)", simulate_ts), .) %>%
       gsub("required_arg\\(\"SEQUENCE_LENGTH\"\\)", sprintf("defineConstant(\"SEQUENCE_LENGTH\", %s)", sequence_length), .) %>%
       gsub("required_arg\\(\"RECOMBINATION_RATE\"\\)", sprintf("defineConstant(\"RECOMBINATION_RATE\", %s)", recombination_rate), .) %>%
@@ -223,7 +231,7 @@ slim <- function(
   } else {
     slim_command <- paste(binary,
                           seed,
-                          samples_arg,
+                          schedule_arg,
                           paste0("-d \"MODEL_PATH='", model_dir, "'\""),
                           paste0("-d \"PATH='", results_path, "'\""),
                           paste0("-d SIMULATE_TS=", simulate_ts),

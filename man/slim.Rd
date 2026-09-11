@@ -8,7 +8,7 @@ slim(
   model,
   sequence_length,
   recombination_rate,
-  samples = NULL,
+  schedule = NULL,
   ts = TRUE,
   path = NULL,
   random_seed = NULL,
@@ -20,7 +20,8 @@ slim(
   max_attempts = 1,
   spatial = !is.null(model$world),
   coalescent_only = TRUE,
-  locations = NULL
+  locations = NULL,
+  samples = NULL
 )
 }
 \arguments{
@@ -31,7 +32,7 @@ slim(
 \item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{samples}{A data frame of times at which a given number of individuals
+\item{schedule}{A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
@@ -126,15 +127,15 @@ chimp <- model$populations[["CH"]]
 
 # schedule the sampling of a couple of ancient and present-day individuals
 # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-modern_samples <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
-ancient_samples <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
+modern <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
+ancient <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
 
 # sampling schedules are just data frames and can be merged easily
-samples <- rbind(modern_samples, ancient_samples)
+schedule <- rbind(modern, ancient)
 
 # run a simulation using the SLiM back end from a compiled slendr model object and return
 # a tree-sequence object as a result
-ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, schedule = schedule)
 
 # simulated tree-sequence object can be saved to a file using ts_write()...
 ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
