@@ -88,7 +88,7 @@ test_that("gene_flow() behaves as expected in some concrete situations", {
   # this used to say: "Both A and B must be present within the gene-flow window 4e+06-4000005"
   expect_error(
     gene_flow(from = popA, to = popB, start = 4e6, end = (4e6+5), proportion = 0.3),
-    "Inconsistent time direction implied by populations and the gene flow event"
+    "Inconsistent time direction implied by population and the gene-flow timings"
   )
 
   # this used to say: "Specified times are not consistent with the assumed direction of time

@@ -690,7 +690,7 @@ gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = 
   direction <- unique(setdiff(c(gf_dir, from_dir, to_dir), "unknown"))
 
   if (length(direction) > 1)
-    stop("Inconsistent time direction implied by populations and the gene flow event", call. = FALSE)
+    stop("Inconsistent time direction implied by population and gene-flow timings", call. = FALSE)
 
   # make sure both participating populations are present at the start of the
   # gene flow event (`check_present_time()` is reused from the sampling functionality)
