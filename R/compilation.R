@@ -102,7 +102,8 @@ compile_model <- function(
       parent$pop[1]
   }))
   if (!all(parent_names %in% pop_names))
-    stop("The following parent populations are missing: ", parent_names[!parent_names %in% pop_names], call. = FALSE)
+    stop("The following parent populations are missing: ",
+         paste0(parent_names[!parent_names %in% pop_names], collapse = ", "), call. = FALSE)
 
   if (length(populations) != length(unique(sapply(populations, `[[`, "pop"))))
     stop("All populations must have unique names", call. = FALSE)
