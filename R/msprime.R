@@ -115,7 +115,7 @@ msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
   } else {
     schedule_path <- tempfile()
     readr::write_tsv(schedule, schedule_path)
-    schedule <- paste("--sampling-schedule", schedule_path)
+    schedule_arg <- paste("--sampling-schedule", schedule_path)
 
     # verify checksums of serialized model configuration files
     checksums <- readr::read_tsv(file.path(model$path, "checksums.tsv"), progress = FALSE,
@@ -132,7 +132,7 @@ msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
         model$path,
         sequence_length,
         recombination_rate,
-        sampling,
+        schedule_arg,
         ifelse(verbose, "--verbose", ""),
         ifelse(debug, "--debug", ""),
         ifelse(coalescent_only, "--coalescent_only", ""),
@@ -160,7 +160,7 @@ msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
     orig_length = as.integer(model$orig_length),
     direction = model$direction,
     description = model$description,
-    schedule = reticulate::r_to_py(schedule),
+    samples = reticulate::r_to_py(schedule),
     debug = debug,
     coalescent_only = coalescent_only
   )
