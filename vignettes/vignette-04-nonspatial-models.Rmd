@@ -87,7 +87,7 @@ samples <- schedule_sampling(
 Because it's not just the model itself that's useful to visually verify (which is the main purpose of `plot_model()`) but also the sampling scheme, _slendr_ makes it possible to overlay the numbers of individuals scheduled for tree-sequence recording from each lineage at each timepoint:
 
 ```{r, non-spatial-graph_sampling, fig.width=6, fig.height=4}
-plot_model(model, samples = samples)
+plot_model(model, schedule = samples)
 ```
 
 Even the final step---execution of the model in SLiM---is the same, using the built-in `slim()` function:
@@ -144,7 +144,7 @@ schedule <- rbind(schedule_amh, schedule_ui)
 Then we would simulate just like before:
 
 ```{r}
-ts <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule)
+ts <- msprime(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule)
 ```
 
 When we inspect the table of all recorded individuals, we can see that the Ust'-Ishim individual is stored under its proper symbolic name:

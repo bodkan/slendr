@@ -868,13 +868,13 @@ Using the compiled model, we can simulate a tree sequence using the `slim()` fun
 ```{r, echo=FALSE, eval = RERUN & run_vignette}
 x = Sys.time()
 data_dir <- "~/Code/__archive/introgression_data/"
-slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
+slim(model, recombination_rate = 1e-8, schedule = samples, path = data_dir)
 y = Sys.time()
 y - x # Time difference of 45.62365 mins
 ```
 
 ```{r, eval=FALSE}
-slim(model, recombination_rate = 1e-8, samples = samples, path = "~/Code/__archive/introgression_data/")
+slim(model, recombination_rate = 1e-8, schedule = samples, path = "~/Code/__archive/introgression_data/")
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.

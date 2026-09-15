@@ -73,7 +73,7 @@ Let's now simulate a 50Mb tree sequence from this model, recording 50 diploid in
 ```{r}
 samples <- schedule_sampling(model, times = 0, list(eur, 50), list(pap, 50))
 
-ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, samples = samples, random_seed = 42)
+ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, schedule = samples, random_seed = 42)
 ```
 
 ### Extracting ancestry tracts

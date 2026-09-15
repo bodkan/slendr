@@ -173,7 +173,7 @@ Finally, we can simulate data from our model and process the output tree sequenc
 ```{r}
 ts <- slim(
   model, sequence_length = 100e3, recombination_rate = 1e-8, burnin = 200e3,
-  samples = samples, method = "batch", random_seed = 314159, max_attempts = 1
+  schedule = samples, method = "batch", random_seed = 314159, max_attempts = 1
 ) %>%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = seed) %>%
   ts_simplify()

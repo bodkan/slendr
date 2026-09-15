@@ -351,7 +351,7 @@ plot_model(model, sizes = FALSE)
 plot_map(model)
 
 ts <- slim(
-  model, burnin = 200000, samples = samples, random_seed = SEED,
+  model, burnin = 200000, schedule = samples, random_seed = SEED,
   sequence_length = 200000, recombination_rate = 1e-8
 )
 ```
