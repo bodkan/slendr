@@ -1290,7 +1290,7 @@ area <- function(x) {
 #' schedule
 #'
 #' # simulate a tree sequence
-#' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = schedule)
+#' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
 #'
 #' # inspect the recorded table of samples
 #' ts_samples(ts)
