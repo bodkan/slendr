@@ -9,6 +9,7 @@
 This is in order to keep the naming of things a bit more consistent and to avoid
 clumsy issues with the meaning (and typical use) of the the downstream
 `ts_samples()` and various `ts_*()` statistical functions.
+([PR #200](https://github.com/bodkan/slendr/pull/200))
 
 # _slendr_ 1.5.0
 
