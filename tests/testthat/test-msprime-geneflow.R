@@ -3,7 +3,7 @@
 # valid, so it actually makes sense to test things this way).
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 RERUN <- FALSE
 

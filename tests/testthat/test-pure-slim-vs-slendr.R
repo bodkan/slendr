@@ -2,7 +2,7 @@
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 # total length of the test simulation run
 T <- 10000

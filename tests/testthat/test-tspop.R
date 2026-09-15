@@ -1,5 +1,5 @@
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 anc_all <- population("ancestor_all", time = 700e3, N = 10000)
 afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)

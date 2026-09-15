@@ -2,7 +2,7 @@
 # a proper warning for users
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 test_that("ts_load() deprecated in favour of ts_read()", {
   expect_warning(ts_load(system.file("extdata/models/introgression_slim.trees", package = "slendr")))

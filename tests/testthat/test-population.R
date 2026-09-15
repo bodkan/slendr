@@ -140,7 +140,7 @@ test_that("only strings fitting the requirements of valid Python identifiers can
   }
 
   skip_if(!check_dependencies(python = TRUE))
-  init_env(quiet = TRUE)
+  init_env()
 
   # msprime passes
   for (n in valid_names) {

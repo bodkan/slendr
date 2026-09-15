@@ -1,7 +1,7 @@
 skip_if(!check_dependencies(python = TRUE))
 
 library(slendr)
-init_env(quiet = TRUE)
+init_env()
 
 pop <- population("pop", time = 1000, N = 100)
 model <- compile_model(pop, generation_time = 1, direction = "backward", serialize = TRUE)

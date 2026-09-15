@@ -67,7 +67,7 @@ test_that("deletion in non-interactive mode must be forced", {
 })
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 test_that("sequence length can only be an integer number (SLiM)", {
   p <- population(name = "pop1", N = 700, time = 1)
@@ -198,7 +198,7 @@ test_that("parameters of the base model are extracted properly (from model)", {
 })
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 ts <- msprime(model, sequence_length = 1, recombination_rate = 0)
 ts_nogf <- msprime(model_nogf, sequence_length = 1, recombination_rate = 0)

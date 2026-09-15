@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 seed <- 42 # random seed
 seq_len <- 2e5 # amount of sequence to simulate

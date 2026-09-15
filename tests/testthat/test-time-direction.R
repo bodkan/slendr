@@ -1,7 +1,7 @@
 # skip_if(TRUE)
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 test_that("forward and backward time model objects are equivalent", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")

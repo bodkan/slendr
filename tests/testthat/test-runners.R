@@ -1,5 +1,5 @@
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 pop <- population("pop", time = 1, N = 10)
 model <- compile_model(pop, generation_time = 1, direction = "forward", simulation_length = 10)

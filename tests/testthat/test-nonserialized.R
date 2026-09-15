@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)
 ehg <- population("EHG", parent = ooa, time = 28000, N = 100, remove = 6000)

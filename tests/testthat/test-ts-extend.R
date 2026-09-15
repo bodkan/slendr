@@ -1,6 +1,6 @@
 skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 pop <- population("pop", N = 1000, time = 1)
 model <- compile_model(list(pop), generation_time = 1, direction = "forward", simulation_length = 1000, serialize = FALSE)

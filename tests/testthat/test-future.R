@@ -13,7 +13,7 @@
 # cleare why have these been introduced.
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 # resizes with default sampling ---------------------------------------------------------------
 

@@ -5,7 +5,7 @@
 skip_if(TRUE)
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 test_that("aggregate ts_ibd(ts, coordinates = TRUE) matches IBD totals", {
   pop <- population("POP", time = 1, N = 1000)
