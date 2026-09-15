@@ -11,6 +11,12 @@ clumsy issues with the meaning (and typical use) of the the downstream
 `ts_samples()` and various `ts_*()` statistical functions.
 ([PR #200](https://github.com/bodkan/slendr/pull/200))
 
+- The `ts_samples()` function now allows extracting sample metatada not just
+from a given _slendr_ tree sequence, but also from a compiled model. This is
+useful for workflows which need to operate with such information before a
+potentially large simulation is even executed.
+([#8ef6750d](https://github.com/bodkan/slendr/commit/8ef6750d))
+
 # _slendr_ 1.5.0
 
 This release implements a number of important changes to installing and handling Python environments of slendr:

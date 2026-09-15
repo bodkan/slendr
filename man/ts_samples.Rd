@@ -2,20 +2,26 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_samples}
 \alias{ts_samples}
-\title{Extract names and times of individuals of interest in the current tree sequence
-(either all sampled individuals or those that the user simplified to)}
+\title{Extract names and times of individuals of interest in a tree sequence produced
+by a slendr model}
 \usage{
-ts_samples(ts)
+ts_samples(x)
 }
 \arguments{
-\item{ts}{Tree sequence object of the class \code{slendr_ts}}
+\item{x}{Either a tree sequence object of the class \code{slendr_ts}, or
+a compiled slendr model of the class \code{slendr_model}}
 }
 \value{
 Table of individuals scheduled for sampling across space and time
 }
 \description{
-Extract names and times of individuals of interest in the current tree sequence
-(either all sampled individuals or those that the user simplified to)
+Extracts a table of metadata information about individuals recorded in
+a given simulated tree sequence or in a tree sequence which would be
+produced by a given model
+}
+\details{
+If a model is provided as \code{x}, the function will first simulate
+a trivially small tree sequence using the built-in msprime engine.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present

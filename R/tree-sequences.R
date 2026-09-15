@@ -1323,10 +1323,18 @@ ts_edges <- function(x) {
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 }
 
-#' Extract names and times of individuals of interest in the current tree sequence
-#' (either all sampled individuals or those that the user simplified to)
+#' Extract names and times of individuals of interest in a tree sequence produced
+#' by a slendr model
 #'
-#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' Extracts a table of metadata information about individuals recorded in
+#' a given simulated tree sequence or in a tree sequence which would be
+#' produced by a given model
+#'
+#' If a model is provided as \code{x}, the function will first simulate
+#' a trivially small tree sequence using the built-in msprime engine.
+#'
+#' @param x Either a tree sequence object of the class \code{slendr_ts}, or
+#'   a compiled slendr model of the class \code{slendr_model}
 #'
 #' @return Table of individuals scheduled for sampling across space and time
 #'
@@ -1345,15 +1353,19 @@ ts_edges <- function(x) {
 #' # extract the table of individuals scheduled for simulation and sampling
 #' ts_samples(ts)
 #' @export
-ts_samples <- function(ts) {
-  if (is.null(attr(ts, "model")))
+ts_samples <- function(x) {
+  if (inherits(x, "slendr_ts") && is.null(attr(x, "model"))) {
     stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
+  } else if (inherits(x, "slendr_model")) {
+    init_env(uv = TRUE)
+    x <- msprime(x, sequence_length = 1, recombination_rate = 0)
+  }
 
-  samples <- attr(ts, "metadata")$sampling
-  metadata <- attr(ts, "metadata")
+  samples <- attr(x, "metadata")$sampling
+  metadata <- attr(x, "metadata")
 
   if (length(metadata$sample_names) != length(metadata$subset_names))
     samples <- dplyr::filter(samples, name %in% metadata$subset_names)
