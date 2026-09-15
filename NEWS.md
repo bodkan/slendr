@@ -2,6 +2,11 @@
 
 - The `quiet =` argument of `init_env()` is now deprecated, as the function is "quiet" by default. ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
 
+- The `ts_samples()` function now allows extracting sample metatada not just from
+a given _slendr_ tree sequence, but also from a compiled model. This is useful
+for workflows which need to operate with such information before a potentially
+large simulation is even executed.
+
 # _slendr_ 1.5.0
 
 This release implements a number of important changes to installing and handling Python environments of slendr:

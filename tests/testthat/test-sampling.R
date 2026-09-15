@@ -419,3 +419,25 @@ test_that("implicit and explicit sampling schedules are consistent (backward)", 
 
   expect_equal(s1_explicit, s2_explicit)
 })
+
+test_that("pre- and post-simulation samples are the same (msprime)", {
+  a <- population("a", time = 100, N = 4)
+  c <- population("c", time = 80, N = 10, parent = a)
+  b <- population("b", time = 20, N = 3, parent = c)
+
+  model <- compile_model(list(a, b, c), generation_time = 1)
+  s1 <- ts_samples(model)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  expect_equal(s1, s2)
+})
+
+test_that("pre- and post-simulation samples are the same (slim)", {
+  a <- population("a", time = 100, N = 4)
+  c <- population("c", time = 80, N = 10, parent = a)
+  b <- population("b", time = 20, N = 3, parent = c)
+
+  model <- compile_model(list(a, b, c), generation_time = 1)
+  s1 <- ts_samples(model)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  expect_equal(s1, s2)
+})
