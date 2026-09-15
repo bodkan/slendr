@@ -111,9 +111,10 @@ slim <- function(
     locations = NULL, samples = NULL
 ) {
   if (!is.null(samples)) {
-    warning("The `samples =` argument is now deprecated in favor of `schedule =`.\n",
-            "Your code will keep working for the foreseeable future, but please\n",
-            "update it accordingly.", call. = FALSE)
+    warning("The `samples =` argument is now deprecated in favor of `schedule =`\n",
+            "to avoid frequent clumsiness in downstream statistical code.\n",
+            "Your code will keep working for the foreseeable future but when\n",
+            "you get a chance, please update it accordingly.", call. = FALSE)
     schedule <- samples
   }
 
@@ -183,7 +184,7 @@ slim <- function(
   if (ts) {
     schedule_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     schedule_df <- process_sampling(schedule, model, verbose)
-    readr::write_tsv(sampling_df, schedule_path)
+    readr::write_tsv(schedule_df, schedule_path)
   } else {
     schedule_path <- ""
   }
@@ -196,7 +197,7 @@ slim <- function(
 
   seed <- paste0(" -d SEED=", random_seed)
 
-  schedule_arg <- if (sampling_path == "") "" else paste0(" -d \"SAMPLES_PATH='", schedule_path, "'\"")
+  schedule_arg <- if (schedule_path == "") "" else paste0(" -d \"SAMPLES_PATH='", schedule_path, "'\"")
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 

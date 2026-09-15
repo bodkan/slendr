@@ -80,7 +80,7 @@
 #'
 #' summary(ts)
 #' @export
-msprime <- function(model, sequence_length, recombination_rate, schedule = NULL, 
+msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
                     random_seed = NULL, verbose = FALSE, debug = FALSE, run = TRUE,
                     path = NULL, coalescent_only = TRUE, samples = NULL) {
   if (sequence_length %% 1 != 0 || sequence_length <= 0)
@@ -97,9 +97,10 @@ msprime <- function(model, sequence_length, recombination_rate, schedule = NULL,
          call. = FALSE)
 
   if (!is.null(samples)) {
-    warning("The `samples =` argument is now deprecated in favor of `schedule =`.\n",
-            "Your code will keep working for the foreseeable future, but please\n",
-            "update it accordingly.", call. = FALSE)
+    warning("The `samples =` argument is now deprecated in favor of `schedule =`\n",
+            "to avoid frequent clumsiness in downstream statistical code.\n",
+            "Your code will keep working for the foreseeable future but when\n",
+            "you get a chance, please update it accordingly.", call. = FALSE)
     schedule <- samples
   }
 
