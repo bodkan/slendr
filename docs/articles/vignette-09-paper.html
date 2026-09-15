@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,7 +119,6 @@ applicable, its just the presentation which has changed.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://forcats.tidyverse.org/" class="external-link">forcats</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Python virtual environment for slendr has been activated.</span></span>
 <span></span>
 <span><span class="va">SEED</span> <span class="op">&lt;-</span> <span class="fl">42</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">SEED</span><span class="op">)</span></span></code></pre></div>
@@ -398,7 +397,7 @@ applicable, its just the presentation which has changed.</p>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span></span>
-<span>  <span class="va">model</span>, burnin <span class="op">=</span> <span class="fl">200000</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">SEED</span>,</span>
+<span>  <span class="va">model</span>, burnin <span class="op">=</span> <span class="fl">200000</span>, schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">SEED</span>,</span>
 <span>  sequence_length <span class="op">=</span> <span class="fl">200000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -577,22 +576,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.2503620</td>
+<td align="right">5.9488753</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">11.6591766</td>
+<td align="right">11.5763015</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.2363798</td>
+<td align="right">2.1868384</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.7446599</td>
+<td align="right">0.6453869</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

@@ -5,10 +5,10 @@
 ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
 
 - The `samples =` argument of `msprime()` and `slim()` (as well as
-`plot_model()` and functions) is now deprecated in favor of `schedule =`, in
-order to keep the naming of things a bit more consistent and to avoid clumsy
-issues with the meaning (and typical use) of the the downstream `ts_samples()`
-and various `ts_*()` statistical functions.
+`plot_model()` and other functions) is now deprecated in favor of `schedule =`.
+This is in order to keep the naming of things a bit more consistent and to avoid
+clumsy issues with the meaning (and typical use) of the the downstream
+`ts_samples()` and various `ts_*()` statistical functions.
 
 # _slendr_ 1.5.0
 
