@@ -9,7 +9,7 @@ function during the compilation of a slendr demographic model."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ function during the compilation of a slendr demographic model.</p>
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">sequence_length</span>,</span>
 <span>  <span class="va">recombination_rate</span>,</span>
-<span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  schedule <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ts <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -71,7 +71,8 @@ function during the compilation of a slendr demographic model.</p>
 <span>  max_attempts <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">world</span><span class="op">)</span>,</span>
 <span>  coalescent_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  locations <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  locations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  samples <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -92,7 +93,7 @@ function during the compilation of a slendr demographic model.</p>
 recombinations per basepair per generation)</p></dd>
 
 
-<dt id="arg-samples">samples<a class="anchor" aria-label="anchor" href="#arg-samples"></a></dt>
+<dt id="arg-schedule">schedule<a class="anchor" aria-label="anchor" href="#arg-schedule"></a></dt>
 <dd><p>A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see <code>schedule_sampling</code> for a
 function that can generate the sampling schedule in the correct format). If
@@ -198,7 +199,6 @@ files by themselves (and only the path is needed).</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Python virtual environment for slendr has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -212,15 +212,15 @@ files by themselves (and only the path is needed).</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># schedule the sampling of a couple of ancient and present-day individuals</span></span></span>
 <span class="r-in"><span><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span></span>
-<span class="r-in"><span><span class="va">modern_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ancient_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30000</span>, <span class="fl">20000</span>, <span class="fl">10000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">modern</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ancient</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30000</span>, <span class="fl">20000</span>, <span class="fl">10000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sampling schedules are just data frames and can be merged easily</span></span></span>
-<span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">modern_samples</span>, <span class="va">ancient_samples</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">modern</span>, <span class="va">ancient</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># run a simulation using the SLiM back end from a compiled slendr model object and return</span></span></span>
 <span class="r-in"><span><span class="co"># a tree-sequence object as a result</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, schedule <span class="op">=</span> <span class="va">schedule</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulated tree-sequence object can be saved to a file using ts_write()...</span></span></span>
 <span class="r-in"><span><span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
@@ -257,7 +257,7 @@ files by themselves (and only the path is needed).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│     4│  2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│     1│ 43.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│     1│ 43.5 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │     0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧══════╧═════════╧════════════╝</span>
