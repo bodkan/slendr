@@ -12,7 +12,7 @@ test_that("aggregate ts_ibd(ts, coordinates = TRUE) matches IBD totals", {
   model <- compile_model(populations = pop, generation_time = 1, simulation_length = 1000)
   schedule <- schedule_sampling(model, times = 1001, list(pop, 5))
 
-  ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = schedule)
+  ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
 
   ibd_fragments <- ts_ibd(ts)
 

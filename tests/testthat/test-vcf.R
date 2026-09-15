@@ -10,7 +10,7 @@ schedule <- schedule_sampling(model, times = 0, list(pop, 10))
 # give warning on missing mutations ---------------------------------------
 
 test_that("exporting VCF from tree sequences without mutations gives warning (slendr ts)", {
-  ts_nomuts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, samples = schedule)
+  ts_nomuts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, schedule = schedule)
   ts_muts <- ts_nomuts %>% ts_mutate(1e-8)
 
   vcf_path <- tempfile()
@@ -22,7 +22,7 @@ test_that("exporting VCF from tree sequences without mutations gives warning (sl
 })
 
 test_that("exporting VCF from tree sequences without mutations gives warning (non-slendr ts)", {
-  ts_nomuts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, samples = schedule) %>% ts_read
+  ts_nomuts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, schedule = schedule) %>% ts_read
   ts_muts <- ts_nomuts %>% ts_mutate(1e-8)
 
   vcf_path <- tempfile()
@@ -37,7 +37,7 @@ test_that("exporting VCF from tree sequences without mutations gives warning (no
 # give error on missing individuals ---------------------------------------
 
 test_that("writing VCF from missing individuals leads to an error (slendr ts)", {
-  ts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, samples = schedule) %>%
+  ts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, schedule = schedule) %>%
     ts_mutate(1e-8)
 
   vcf_path <- tempfile()
@@ -50,7 +50,7 @@ test_that("writing VCF from missing individuals leads to an error (slendr ts)", 
 })
 
 test_that("writing VCF from missing individuals leads to an error (non-slendr ts)", {
-  ts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, samples = schedule) %>%
+  ts <- msprime(model, sequence_length = 1000000, recombination_rate = 0, schedule = schedule) %>%
     ts_mutate(1e-8) %>% ts_read
 
   vcf_path <- tempfile()

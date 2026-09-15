@@ -48,3 +48,12 @@ test_that("rate argument is correctly distributed into an overall proportion", {
   log <- suppressMessages(capture.output(slim(model, sequence_length = 1, recombination_rate = 0, verbose = TRUE)))
   expect_true(sum(grepl("0.012% over 10 generations", log)) == 1)
 })
+
+test_that("`samples` argument is deprecated in favour of `schedule`", {
+  model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 100)
+  schedule <- schedule_sampling(model, times = 470, list(pop1, 1))
+  expect_warning(msprime(model, sequence_length = 1, recombination_rate = 1e-8, samples = schedule))
+  expect_warning(slim(model, sequence_length = 1, recombination_rate = 1e-8, samples = schedule))
+  expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule), "slendr_ts")
+  expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule), "slendr_ts")
+})
