@@ -41,6 +41,7 @@
 #'   This parameter translates to the \code{coalescing_segments_only} argument
 #'   of the underlying msprime method \code{sim_ancestry}. See Details for
 #'   additional information.
+#' @param samples Deprecated, see \code{schedule} instead.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the

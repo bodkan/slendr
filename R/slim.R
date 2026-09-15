@@ -62,6 +62,7 @@
 #' @param slim_path Path to the appropriate SLiM binary (this is useful if the
 #'   \code{slim} binary is not on the \code{$PATH}). Note that this argument must
 #'   be specified if the function is being run on Windows.
+#' @param samples Deprecated, see \code{schedule} instead.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the

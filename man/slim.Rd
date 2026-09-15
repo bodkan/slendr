@@ -82,6 +82,8 @@ a spatial mode.}
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
+
+\item{samples}{Deprecated, see \code{schedule} instead.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}

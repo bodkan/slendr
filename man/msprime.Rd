@@ -60,6 +60,8 @@ record much more information, resulting in unary nodes in the tree sequence.
 This parameter translates to the \code{coalescing_segments_only} argument
 of the underlying msprime method \code{sim_ancestry}. See Details for
 additional information.}
+
+\item{samples}{Deprecated, see \code{schedule} instead.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
