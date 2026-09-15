@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE) || !is_slim_present())
 
-init_env(quiet = TRUE)
+init_env()
 
 set.seed(42)
 

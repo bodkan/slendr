@@ -3,7 +3,7 @@
 # valid, so it actually makes sense to test things this way).
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 RERUN <- FALSE
 
@@ -39,8 +39,8 @@ samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), l
 ts_slim_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed) %>% ts_write(ts_slim_nogf)
-msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed) %>% ts_write(ts_msprime_nogf)
+slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed) %>% ts_write(ts_slim_nogf)
+msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed) %>% ts_write(ts_msprime_nogf)
 
 # model with gene flow
 gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, proportion = 0.1)
@@ -52,8 +52,8 @@ samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), lis
 ts_slim_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed) %>% ts_write(ts_slim_gf)
-msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed) %>% ts_write(ts_msprime_gf)
+slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed) %>% ts_write(ts_slim_gf)
+msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed) %>% ts_write(ts_msprime_gf)
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
 slim_nogf <- ts_read(model = model_nogf, file = ts_slim_nogf) %>%

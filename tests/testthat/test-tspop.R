@@ -1,5 +1,5 @@
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 anc_all <- population("ancestor_all", time = 700e3, N = 10000)
 afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)
@@ -30,7 +30,7 @@ model <- compile_model(
 
 samples <- schedule_sampling(model, times = 0, list(eur, 25), list(pap, 25))
 
-ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, samples = samples, random_seed = 42)
+ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, schedule = samples, random_seed = 42)
 
 test_that("census time must correspond to the start of some gene-flow event", {
   expect_error(ts_tracts(ts, census = 123),

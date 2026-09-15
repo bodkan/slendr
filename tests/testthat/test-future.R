@@ -13,7 +13,7 @@
 # cleare why have these been introduced.
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 # resizes with default sampling ---------------------------------------------------------------
 
@@ -79,8 +79,8 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
   samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
-  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
-  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
+  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
+  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
   expect_equal(ts_samples(tss), ts_samples(tsm))
 })
@@ -97,8 +97,8 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
   samples <- schedule_sampling(model, times = c(1, 500, 1000, 1001, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
-  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
-  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
+  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
+  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
   expect_equal(ts_samples(tss), ts_samples(tsm))
 })
@@ -119,8 +119,8 @@ test_that("forward models not starting from 1 given the same outcome (gene flows
 
   samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
-  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
-  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
+  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
+  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
   expect_equal(ts_samples(tss), ts_samples(tsm))
 })
@@ -139,8 +139,8 @@ test_that("forward models starting from 1 given the same outcome (gene flows)", 
 
   samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
-  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
-  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = samples)
+  tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
+  tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
   expect_equal(ts_samples(tss), ts_samples(tsm))
 })

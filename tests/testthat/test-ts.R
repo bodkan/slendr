@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -34,10 +34,10 @@ locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustW
 slim(model, sequence_length = 100000, recombination_rate = 0,
      locations = locations_file, burnin = 0,
      method = "batch", random_seed = 314159,
-     samples = samples, verbose = FALSE) %>% ts_write(slim_ts)
+     schedule = samples, verbose = FALSE) %>% ts_write(slim_ts)
 
 msprime(model, sequence_length = 100000, recombination_rate = 0,
-        random_seed = 314159, samples = samples, verbose = FALSE) %>% ts_write(msprime_ts)
+        random_seed = 314159, schedule = samples, verbose = FALSE) %>% ts_write(msprime_ts)
 
 test_that("ts_read fails gracefully on incorrect filename", {
   expect_error(ts <- ts_read(model, file = paste0(msprime_ts, "blah")), "File not found")
@@ -481,7 +481,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed, max_attempts = max_attempts,
-       samples = samples, verbose = FALSE)
+       schedule = samples, verbose = FALSE)
   ts_write(ts, output)
 
   metadata <- ts_metadata(ts)
@@ -513,7 +513,7 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
   ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed,
-       samples = samples, verbose = FALSE, spatial = spatial)
+       schedule = samples, verbose = FALSE, spatial = spatial)
   ts_write(ts, output)
 
   metadata <- ts_metadata(ts)
@@ -539,7 +539,7 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   spatial <- FALSE
 
   ts <- msprime(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
-       random_seed = seed, samples = samples, verbose = FALSE)
+       random_seed = seed, schedule = samples, verbose = FALSE)
   ts_write(ts, output)
   metadata <- ts_metadata(ts)
 
@@ -642,10 +642,10 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   slim(model, sequence_length = 100000, recombination_rate = 0,
        locations = locations_file, burnin = 10,
        method = "batch", random_seed = 314159,
-       samples = samples, verbose = FALSE) %>% ts_write(slim_ts)
+       schedule = samples, verbose = FALSE) %>% ts_write(slim_ts)
 
   msprime(model, sequence_length = 100000, recombination_rate = 0,
-          random_seed = 314159, samples = samples, verbose = FALSE) %>% ts_write(msprime_ts)
+          random_seed = 314159, schedule = samples, verbose = FALSE) %>% ts_write(msprime_ts)
 
   simplify_to <- c("pop1_1", "pop1_2", "pop1_17")
 
@@ -804,7 +804,7 @@ test_that("ts_read does not track any file path if a tree sequence is directly l
   nonser_model$path <- NULL
 
   ts1 <- msprime(nonser_model, sequence_length = 100000, recombination_rate = 0,
-                 random_seed = 314159, samples = samples)
+                 random_seed = 314159, schedule = samples)
 
   suppressWarnings(ts2 <- ts_recapitate(ts1, recombination_rate = 0, Ne = 100))
   ts3 <- ts_simplify(ts2)
