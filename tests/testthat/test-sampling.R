@@ -429,6 +429,10 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
   s1 <- ts_samples(model)
   s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
   expect_equal(s1, s2)
+
+  n1 <- ts_names(model)
+  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  expect_equal(n1, n2)
 })
 
 test_that("pre- and post-simulation samples are the same (slim)", {
@@ -440,4 +444,8 @@ test_that("pre- and post-simulation samples are the same (slim)", {
   s1 <- ts_samples(model)
   s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
   expect_equal(s1, s2)
+
+  n1 <- ts_names(model)
+  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  expect_equal(n1, n2)
 })

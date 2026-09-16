@@ -2,12 +2,14 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_names}
 \alias{ts_names}
-\title{Extract names of individuals in a tree sequence}
+\title{Extract names of individuals of interest in a tree sequence produced
+by a slendr model}
 \usage{
-ts_names(ts, split = NULL)
+ts_names(x, split = NULL)
 }
 \arguments{
-\item{ts}{Tree sequence object of the class \code{slendr_ts}}
+\item{x}{Either a tree sequence object of the class \code{slendr_ts}, or
+a compiled slendr model of the class \code{slendr_model}}
 
 \item{split}{Should sample names in the tree sequence be split by a column
 (a population or time column)? Default is \code{NULL} and all names of
@@ -21,5 +23,6 @@ a list of such vectors is returned, one element of the list per population
 or sampling time.
 }
 \description{
-Extract names of individuals in a tree sequence
+Extract names of individuals of interest in a tree sequence produced
+by a slendr model
 }

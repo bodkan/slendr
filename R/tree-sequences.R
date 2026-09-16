@@ -1373,9 +1373,11 @@ ts_samples <- function(x) {
   samples
 }
 
-#' Extract names of individuals in a tree sequence
+#' Extract names of individuals of interest in a tree sequence produced
+#' by a slendr model
 #'
-#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param x Either a tree sequence object of the class \code{slendr_ts}, or
+#'   a compiled slendr model of the class \code{slendr_model}
 #' @param split Should sample names in the tree sequence be split by a column
 #'   (a population or time column)? Default is \code{NULL} and all names of
 #'   samples will be returned as a single character vector. If set to "pop" or
@@ -1387,8 +1389,8 @@ ts_samples <- function(x) {
 #'   or sampling time.
 #'
 #' @export
-ts_names <- function(ts, split = NULL) {
-  df <- ts_samples(ts)
+ts_names <- function(x, split = NULL) {
+  df <- ts_samples(x)
 
   if (is.null(split)) { # return all names if splitting not requested
     result <- df$name
