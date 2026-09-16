@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 seed <- 42 # random seed
 seq_len <- 2e5 # amount of sequence to simulate
@@ -30,8 +30,8 @@ forward_samples <- rbind(
 ts_forward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 ts_forward_msprime <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed) %>% ts_write(ts_forward_slim)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed) %>% ts_write(ts_forward_msprime)
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = forward_samples, random_seed = seed) %>% ts_write(ts_forward_slim)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = forward_samples, random_seed = seed) %>% ts_write(ts_forward_msprime)
 
 forward_sts <- ts_read(model = forward_model, file = ts_forward_slim)
 forward_mts <- ts_read(model = forward_model, file = ts_forward_msprime)
@@ -55,7 +55,7 @@ test_that("msprime and SLiM sampling tables are exactly the same (forward model)
 # test_that("sampling more individuals than is the current N triggers warning (forward model)", {
 #   forward_samples <- schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(x1, 1000), list(x2, 1000))
 #   expect_warning(
-#     slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed),
+#     slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = forward_samples, random_seed = seed),
 #     "There were some warnings during the simulation run"
 #   )
 # })
@@ -91,8 +91,8 @@ backward_samples <- rbind(
 ts_backward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 ts_backward_msprime <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed) %>% ts_write(ts_backward_slim)
-msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed) %>% ts_write(ts_backward_msprime)
+slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = backward_samples, random_seed = seed) %>% ts_write(ts_backward_slim)
+msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = backward_samples, random_seed = seed) %>% ts_write(ts_backward_msprime)
 
 backward_sts <- ts_read(model = backward_model, file = ts_backward_slim)
 backward_mts <- ts_read(model = backward_model, file = ts_backward_msprime)
@@ -116,7 +116,7 @@ test_that("msprime and SLiM sampling tables are exactly the same (backward model
 # test_that("sampling more individuals than is the current N triggers warning (backward model)", {
 #   backward_samples <- schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1000), list(x1, 10), list(x2, 10), list(c, 1000))
 #   expect_warning(
-#     slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed),
+#     slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = backward_samples, random_seed = seed),
 #     "There were some warnings during the simulation run"
 #   )
 # })

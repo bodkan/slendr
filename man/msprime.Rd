@@ -8,13 +8,14 @@ msprime(
   model,
   sequence_length,
   recombination_rate,
-  samples = NULL,
+  schedule = NULL,
   random_seed = NULL,
   verbose = FALSE,
   debug = FALSE,
   run = TRUE,
   path = NULL,
-  coalescent_only = TRUE
+  coalescent_only = TRUE,
+  samples = NULL
 )
 }
 \arguments{
@@ -25,7 +26,7 @@ msprime(
 \item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{samples}{A data frame of times at which a given number of individuals
+\item{schedule}{A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
@@ -59,6 +60,8 @@ record much more information, resulting in unary nodes in the tree sequence.
 This parameter translates to the \code{coalescing_segments_only} argument
 of the underlying msprime method \code{sim_ancestry}. See Details for
 additional information.}
+
+\item{samples}{Deprecated, see \code{schedule} instead.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
@@ -93,14 +96,14 @@ chimp <- model$populations[["CH"]]
 
 # schedule the sampling of a couple of ancient and present-day individuals
 # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-modern_samples <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
-ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+modern <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
+ancient <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
 
 # sampling schedules are just data frames and can be merged easily
-samples <- rbind(modern_samples, ancient_samples)
+schedule <- rbind(modern, ancient)
 
 # run a simulation using the msprime back end from a compiled slendr model object
-ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, schedule = schedule)
 
 # simulated tree-sequence object can be saved to a file using ts_write()...
 ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)

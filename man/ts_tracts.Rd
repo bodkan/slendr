@@ -82,7 +82,7 @@ restricted in any way and, as mentioned in the previous paragraph,
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
-init_env(quiet = TRUE)
+init_env()
 
 # load an example model with an already simulated tree sequence
 slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")

@@ -21,7 +21,7 @@
 # and msprime Python library), but they should be *nearly* the same.
 
 skip_if(!check_dependencies(python = TRUE))
-init_env(quiet = TRUE)
+init_env()
 
 RERUN <- FALSE
 

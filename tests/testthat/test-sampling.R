@@ -2,7 +2,7 @@ msg <- "Cannot schedule sampling"
 
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 test_that("sampling from a population which is not present is prevented (forward)", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
@@ -86,7 +86,7 @@ test_that("sampling is as close to the a single specified position as possible",
                    simulation_length = simulation_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- schedule_sampling(model, times = times, locations = locations, list(pop, n_samples))
-  ts <- slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
+  ts <- slim(model, sequence_length = 1, recombination_rate = 0, schedule = samples,
        method = "batch", locations = locations_file, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter
@@ -147,7 +147,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
     schedule_sampling(model, times = times[2], locations = locations[2], list(pop, n_samples))
   )
 
-  ts <- slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
+  ts <- slim(model, sequence_length = 1, recombination_rate = 0, schedule = samples,
        method = "batch", locations = locations_file, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter
@@ -245,13 +245,13 @@ test_that("a mix of spatial and non-spatial samplings is not allowed for a singl
   s3 <- schedule_sampling(model, time = 35, list(p2, 5), strict = TRUE)
   s <- rbind(s1, s2, s3)
   expect_error(
-    slim(model, samples = s, sequence_length = 1000, recombination_rate = 0),
+    slim(model, schedule = s, sequence_length = 1000, recombination_rate = 0),
     "For each population, samples must be all spatial or all non-spatial.\nThis is not true for the following populations: p2"
   )
   # this passes
   s3 <- schedule_sampling(model, time = 35, list(p2, 5), locations = list(c(10, 15)), strict = TRUE)
   s <- rbind(s1, s2, s3)
-  expect_s3_class(slim(model, samples = s, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
+  expect_s3_class(slim(model, schedule = s, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
 })
 
 test_that("sampling table is correctly adjusted after simplification (msprime)", {
@@ -384,10 +384,10 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
   # explicit sampling
   schedule <- schedule_sampling(model, times = 51, list(a, 4), list(b, 3), list(c, 10))
 
-  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
   s1_explicit <- ts_samples(ts1)
 
-  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule)
+  ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
   s2_explicit <- ts_samples(ts2)
 
   expect_equal(s1, s1_explicit)
@@ -411,8 +411,8 @@ test_that("implicit and explicit sampling schedules are consistent (backward)", 
   # explicit sampling
   schedule <- schedule_sampling(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
 
-  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, samples = schedule) %>% ts_samples
-  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, samples = schedule) %>% ts_samples
+  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
+  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)

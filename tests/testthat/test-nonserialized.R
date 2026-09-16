@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)
 ehg <- population("EHG", parent = ooa, time = 28000, N = 100, remove = 6000)
@@ -122,12 +122,12 @@ test_that("non-serialized models give the same result as serialized models (with
     schedule_sampling(model_nonser, times = 1000, list(ana, 5), list(eur, 5))
   )
 
-  ts_nonser <- msprime(model_nonser, sequence_length = 10000, recombination_rate = 0, random_seed = 42, samples = samples_nonser) %>%
+  ts_nonser <- msprime(model_nonser, sequence_length = 10000, recombination_rate = 0, random_seed = 42, schedule = samples_nonser) %>%
     ts_mutate(mutation_rate = 0.0001, random_seed = 42)
   expect_s3_class(ts_nonser, "slendr_ts")
   expect_s3_class(ts_nonser, "tskit.trees.TreeSequence")
 
-  ts_ser <- msprime(model_ser, sequence_length = 10000, recombination_rate = 0, random_seed = 42, samples = samples_ser) %>%
+  ts_ser <- msprime(model_ser, sequence_length = 10000, recombination_rate = 0, random_seed = 42, schedule = samples_ser) %>%
     ts_mutate(mutation_rate = 0.0001, random_seed = 42)
   expect_s3_class(ts_ser, "slendr_ts")
   expect_s3_class(ts_ser, "tskit.trees.TreeSequence")

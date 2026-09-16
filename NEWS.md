@@ -1,6 +1,15 @@
 # _slendr_ (development version)
 
-- The `quiet =` argument of `init_env()` is now deprecated, as the function is "quiet" by default. ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
+- The `quiet =` argument of `init_env()` is now deprecated, as the function is
+"quiet" by default.
+([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
+
+- The `samples =` argument of `msprime()` and `slim()` (as well as
+`plot_model()` and other functions) is now deprecated in favor of `schedule =`.
+This is in order to keep the naming of things a bit more consistent and to avoid
+clumsy issues with the meaning (and typical use) of the the downstream
+`ts_samples()` and various `ts_*()` statistical functions.
+([PR #200](https://github.com/bodkan/slendr/pull/200))
 
 - The `ts_samples()` function now allows extracting sample metatada not just
 from a given _slendr_ tree sequence, but also from a compiled model. This is

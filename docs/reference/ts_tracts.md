@@ -101,7 +101,7 @@ standard `tspop.get_pop_ancestry()` call.
 ## Examples
 
 ``` r
-init_env(quiet = TRUE)
+init_env()
 
 # load an example model with an already simulated tree sequence
 slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")

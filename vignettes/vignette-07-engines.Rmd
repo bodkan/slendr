@@ -109,12 +109,12 @@ Now we will run both models (with and without gene flow) in the two _slendr_ bac
 
 ```{r}
 # model without gene flow
-slim_nogf <- slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
-msprime_nogf <- msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+slim_nogf <- slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed)
+msprime_nogf <- msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed)
 
 # model with b -> x1 gene flow
-slim_gf <- slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
-msprime_gf <- msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+slim_gf <- slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed)
+msprime_gf <- msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, schedule = samples, random_seed = seed)
 ```
 
 Note that we are using exactly the same model configuration object in both simulation runs! In fact, even the function interface looks nearly exactly the same. It doesn't matter what the specific details of your demographic models are, _slendr_ will interpret them correctly regardless of which back end simulation engine you choose to use.
@@ -342,11 +342,11 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 
   # run the model in SLiM
   ts_slim <- slim(model, sequence_length = seq_len, recombination_rate = rec_rate,
-                  samples = samples, random_seed = seed, verbose = FALSE)
+                  schedule = samples, random_seed = seed, verbose = FALSE)
 
   # run the same model in msprim
   ts_msprime <- msprime(model, sequence_length = seq_len, recombination_rate = rec_rate,
-                        samples = samples, random_seed = seed, verbose = FALSE)
+                        schedule = samples, random_seed = seed, verbose = FALSE)
 
   # load the SLiM tree sequence
   ts_slim <- ts_recapitate(ts_slim, Ne = N, recombination_rate = rec_rate, random_seed = seed) %>%

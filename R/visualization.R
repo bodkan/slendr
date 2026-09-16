@@ -302,7 +302,7 @@ sort_splits <- function(model) {
 #'   algorithm will be used, ordering populations from the most ancestral to the
 #'   most recent using an in-order tree traversal.
 #' @param file Output file for a figure saved via \code{ggsave}
-#' @param samples Sampling schedule to be visualized over the model
+#' @param schedule Sampling schedule to be visualized over the model
 #' @param ... Optional argument which will be passed to \code{ggsave}
 #'
 #' @return A ggplot2 object with the visualized slendr model
@@ -322,7 +322,7 @@ sort_splits <- function(model) {
 #'   labs geom_segment arrow
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE,
-                       order = NULL, file = NULL, samples = NULL, ...) {
+                       order = NULL, file = NULL, schedule = NULL, ...) {
   populations <- model$populations
 
   log10_ydelta <- 0.001
@@ -581,9 +581,9 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
                                               scales::label_comma(), NULL))
 
   # if specified, overlay sampling points over the model
-  if (!is.null(samples)) {
+  if (!is.null(schedule)) {
     sampling_points <- dplyr::select(centers, pop, center) %>%
-      dplyr::inner_join(samples, by = "pop") %>%
+      dplyr::inner_join(schedule, by = "pop") %>%
       dplyr::mutate(time = ifelse(time == 0, log10_ydelta, time))
     p <- p + geom_label(data = sampling_points, aes(label = n, x = center, y = time),
                    fontface = "bold", alpha = 0.5)

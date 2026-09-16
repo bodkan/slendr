@@ -1,6 +1,6 @@
 skip_if(!check_dependencies(python = TRUE, slim = TRUE))
 
-init_env(quiet = TRUE)
+init_env()
 
 # basic extension type and sanity checking --------------------------------
 

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -224,12 +224,12 @@ set up correctly:</p>
 <em>slendr</em> backends, SLiM and msprime:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># model without gene flow</span></span>
-<span><span class="va">slim_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
-<span><span class="va">msprime_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
+<span><span class="va">slim_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
+<span><span class="va">msprime_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># model with b -&gt; x1 gene flow</span></span>
-<span><span class="va">slim_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
-<span><span class="va">msprime_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">slim_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
+<span><span class="va">msprime_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span></code></pre></div>
 <p>Note that we are using exactly the same model configuration object in
 both simulation runs! In fact, even the function interface looks nearly
 exactly the same. It doesn’t matter what the specific details of your
@@ -596,11 +596,11 @@ to population genetics theory).</p>
 <span></span>
 <span>  <span class="co"># run the model in SLiM</span></span>
 <span>  <span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>,</span>
-<span>                  samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                  schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># run the same model in msprim</span></span>
 <span>  <span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>,</span>
-<span>                        samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                        schedule <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># load the SLiM tree sequence</span></span>
 <span>  <span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span><span class="va">ts_slim</span>, Ne <span class="op">=</span> <span class="va">N</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
