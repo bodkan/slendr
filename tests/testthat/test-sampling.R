@@ -444,7 +444,7 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
 
   # explicit sampling names
   n1 <- ts_names(model, schedule = schedule)
-  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_names
   expect_equal(n1, n2)
 })
 
@@ -472,6 +472,6 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
 
   # explicit sampling names
   n1 <- ts_names(model, schedule = schedule)
-  n2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  n2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_names
   expect_equal(n1, n2)
 })

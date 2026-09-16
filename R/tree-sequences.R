@@ -1396,7 +1396,7 @@ ts_samples <- function(x, schedule = NULL) {
 #'
 #' @export
 ts_names <- function(x, split = NULL, schedule = NULL) {
-  df <- ts_samples(x, schedule = NULL)
+  df <- ts_samples(x, schedule = schedule)
 
   if (is.null(split)) { # return all names if splitting not requested
     result <- df$name
