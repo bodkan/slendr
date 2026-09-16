@@ -17,6 +17,9 @@ useful for workflows which need to operate with such information before a
 potentially large simulation is even executed.
 ([#8ef6750d](https://github.com/bodkan/slendr/commit/8ef6750d))
 
+- The `ts_names()` function has been updated in the same way as `ts_samples()`
+described above ([#1d27bc0f](https://github.com/bodkan/slendr/commit/1d27bc0f))
+
 # _slendr_ 1.5.0
 
 This release implements a number of important changes to installing and handling Python environments of slendr:

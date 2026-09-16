@@ -424,28 +424,54 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
   a <- population("a", time = 100, N = 4)
   c <- population("c", time = 80, N = 10, parent = a)
   b <- population("b", time = 20, N = 3, parent = c)
-
   model <- compile_model(list(a, b, c), generation_time = 1)
+
+  # no explicit sampling tables
   s1 <- ts_samples(model)
   s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
   expect_equal(s1, s2)
 
+  # no explicit sampling names
   n1 <- ts_names(model)
+  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  expect_equal(n1, n2)
+
+  # explicit sampling tables
+  schedule <- schedule_sampling(model, times = 10, list(a, 3), list(c, 2))
+  s1 <- ts_samples(model, schedule)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  expect_equal(s1, s2)
+
+  # explicit sampling names
+  n1 <- ts_names(model, schedule = schedule)
   n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
   expect_equal(n1, n2)
 })
 
-test_that("pre- and post-simulation samples are the same (slim)", {
+test_that("pre- and post-simulation samples are the same (SLiM)", {
   a <- population("a", time = 100, N = 4)
   c <- population("c", time = 80, N = 10, parent = a)
   b <- population("b", time = 20, N = 3, parent = c)
-
   model <- compile_model(list(a, b, c), generation_time = 1)
+
+  # no explicit sampling tables
   s1 <- ts_samples(model)
   s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
   expect_equal(s1, s2)
 
+  # no explicit sampling names
   n1 <- ts_names(model)
-  n2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  n2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
+  expect_equal(n1, n2)
+
+  # explicit sampling tables
+  schedule <- schedule_sampling(model, times = 10, list(a, 3), list(c, 2))
+  s1 <- ts_samples(model, schedule)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  expect_equal(s1, s2)
+
+  # explicit sampling names
+  n1 <- ts_names(model, schedule = schedule)
+  n2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_names
   expect_equal(n1, n2)
 })

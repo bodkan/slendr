@@ -5,11 +5,15 @@
 \title{Extract names and times of individuals of interest in a tree sequence produced
 by a slendr model}
 \usage{
-ts_samples(x)
+ts_samples(x, schedule = NULL)
 }
 \arguments{
 \item{x}{Either a tree sequence object of the class \code{slendr_ts}, or
 a compiled slendr model of the class \code{slendr_model}}
+
+\item{schedule}{If samples from a model (not yet a tree sequence) are to be
+obtained, this argument can be used to restrict the set of recorded
+individuals}
 }
 \value{
 Table of individuals scheduled for sampling across space and time

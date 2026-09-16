@@ -1335,6 +1335,9 @@ ts_edges <- function(x) {
 #'
 #' @param x Either a tree sequence object of the class \code{slendr_ts}, or
 #'   a compiled slendr model of the class \code{slendr_model}
+#' @param schedule If samples from a model (not yet a tree sequence) are to be
+#'   obtained, this argument can be used to restrict the set of recorded
+#'   individuals
 #'
 #' @return Table of individuals scheduled for sampling across space and time
 #'
@@ -1353,7 +1356,7 @@ ts_edges <- function(x) {
 #' # extract the table of individuals scheduled for simulation and sampling
 #' ts_samples(ts)
 #' @export
-ts_samples <- function(x) {
+ts_samples <- function(x, schedule = NULL) {
   if (inherits(x, "slendr_ts") && is.null(attr(x, "model"))) {
     stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
          "from a slendr model. To access information about times and\nlocations ",
@@ -1361,7 +1364,7 @@ ts_samples <- function(x) {
          "function ts_nodes().\n", call. = FALSE)
   } else if (inherits(x, "slendr_model")) {
     init_env(uv = TRUE)
-    x <- msprime(x, sequence_length = 1, recombination_rate = 0)
+    x <- msprime(x, sequence_length = 1, recombination_rate = 0, schedule = schedule)
   }
 
   samples <- attr(x, "metadata")$sampling
@@ -1383,14 +1386,17 @@ ts_samples <- function(x) {
 #'   samples will be returned as a single character vector. If set to "pop" or
 #'   "time", a list of character vectors will be returned, one vector for each
 #'   unique "pop" or "time" grouping.
+#' @param schedule If samples from a model (not yet a tree sequence) are to be
+#'   obtained, this argument can be used to restrict the set of recorded
+#'   individuals
 #'
 #' @return A vector of character sample names. If \code{split} is specified,
 #'   a list of such vectors is returned, one element of the list per population
 #'   or sampling time.
 #'
 #' @export
-ts_names <- function(x, split = NULL) {
-  df <- ts_samples(x)
+ts_names <- function(x, split = NULL, schedule = NULL) {
+  df <- ts_samples(x, schedule = NULL)
 
   if (is.null(split)) { # return all names if splitting not requested
     result <- df$name
