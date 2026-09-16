@@ -318,8 +318,8 @@ sort_splits <- function(model) {
 #'
 #' plot_model(model, sizes = FALSE, log = TRUE)
 #' @importFrom ggplot2 ggplot expand_limits theme_classic element_line unit
-#'   geom_polygon geom_label scale_y_continuous scale_color_discrete scale_fill_discrete
-#'   labs geom_segment arrow
+#' @importFrom ggplot2 geom_polygon geom_label scale_y_continuous scale_color_discrete
+#' @importFrom ggplot2 scale_fill_discrete labs geom_segment arrow
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE,
                        order = NULL, file = NULL, schedule = NULL, ...) {
