@@ -1,5 +1,9 @@
 # _slendr_ (development version)
 
+- A new function `ts_replicate()` can be used to automate the computation of a
+given tree-sequence statistical expression across a number of replicates.
+([#f83d6d9c](https://github.com/bodkan/slendr/commit/f83d6d9c))
+
 - The `quiet =` argument of `init_env()` is now deprecated, as the function is
 "quiet" by default.
 ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
