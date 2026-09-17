@@ -734,7 +734,7 @@ ts_replicate <- function(n, expr) {
     stop("Number of replicates `n` must be a non-negative integer number", call. = FALSE)
   }
 
-  df <- do.call(rbind, lapply(integer(n), eval(substitute(function(...) expr, env = parent.frame(1)))))
+  df <- do.call(rbind, lapply(integer(n), eval(substitute(function(...) expr), env = parent.frame(1))))
   df$rep <- integer(n)
 
   df
