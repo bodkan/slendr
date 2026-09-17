@@ -849,9 +849,10 @@ test_that("ts_names(ts, split = 'time') returns a list of character vectors", {
 # test replicates ---------------------------------------------------------
 
 test_that("replicates are computed correctly", {
+  samples <- ts_names(model, split = "pop")
+
   set.seed(42)
   ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
-  samples <- ts_names(ts, split = "pop")
   df1 <- ts_f2(ts, A = samples["pop1"], B = samples["pop2"], mode = "branch")
 
   set.seed(42)
