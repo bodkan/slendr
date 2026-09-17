@@ -693,6 +693,56 @@ ts_metadata <- function(ts) {
   attr(ts, "metadata")
 }
 
+#' Compute a tree-sequence expression across a given number of replicates
+#'
+#' This function can be used to compute a given number of replicates of
+#' a specified tree-sequence statistical expression
+#'
+#' @param n Number of replicates to compute
+#' @param expr A tree-sequence expression to compute (see Details)
+#'
+#' @return A data frame object
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
+#' }
+#' init_env()
+#' p1 <- population("p1", time = 4000, N = 1000)
+#' p2 <- population("p2", time = 3000, N = 1000, parent = p1)
+#' p3 <- population("p3", time = 2000, N = 1000, parent = p2)
+#'
+#' model <- compile_model(list(p1, p2, p3), generation_time = 1)
+#' schedule <- schedule_sampling(model, times = 0, list(p1, 10), list(p2, 10), list(p3, 10))
+#' samples <- ts_names(model, split = "pop", schedule = schedule)
+#'
+#' # this is how we can compute a single tree-sequence statistic with slendr:
+#' # 1. first we simulate a tree sequence from a model
+#' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
+#' # 2. then we run a desired tskit-wrapper function
+#' ts_f3(ts, A = samples["p1"], B = samples["p2"], C = samples["p3"], mode = "branch")
+#'
+#' # this is how we can compute the same function across multiple replicates at once
+#' ts_replicate(
+#'   n = 10,
+#'   {
+#'     ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
+#'     ts_f3(ts, A = samples["p1"], B = samples["p2"], C = samples["p3"], mode = "branch")
+#'   }
+#' )
+#' @export
+ts_replicate <- function(n, expr) {
+  if (n %% 1 != 0 || n <= 0) {
+    stop("Number of replicates `n` must be a non-negative integer number", call. = FALSE)
+  }
+
+  code <- substitute(expr)
+  replicates <- seq_len(n)
+
+  df <- do.call(rbind, lapply(replicates, function(i) eval(code)))
+  df$rep <- replicates
+
+  df
+}
+
 # output formats ----------------------------------------------------------
 
 #' Extract genotype table from the tree sequence

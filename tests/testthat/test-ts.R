@@ -845,3 +845,23 @@ test_that("ts_names(ts, split = 'time') returns a list of character vectors", {
   expect_true(length(ts_names(ts_msprime, split = "time")) == length(unique(samples$time)))
   expect_true(length(ts_names(ts_slim, split = "time")) == length(unique(samples$time)))
 })
+
+# test replicates ---------------------------------------------------------
+
+test_that("replicates are computed correctly", {
+  set.seed(42)
+  ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
+  samples <- ts_names(ts, split = "pop")
+  df1 <- ts_f2(ts, A = samples["p1"], B = samples["p2"], mode = "branch")
+
+  set.seed(42)
+  n <- 5
+  df2 <- ts_replicate(n, {
+    ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
+    ts_f2(ts, A = samples["p1"], B = samples["p2"], mode = "branch")
+  })
+
+  expect_true(nrow(df2) == n)
+  expect_equal(df1, df2[1, c("A", "B", "f2")])
+})
+
