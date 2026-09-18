@@ -1185,7 +1185,7 @@ arguments! This is because our non-neutral extension snippet already
 customizes though, so there’s no reason for us to instruct
 <code><a href="../reference/slim.html">slim()</a></code> on that front in any way:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, schedule <span class="op">=</span> <span class="va">samples</span>, path <span class="op">=</span> <span class="st">"~/Code/__archive/introgression_data/"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, schedule <span class="op">=</span> <span class="va">samples</span>, path <span class="op">=</span> <span class="st">"~/Code/_archive/introgression_data/"</span><span class="op">)</span></span></code></pre></div>
 <p>It’s been suggested that Neanderthals had a significantly lower
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>e</mi></msub><annotation encoding="application/x-tex">N_e</annotation></semantics></math>
 compared to anatomically modern humans (AMH), which might have decreased
@@ -1205,8 +1205,15 @@ just load this data and directly visualize it:</p>
 <span><span class="va">gene_length</span> <span class="op">&lt;-</span> <span class="fl">5e6</span></span>
 <span><span class="va">window_length</span> <span class="op">&lt;-</span> <span class="fl">100e3</span></span></code></pre></div>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Code/__archive/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Code/_archive/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">40000000</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> "\t"</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (3): gene, pos, freq</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">freqs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="va">pos</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">5e6</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1218,6 +1225,7 @@ just load this data and directly visualize it:</p>
 <span>       title <span class="op">=</span> <span class="st">"Proportion of Neanderthal ancestry in Europeans along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="vignette-11-extensions_files/figure-html/introgression_freqs-1.png" class="r-plt" alt="" width="480"></p>
 <p>The hypothesis clearly stands against the data!</p>
 <p>We shouldn’t forget that the default data structure of
 <em>slendr</em> is a tree sequence. This gives us much more flexibility
@@ -1229,22 +1237,44 @@ frequencies during the SLiM run (saved in <code>frequencies.tsv</code>),
 we could use the simulated tree sequence to quickly calculate the
 genetic divergence between Europeans and a Neanderthal in windows along
 the simulated genome.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load a tree sequence and extract the names of recorded individuals</span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Code/__archive/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Code/_archive/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_names.html">ts_names</a></span><span class="op">(</span><span class="va">ts</span>, split <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">samples</span></span>
-<span></span>
-<span><span class="co"># compute coordinates of sliding windows along the genome</span></span>
+<span><span class="va">samples</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; $EUR</span></span>
+<span><span class="co">#&gt;   [1] "EUR_1"   "EUR_2"   "EUR_3"   "EUR_4"   "EUR_5"   "EUR_6"   "EUR_7"  </span></span>
+<span><span class="co">#&gt;   [8] "EUR_8"   "EUR_9"   "EUR_10"  "EUR_11"  "EUR_12"  "EUR_13"  "EUR_14" </span></span>
+<span><span class="co">#&gt;  [15] "EUR_15"  "EUR_16"  "EUR_17"  "EUR_18"  "EUR_19"  "EUR_20"  "EUR_21" </span></span>
+<span><span class="co">#&gt;  [22] "EUR_22"  "EUR_23"  "EUR_24"  "EUR_25"  "EUR_26"  "EUR_27"  "EUR_28" </span></span>
+<span><span class="co">#&gt;  [29] "EUR_29"  "EUR_30"  "EUR_31"  "EUR_32"  "EUR_33"  "EUR_34"  "EUR_35" </span></span>
+<span><span class="co">#&gt;  [36] "EUR_36"  "EUR_37"  "EUR_38"  "EUR_39"  "EUR_40"  "EUR_41"  "EUR_42" </span></span>
+<span><span class="co">#&gt;  [43] "EUR_43"  "EUR_44"  "EUR_45"  "EUR_46"  "EUR_47"  "EUR_48"  "EUR_49" </span></span>
+<span><span class="co">#&gt;  [50] "EUR_50"  "EUR_51"  "EUR_52"  "EUR_53"  "EUR_54"  "EUR_55"  "EUR_56" </span></span>
+<span><span class="co">#&gt;  [57] "EUR_57"  "EUR_58"  "EUR_59"  "EUR_60"  "EUR_61"  "EUR_62"  "EUR_63" </span></span>
+<span><span class="co">#&gt;  [64] "EUR_64"  "EUR_65"  "EUR_66"  "EUR_67"  "EUR_68"  "EUR_69"  "EUR_70" </span></span>
+<span><span class="co">#&gt;  [71] "EUR_71"  "EUR_72"  "EUR_73"  "EUR_74"  "EUR_75"  "EUR_76"  "EUR_77" </span></span>
+<span><span class="co">#&gt;  [78] "EUR_78"  "EUR_79"  "EUR_80"  "EUR_81"  "EUR_82"  "EUR_83"  "EUR_84" </span></span>
+<span><span class="co">#&gt;  [85] "EUR_85"  "EUR_86"  "EUR_87"  "EUR_88"  "EUR_89"  "EUR_90"  "EUR_91" </span></span>
+<span><span class="co">#&gt;  [92] "EUR_92"  "EUR_93"  "EUR_94"  "EUR_95"  "EUR_96"  "EUR_97"  "EUR_98" </span></span>
+<span><span class="co">#&gt;  [99] "EUR_99"  "EUR_100"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $NEA</span></span>
+<span><span class="co">#&gt; [1] "NEA_1"</span></span></code></pre>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># compute coordinates of sliding windows along the genome</span></span>
 <span><span class="va">windows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="va">n_genes</span> <span class="op">*</span> <span class="va">gene_length</span> <span class="op">-</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="va">window_length</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># compute divergence from the tree sequence in each window separately</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; [1] 0e+00 1e+05 2e+05 3e+05 4e+05 5e+05</span></span></code></pre>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; [1] 999400000 999500000 999600000 999700000 999800000 999900000</span></span></code></pre>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># compute divergence from the tree sequence in each window separately</span></span>
 <span><span class="va">divergence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">samples</span>, windows <span class="op">=</span> <span class="va">windows</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span><span class="op">$</span><span class="va">divergence</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute average divergence at each position in a gene, and a 95% C.I.</span></span>
 <span><span class="va">div_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pop <span class="op">=</span> <span class="st">"eur"</span>,</span>
@@ -1257,7 +1287,13 @@ the simulated genome.</p>
 <span>    ci_low <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    ci_up <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">#&gt; `summarise()` has regrouped the output.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Summaries were computed grouped by <span style="color: #0000BB;">pop</span> and <span style="color: #0000BB;">pos</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Output is grouped by <span style="color: #0000BB;">pop</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `summarise(.groups = "drop_last")` to silence this message.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `summarise(.by = c(pop, pos))` for per-operation grouping</span></span>
+<span><span class="co">#&gt;   (`?dplyr::dplyr_by`) instead.</span></span></code></pre>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">div_df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, ymin <span class="op">=</span> <span class="va">ci_low</span>, ymax <span class="op">=</span> <span class="va">ci_up</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1265,6 +1301,7 @@ the simulated genome.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"coordinate along a gene"</span>, y <span class="op">=</span> <span class="st">"divergence to Neanderthal"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Divergence of Europeans to a Neanderthal genome along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="vignette-11-extensions_files/figure-html/introgression_divergence-1.png" class="r-plt" alt="" width="480"></p>
 <p>Indeed, we clearly observe lower introgression levels (indicated by
 an increased European-Neanderthal divergence) around loci under
 selection and increased surviving introgression far from those loci,
