@@ -1247,7 +1247,9 @@ area <- function(x) {
 #'   schedule remembering of individuals in the tree-sequence
 #' @param ... Lists of two elements (\code{slendr_pop} population object-<number
 #'   of individuals to sample), representing from which populations should how
-#'   many individuals be remembered at times given by \code{times}
+#'   many individuals be remembered at times given by \code{times}.
+#'   Alternatively, specifying \code{list("each", <number>)} will record the
+#'   given number of samples from every population at the given time.
 #' @param locations List of vector pairs, defining two-dimensional coordinates
 #'   of locations at which the closest number of individuals from given
 #'   populations should be sampled. If \code{NULL} (the default), individuals
@@ -1305,6 +1307,17 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   samples <- list(...)
   sample_pops <- purrr::map(samples, 1)
   sample_counts <- purrr::map(samples, 2)
+
+  if (length(sample_pops) == 1) {
+    if (is.character(sample_pops[[1]]) && sample_pops[[1]] == "each") {
+      sample_pops <- model$populations
+      sample_counts <- as.list(rep.int(sample_counts[[1]], times = length(sample_pops)))
+      samples <- lapply(seq_along(model$populations), function(i) list(model$populations[[i]], sample_counts[[i]]))
+    } else if (!inherits(sample_pops[[1]], "slendr_pop")) {
+      stop("Sampling must be specified as either `list(\"all\", <number>)`\n",
+           "or `list(<slendr population>, <number>)`.", call. = FALSE)
+    }
+  }
 
   model_names <- vapply(model$populations, function(pop) pop$pop[1], FUN.VALUE = "character")
   pop_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
