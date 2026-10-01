@@ -4,12 +4,14 @@
 \alias{ts_replicate}
 \title{Compute a tree-sequence expression across a given number of replicates}
 \usage{
-ts_replicate(n, expr)
+ts_replicate(n, expr, parallel = NULL)
 }
 \arguments{
 \item{n}{Number of replicates to compute}
 
 \item{expr}{A tree-sequence expression to compute (see Details)}
+
+\item{parallel}{How many cores should be utilized for the computation?}
 }
 \value{
 A data frame object

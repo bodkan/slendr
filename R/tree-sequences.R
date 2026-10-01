@@ -700,6 +700,7 @@ ts_metadata <- function(ts) {
 #'
 #' @param n Number of replicates to compute
 #' @param expr A tree-sequence expression to compute (see Details)
+#' @param parallel How many cores should be utilized for the computation?
 #'
 #' @return A data frame object
 #' @examples
@@ -729,12 +730,20 @@ ts_metadata <- function(ts) {
 #'   }
 #' )
 #' @export
-ts_replicate <- function(n, expr) {
+ts_replicate <- function(n, expr, parallel = NULL) {
   if (n %% 1 != 0 || n <= 0) {
     stop("Number of replicates `n` must be a non-negative integer number", call. = FALSE)
   }
 
-  df <- do.call(rbind, lapply(1:n, eval(substitute(function(...) expr), env = parent.frame(1))))
+  if (is.null(parallel)) {
+    df_list <- lapply(1:n, eval(substitute(function(...) expr), env = parent.frame(1)))
+  } else if (parallel %% 1 == 0 || parallel > 0){
+    df_list <- parallel::mclapply(1:n, eval(substitute(function(...) expr), env = parent.frame(1)), mc.cores = parallel)
+  } else {
+    stop("Invalid value of the argument `parallel`", call. = FALSE)
+  }
+
+  df <- do.call(rbind, df_list)
   df$rep <- rep(1:n, each = nrow(df) / n)
 
   df
