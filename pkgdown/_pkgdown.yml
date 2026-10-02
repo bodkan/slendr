@@ -146,6 +146,7 @@ reference:
 
   - title: Tree sequence statistics
     contents:
+    - ts_replicate
     - ts_f2
     - ts_f3
     - ts_f4

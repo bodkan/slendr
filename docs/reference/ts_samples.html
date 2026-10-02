@@ -58,7 +58,7 @@ produced by a given model</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">x</span>, schedule <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,6 +68,12 @@ produced by a given model</p>
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>Either a tree sequence object of the class <code>slendr_ts</code>, or
 a compiled slendr model of the class <code>slendr_model</code></p></dd>
+
+
+<dt id="arg-schedule">schedule<a class="anchor" aria-label="anchor" href="#arg-schedule"></a></dt>
+<dd><p>If samples from a model (not yet a tree sequence) are to be
+obtained, this argument can be used to restrict the set of recorded
+individuals</p></dd>
 
 </dl></div>
     <div class="section level2">
