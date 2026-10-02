@@ -4,6 +4,12 @@
 given tree-sequence statistical expression across a number of replicates.
 ([#f83d6d9c](https://github.com/bodkan/slendr/commit/f83d6d9c))
 
+- To make quick exploratory computation more convenient, the
+`schedule_sampling()` function now supports a syntax `list("each", <number>)`
+which schedules the recording of the given number of individuals from every
+population at a given time.
+([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
+
 - The `quiet =` argument of `init_env()` is now deprecated, as the function is
 "quiet" by default.
 ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))

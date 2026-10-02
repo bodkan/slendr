@@ -475,3 +475,26 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
   n2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_names
   expect_equal(n1, n2)
 })
+
+test_that("batch scheduling gives the correct number of recorded individuals", {
+  a <- population("a", time = 100, N = 4)
+  c <- population("c", time = 80, N = 10, parent = a)
+  b <- population("b", time = 20, N = 3, parent = c)
+  model <- compile_model(list(a, b, c), generation_time = 1)
+
+  expect_error(schedule_sampling(model, times = 0, list("each", -3)),
+               "Sample counts must be non-negative, non-zero integer numbers")
+
+  expect_error(schedule_sampling(model, times = 0, list("hello", -3)),
+               "Sampling must be specified as either")
+
+  schedule1 <- schedule_sampling(model, times = 0, list(a, 3), list(b, 3), list(c, 3))
+  schedule2 <- schedule_sampling(model, times = 0, list("each", 3))
+
+  expect_equal(schedule1, schedule2)
+
+  ts1 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule1)
+  ts2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule2)
+
+  expect_equal(ts_samples(ts1), ts_samples(ts2))
+})
