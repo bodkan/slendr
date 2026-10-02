@@ -14,7 +14,9 @@ schedule remembering of individuals in the tree-sequence}
 
 \item{...}{Lists of two elements (\code{slendr_pop} population object-<number
 of individuals to sample), representing from which populations should how
-many individuals be remembered at times given by \code{times}}
+many individuals be remembered at times given by \code{times}.
+Alternatively, specifying \code{list("each", <number>)} will record the
+given number of samples from every population at the given time.}
 
 \item{locations}{List of vector pairs, defining two-dimensional coordinates
 of locations at which the closest number of individuals from given
