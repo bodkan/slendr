@@ -10,6 +10,11 @@ which schedules the recording of the given number of individuals from every
 population at a given time.
 ([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
 
+- An issue with visualization of "truncated" models (i.e., models compiled with
+the `simulation_length` argument shorter than the default duration of the model)
+which introduced awkward gaps in places of "missing" populations has been fixed.
+([#00fa2bee](https://github.com/bodkan/slendr/commit/00fa2bee))
+
 - The `quiet =` argument of `init_env()` is now deprecated, as the function is
 "quiet" by default.
 ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
