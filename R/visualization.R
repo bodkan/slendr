@@ -325,6 +325,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
                        order = NULL, file = NULL, schedule = NULL, ...) {
   populations <- model$populations
 
+  oldest_time <- get_oldest_time(populations, model$direction)
   log10_ydelta <- 0.001
 
   # layout populations along the x-axis according to an in-order population tree traversal
@@ -337,16 +338,26 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
       stop("If order is given manually, all population names must be specified", call. = FALSE)
   }
 
-  split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
-                        numeric(1))
+  split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time, numeric(1))
 
-  pop_factors <- order_pops(model$populations, model$direction)
+  # in case a truncated model is being plotted, filter down all populations
+  # only to those falling within the truncated time window
+  if (model$direction == "backward") {
+    present_pops <- Filter(function(i) split_times[i] >= oldest_time - model$orig_length, seq_along(populations))
+  } else {
+    present_pops <- Filter(function(i) split_times[i] <= oldest_time + model$orig_length, seq_along(populations))
+  }
+  pop_names <- pop_names[present_pops]
+  populations <- populations[pop_names]
+  split_times <- split_times[pop_names]
+
+  pop_factors <- order_pops(populations, model$direction)
 
   # extract times at which each population will be removed from the simulation
   if (model$direction == "backward")
-    default_end <- get_oldest_time(model$populations, model$direction) - model$orig_length + log10_ydelta
+    default_end <- oldest_time - model$orig_length + log10_ydelta
   else
-    default_end <- get_oldest_time(model$populations, model$direction) + model$orig_length
+    default_end <- oldest_time + model$orig_length
 
   end_times <- purrr::map_int(populations, function(pop) {
     remove <- attr(pop, "remove")
@@ -476,6 +487,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # arrows
   if (!is.null(model$geneflow) && gene_flow) {
     gene_flow <- model$geneflow %>%
+      dplyr::filter(from %in% pop_names, to %in% pop_names) %>% # take care of truncation first
       dplyr::mutate(
         x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
         xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
@@ -564,13 +576,12 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # (it seems that the first rectangle that is drawn is plotted even "earlier" than a
   # model start but this takes care of things for now -- if more plotting issues pop up,
   # they can be fixed later)
-  oldest_time <- get_oldest_time(model$populations, model$direction)
   if (model$direction == "forward") {
-    ylim_low <- get_oldest_time(model$populations, model$direction)
+    ylim_low <- oldest_time
     ylim_high <- oldest_time + model$orig_length
     ylim <- c(ylim_high, ylim_low)
   } else {
-    ylim_high <- get_oldest_time(model$populations, model$direction)
+    ylim_high <- oldest_time
     ylim_low <- oldest_time - model$orig_length
     ylim <- c(ylim_low, ylim_high)
   }
