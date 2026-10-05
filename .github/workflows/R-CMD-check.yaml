@@ -128,7 +128,7 @@ jobs:
         # NOTE: for new SLiM releases in the local UTM-based Windows VM:
         # 1. pacman -Suy to update packages
         # 2. the above step should also update SLiM itself
-        #    -- otherwise run pacman -S pacman -S mingw-w64-ucrt-x86_64-slim-simulator
+        #    -- otherwise run pacman -S mingw-w64-ucrt-x86_64-slim-simulator
         #
         # NOTE: if slim.exe needs to be added to path
         # 1. find location of the slim.exe binary with
@@ -143,7 +143,7 @@ jobs:
         with:
           update: true
           install: >-
-            pacman -S mingw-w64-ucrt-x86_64-slim-simulator
+            mingw-w64-ucrt-x86_64-slim-simulator
             bash
 
       - name: Install pandoc on Windows
