@@ -321,12 +321,12 @@ check_split_time <- function(time, parent) {
   direction <- time_direction(parent)
   if (direction == "forward" & time <= parent_time) {
     stop(sprintf("The model implies forward time direction but the specified split
-time (%d) is lower than the parent's (%s)",
+time (%d) is lower or equal to the parent's (%s)",
                  time, parent_time),
          call. = FALSE)
   } else if (direction == "backward" & time >= parent_time) {
     stop(sprintf("The model implies backward time direction but the specified split
-time (%s) is higher than the parent's (%s)",
+time (%s) is higher or equal to the parent's (%s)",
                  time, parent_time),
          call. = FALSE)
   } else if (time == parent_time) {
