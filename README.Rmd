@@ -18,7 +18,7 @@ set.seed(314159)
 
 <!-- badges: start -->
 
-[![CRAN-version](https://www.r-pkg.org/badges/version/slendr)](https://cran.r-project.org/package=slendr) [![CRAN-downloads](https://cranlogs.r-pkg.org/badges/grand-total/slendr)](https://cran.r-project.org/package=slendr) [![R-CMD-check](https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg)](https://github.com/bodkan/slendr/actions) [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio) [![Coverage status](https://codecov.io/gh/bodkan/slendr/branch/main/graph/badge.svg)](https://app.codecov.io/github/bodkan/slendr?branch=main)
+[![CRAN-version](https://www.r-pkg.org/badges/version/slendr)](https://cran.r-project.org/package=slendr) [![CRAN-downloads](https://cranlogs.r-pkg.org/badges/grand-total/slendr)](https://cran.r-project.org/package=slendr) [![R-CMD-check](https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg)](https://github.com/bodkan/slendr/actions) [![Coverage status](https://codecov.io/gh/bodkan/slendr/branch/main/graph/badge.svg)](https://app.codecov.io/github/bodkan/slendr?branch=main)
 
 <!-- badges: end -->
 
@@ -63,18 +63,6 @@ Here is a brief summary of _slendr_'s most important features. The R package all
 -   Specify within-population individual [dispersal dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html) from the R interface by leveraging SLiM's individual interaction parameters implemented in the SLiM back-end script.
 
 **Utilizing the flexibility of R with its wealth of libraries for statistics, geospatial analysis and graphics, and combining it with the power of population genetic simulation frameworks SLiM and _msprime_, the _slendr_ R package makes it possible to write entire workflows without the need to leave the R environment.**
-
-------------------------------------------------------------------------
-
-### Testing the R package in an online RStudio session
-
-You can open an RStudio session and test examples from the [vignettes](https://bodkan.net/slendr/articles/) directly in your web browser by clicking this button (no installation is needed!):
-
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
-
-**In case the RStudio instance appears to be starting very slowly, please be patient (Binder is a freely available service with limited computational resources provided by the community).** If Binder crashes, try reloading the web page, which will restart the cloud session.
-
-Once you get a browser-based RStudio session, you can navigate to the `vignettes/` directory and test the examples on your own!
 
 ------------------------------------------------------------------------
 
