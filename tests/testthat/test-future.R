@@ -19,11 +19,11 @@ init_env()
 
 test_that("forward models not starting from 1 given the same outcome (resizes, all samples)", {
   pop1 <- population("pop1", time = 1500, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 1000)
 
@@ -35,11 +35,11 @@ test_that("forward models not starting from 1 given the same outcome (resizes, a
 
 test_that("forward models starting from 1 give the same outcome (resizes, all samples)", {
   pop1 <- population("pop1", time = 1, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 3000)
 
@@ -51,11 +51,11 @@ test_that("forward models starting from 1 give the same outcome (resizes, all sa
 
 test_that("(truncated) forward models starting from 1 give the same outcome (resizes, all samples)", {
   pop1 <- population("pop1", time = 1, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 1000)
 
@@ -69,11 +69,11 @@ test_that("(truncated) forward models starting from 1 give the same outcome (res
 
 test_that("forward models not starting from 1 give the same outcome (resizes, defined samples)", {
   pop1 <- population("pop1", time = 1500, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 1000)
 
@@ -87,11 +87,11 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
 test_that("forward models not starting from 1 give the same outcome (resizes, defined samples)", {
   pop1 <- population("pop1", time = 1, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 3000)
 
@@ -107,11 +107,11 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
 test_that("forward models not starting from 1 given the same outcome (gene flows)", {
   pop1 <- population("pop1", time = 1500, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   gf <- gene_flow(pop1, pop2, proportion = 0.1, start = 1800, end = 1900)
 
@@ -127,11 +127,11 @@ test_that("forward models not starting from 1 given the same outcome (gene flows
 
 test_that("forward models starting from 1 given the same outcome (gene flows)", {
   pop1 <- population("pop1", time = 1, N = 100) %>%
-    resize(time = 1800, N = 10, how = "step") %>%
-    resize(time = 2024, N = 30, how = "step") %>%
-    resize(time = 2200, N = 30, how = "step")
+    resize(time = 1800, N = 10) %>%
+    resize(time = 2024, N = 30) %>%
+    resize(time = 2200, N = 30)
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
-    resize(time = 1800, N = 10, how = "step")
+    resize(time = 1800, N = 10)
 
   gf <- gene_flow(pop1, pop2, proportion = 0.1, start = 1800, end = 1900)
 
@@ -154,10 +154,10 @@ test_that("forward models starting from 1 given the same outcome (gene flows)", 
 
 test_that("backward models correctly sample by default 'at present' (non-truncated)", {
   pop1 <- population("pop1", time = 10000, N = 100) %>%
-    resize(time = 7800, N = 10, how = "step") %>%
-    resize(time = 4024, N = 30, how = "step")
+    resize(time = 7800, N = 10) %>%
+    resize(time = 4024, N = 30)
   pop2 <- population("pop2", time = 1700, N = 50, parent = pop1) %>%
-    resize(time = 800, N = 10, how = "step")
+    resize(time = 800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 100)
 
@@ -169,10 +169,10 @@ test_that("backward models correctly sample by default 'at present' (non-truncat
 
 test_that("backward models correctly sample by default 'at present' (truncated)", {
   pop1 <- population("pop1", time = 10000, N = 100) %>%
-    resize(time = 7800, N = 10, how = "step") %>%
-    resize(time = 4024, N = 30, how = "step")
+    resize(time = 7800, N = 10) %>%
+    resize(time = 4024, N = 30)
   pop2 <- population("pop2", time = 1700, N = 50, parent = pop1) %>%
-    resize(time = 800, N = 10, how = "step")
+    resize(time = 800, N = 10)
 
   model <- compile_model(list(pop1, pop2), generation_time = 100, simulation_length = 5000)
 

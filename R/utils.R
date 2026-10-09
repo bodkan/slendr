@@ -116,7 +116,7 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     attr(result, "history") <- append(attr(result, "history"), changes)
     # for (i in seq_along(inter_regions)[-1]) {
     #   time <- inter_regions[[i]]$time
-    #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
+    #   result <- resize(result, N = new_N[i - 1], time = time)
     # }
   }
 

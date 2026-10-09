@@ -16,6 +16,14 @@ test_that("ts_save() deprecated in favour of ts_write()", {
 pop1 <- population("pop1", N = 100, time = 500)
 pop2 <- population("pop2", N = 100, parent = pop1, time = 120)
 
+test_that("the `how` argument in resize() is no longer necessary", {
+  expect_warning(resize(pop1, time = 600, N = 10, how = "step"))
+  expect_warning(resize(pop1, time = 600, end = 1000, N = 10, how = "exponential"))
+
+  expect_error(resize(pop1, N = 10), "The `time` of the resize event must be specified")
+  expect_error(resize(pop1, end = 1000, N = 10), "The `time` of the resize event must be specified")
+})
+
 test_that("using the rate argument gives a warning", {
   msg <- "The argument `rate` is about to be deprecated"
   expect_warning(gf <- gene_flow(from = pop1, to = pop2, start = 10, end = 0, rate = 0.1), msg)

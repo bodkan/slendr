@@ -280,19 +280,19 @@ forward_const <- population("const", time = 1, N = N)
 
 # decreasing step Ne model
 forward_decr <- population("decr", time = 1, N = N, map = FALSE) %>%
-  resize(time = 2000, N = N / N_factor, how = "step")
+  resize(time = 2000, N = N / N_factor)
 
 # increasing step Ne model
 forward_incr <- population("inc", time = 1, N = N) %>%
-  resize(time = 2000, N = N * N_factor, how = "step")
+  resize(time = 2000, N = N * N_factor)
 
 # exponential increase in size
 forward_exp_incr <- population("exp_inc", time = 1, N = N) %>%
-  resize(time = 2000, end = 3000, N = N * N_factor, how = "exponential")
+  resize(time = 2000, end = 3000, N = N * N_factor)
 
 # exponential decrease in size
 forward_exp_decr <- population("exp_decr", time = 1, N = N) %>%
-  resize(time = 2000, end = 3000, N = N / N_factor, how = "exponential")
+  resize(time = 2000, end = 3000, N = N / N_factor)
 ```
 
 Now let's flip the flow of time around and define the population histories in units of "time ago":
@@ -303,19 +303,19 @@ backward_const <- population("const", time = 5000, N = N)
 
 # decreasing step Ne model
 backward_decr <- population("decr", time = 5000, N = N) %>%
-  resize(time = 3000, N = N / N_factor, how = "step")
+  resize(time = 3000, N = N / N_factor)
 
 # increasing step Ne model
 backward_incr <- population("inc", time = 5000, N = N) %>%
-  resize(time = 3000, N = N * N_factor, how = "step")
+  resize(time = 3000, N = N * N_factor)
 
 # exponential increase in size
 backward_exp_incr <- population("exp_inc", time = 5000, N = N) %>%
-  resize(time = 3000, end = 2000, N = N * N_factor, how = "exponential")
+  resize(time = 3000, end = 2000, N = N * N_factor)
 
 # exponential decrease in size
 backward_exp_decr <- population("exp_decr", time = 5000, N = N) %>%
-  resize(time = 3000, end = 2000, N = N / N_factor, how = "exponential")
+  resize(time = 3000, end = 2000, N = N / N_factor)
 ```
 
 For convenience, we will write a helper function which will, for a given population history object (ten objects just above), compile a _slendr_ model, run it in both SLiM and *msprime* back ends, load the tree sequence, and compute allele frequency spectrum (AFS) from it. This will save us lots of code repetition (always a good thing), minimize the chance of copy-pasting bugs (definitely a good thing!) and compare the AFS patterns across different models and the two _slendr_ simulation back ends (they should be the same according to population genetics theory).

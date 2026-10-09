@@ -4,20 +4,21 @@
 \alias{resize}
 \title{Change the population size}
 \usage{
-resize(pop, N, how, time, end = NULL)
+resize(pop, N, time, end = NULL, how = NULL)
 }
 \arguments{
 \item{pop}{Object of the class \code{slendr_pop}}
 
 \item{N}{Population size after the change}
 
-\item{how}{How to change the population size (options are \code{"step"} or
-\code{"exponential"})}
-
 \item{time}{Time of the population size change}
 
-\item{end}{End of the population size change period (used for exponential
-change events)}
+\item{end}{End of the population size change period (automatically implies
+an exponential change event)}
+
+\item{how}{Deprecated argument. Specifying the value of \code{end} now
+automatically implies an exponential resize, leaving it out implies an
+instantaneous size change.}
 }
 \value{
 Object of the class \code{slendr_pop}, which contains population

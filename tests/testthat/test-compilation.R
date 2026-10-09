@@ -57,7 +57,7 @@ test_that("invalid blank maps are prevented", {
 
 test_that("deletion in non-interactive mode must be forced", {
   skip_if(interactive())
-  p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50, how = "step")
+  p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50)
   directory <- file.path(tempdir(), "dir-forced")
   dir.create(directory)
   expect_error(model <- compile_model(p, path = directory, generation_time = 30, overwrite = TRUE),
@@ -142,10 +142,10 @@ test_that("purely non-spatial populations compile in silence", {
 
 afr <- population("AFR", time = 52000, N = 3000)
 ooa <- population("OOA", parent = afr, time = 51000, N = 500, remove = 25000) %>%
-  resize(N = 2000, time = 40000, how = "step")
+  resize(N = 2000, time = 40000)
 ehg <- population("EHG", parent = ooa, time = 28000, N = 1000, remove = 6000)
 eur <- population("EUR", parent = ehg, time = 25000, N = 2000) %>%
-  resize(N = 10000, how = "exponential", time = 5000, end = 0)
+  resize(N = 10000, time = 5000, end = 0)
 ana <- population("ANA", time = 28000, N = 3000, parent = ooa, remove = 4000)
 yam <- population("YAM", time = 7000, N = 500, parent = ehg, remove = 2500)
 

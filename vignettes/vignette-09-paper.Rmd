@@ -316,7 +316,7 @@ eur <- population(
   "EUR", time = 30000, N = 2000, parent = ooa,
   map = map, polygon = R2
 ) %>%
-  resize(N = 10000, time = 5000, end = 0, how = "exponential")
+  resize(N = 10000, time = 5000, end = 0)
 
 ana <- population(
   "ANA", time = 25000, N = 4000, parent = ooa, remove = 3000,

@@ -17,7 +17,7 @@ test_that("Population size stays constant when specified", {
 
 test_that("Population size is increased correctly in single step", {
   pop <- population("pop", time = 1000, N = 100, map = map, center = c(20, 50), radius = 500e3)
-  res <- run_sim(resize(pop, N = 50, time = 900, how = "step"), "backward")
+  res <- run_sim(resize(pop, N = 50, time = 900), "backward")
   start_N <- attr(pop, "history")[[1]]$N
   expect_true(dplyr::filter(res, time > 900) %>% { all(.$N == start_N) })
   expect_true(dplyr::filter(res, time <= 900) %>% { all(.$N == 50) })
@@ -26,8 +26,8 @@ test_that("Population size is increased correctly in single step", {
 test_that("Population size is increased correctly in two steps", {
   pop <- population("pop", time = 1000, N = 100, map = map, center = c(20, 50), radius = 500e3)
   res <- run_sim(
-    resize(pop, N = 50, time = 900, how = "step") %>%
-      resize(N = 500, time = 300, how = "step"), "backward")
+    resize(pop, N = 50, time = 900) %>%
+      resize(N = 500, time = 300), "backward")
   start_N <- attr(pop, "history")[[1]]$N
   expect_true(dplyr::filter(res, time > 900) %>% { all(.$N == start_N) })
   expect_true(dplyr::filter(res, time <= 900 & time > 300) %>% { all(.$N == 50) })
@@ -39,7 +39,7 @@ test_that("Simulated exponential growth matches theoretical expectations", {
   t1 <- 900; t2 <- 600
 
   pop <- population("pop", time = 1000, N = N1, map = map, center = c(20, 50), radius = 500e3)
-  res <- run_sim(resize(pop, N = N2, time = t1, end = t2, how = "exponential"), "backward")
+  res <- run_sim(resize(pop, N = N2, time = t1, end = t2), "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
   expect_true(res[1, ]$N == N1) # initial size
@@ -55,7 +55,7 @@ test_that("Simulated exponential shrinking matches theoretical expectations", {
   t1 <- 900; t2 <- 600
 
   pop <- population("pop", time = 1000, N = N1, map = map, center = c(20, 50), radius = 500e3)
-  res <- run_sim(resize(pop, N = N2, time = t1, end = t2, how = "exponential"), "backward")
+  res <- run_sim(resize(pop, N = N2, time = t1, end = t2), "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
   expect_true(res[1, ]$N == N1) # initial size
@@ -71,8 +71,8 @@ test_that("Multiple resize event types are allowed (backward model)", {
   t1 <- 900; t2 <- 600; t3 <- 200
 
   pop <- population("pop", time = 1000, N = N1, map = map, center = c(20, 50), radius = 500e3) %>%
-    resize(N = N2, time = t1, end = t2, how = "exponential") %>%
-    resize(N = N3, time = t3, how = "step")
+    resize(N = N2, time = t1, end = t2) %>%
+    resize(N = N3, time = t3)
 
   res <- run_sim(pop, "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
@@ -91,8 +91,8 @@ test_that("Multiple resize event types are allowed (forward model)", {
   t1 <- 2; t2 <- 600; t3 <- 900
 
   pop <- population("pop", time = 1, N = N1, map = map, center = c(20, 50), radius = 500e3) %>%
-    resize(N = N2, time = t1, end = t2, how = "exponential") %>%
-    resize(N = N3, time = t3, how = "step")
+    resize(N = N2, time = t1, end = t2) %>%
+    resize(N = N3, time = t3)
 
   res <- run_sim(pop, "forward", simulation_length = 1000)
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
@@ -112,16 +112,16 @@ test_that("Resize cannot happen at the same time as population split (forward)",
   anc <- population("anc", time = 1, N = 1000)
   pop <- population("pop", time = 10, N = 1000, parent = anc)
 
-  expect_error(resize(pop, time = 10, N = 100, how = "step"), error_msg)
-  expect_error(resize(pop, time = 10, end = 20, N = 100, how = "exponential"), error_msg)
+  expect_error(resize(pop, time = 10, N = 100), error_msg)
+  expect_error(resize(pop, time = 10, end = 20, N = 100), error_msg)
 
-  expect_s3_class(resize(pop, time = 11, N = 100, how = "step"), "slendr_pop")
-  resized_step <- resize(pop, time = 11, N = 100, how = "step")
+  expect_s3_class(resize(pop, time = 11, N = 100), "slendr_pop")
+  resized_step <- resize(pop, time = 11, N = 100)
   expect_true(attr(resized_step, "history")[[2]]$event == "resize")
   expect_true(is.na(attr(resized_step, "history")[[2]]$tend))
 
-  expect_s3_class(resize(pop, time = 11, end = 20, N = 100, how = "exponential"), "slendr_pop")
-  resized_exp <- resize(pop, time = 11, end = 20, N = 100, how = "exponential")
+  expect_s3_class(resize(pop, time = 11, end = 20, N = 100), "slendr_pop")
+  resized_exp <- resize(pop, time = 11, end = 20, N = 100)
   expect_true(attr(resized_exp, "history")[[2]]$event == "resize")
   expect_true(attr(resized_exp, "history")[[2]]$tend == 20)
 })
@@ -132,16 +132,16 @@ test_that("Resize cannot happen at the same time as population split (backward)"
   anc <- population("anc", time = 1000, N = 1000)
   pop <- population("pop", time = 100, N = 1000, parent = anc)
 
-  expect_error(resize(pop, time = 100, N = 100, how = "step"), error_msg)
-  expect_error(resize(pop, time = 100, end = 20, N = 100, how = "exponential"), error_msg)
+  expect_error(resize(pop, time = 100, N = 100), error_msg)
+  expect_error(resize(pop, time = 100, end = 20, N = 100), error_msg)
 
-  expect_s3_class(resize(pop, time = 99, N = 100, how = "step"), "slendr_pop")
-  resized_step <- resize(pop, time = 99, N = 100, how = "step")
+  expect_s3_class(resize(pop, time = 99, N = 100), "slendr_pop")
+  resized_step <- resize(pop, time = 99, N = 100)
   expect_true(attr(resized_step, "history")[[2]]$event == "resize")
   expect_true(is.na(attr(resized_step, "history")[[2]]$tend))
 
-  expect_s3_class(resize(pop, time = 99, end = 20, N = 100, how = "exponential"), "slendr_pop")
-  resized_exp <- resize(pop, time = 99, end = 20, N = 100, how = "exponential")
+  expect_s3_class(resize(pop, time = 99, end = 20, N = 100), "slendr_pop")
+  resized_exp <- resize(pop, time = 99, end = 20, N = 100)
   expect_true(attr(resized_exp, "history")[[2]]$event == "resize")
   expect_true(attr(resized_exp, "history")[[2]]$tend == 20)
 })

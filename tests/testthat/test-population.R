@@ -68,14 +68,14 @@ test_that("parent cannot be scheduled for removal before a daughter splits (back
 
 test_that("non-integer population size is rounded (step resize)", {
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000.9, how = "step", time = 100)
+    resize(N = 1000.9, time = 100)
   expect_true(attr(pop, "history")[[2]]$N %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$N == 1001)
 })
 
 test_that("non-integer population resize time is rounded (step resize)", {
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000, how = "step", time = 100.9)
+    resize(N = 1000, time = 100.9)
   expect_true(attr(pop, "history")[[2]]$tresize %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$tresize == 101)
 })
@@ -86,7 +86,7 @@ test_that("non-integer population resize time is rounded (step resize)", {
 
 test_that("non-integer population size is rounded (exponential resize)", {
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000.9, how = "exponential", time = 100, end = 400)
+    resize(N = 1000.9, time = 100, end = 400)
   expect_true(attr(pop, "history")[[2]]$N %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$N == 1001)
 })
@@ -94,19 +94,19 @@ test_that("non-integer population size is rounded (exponential resize)", {
 test_that("non-integer population resize time is rounded (exponential resize)", {
   # start time non-integer
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000, how = "exponential", time = 100.9, end = 400)
+    resize(N = 1000, time = 100.9, end = 400)
   expect_true(attr(pop, "history")[[2]]$tresize %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$tresize == 101)
 
   # end time non-integer
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000, how = "exponential", time = 100, end = 400.9)
+    resize(N = 1000, time = 100, end = 400.9)
   expect_true(attr(pop, "history")[[2]]$tend %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$tend == 401)
 
   # start and end time non-integer
   pop <- population("pop", time = 42, N = 100) %>%
-    resize(N = 1000, how = "exponential", time = 100.9, end = 400.9)
+    resize(N = 1000, time = 100.9, end = 400.9)
   expect_true(attr(pop, "history")[[2]]$tresize %% 1 == 0)
   expect_true(attr(pop, "history")[[2]]$tresize == 101)
   expect_true(attr(pop, "history")[[2]]$tend %% 1 == 0)

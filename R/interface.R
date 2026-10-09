@@ -467,7 +467,7 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
       sapply(`[[`, "N") %>%
       utils::tail(1)
     new_N <- round(area_change * prev_N)
-    result <- resize(result, N = new_N, time = time, how = "step")
+    result <- resize(result, N = new_N, time = time)
   }
 
   result
@@ -490,11 +490,12 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
 #'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param N Population size after the change
-#' @param how How to change the population size (options are \code{"step"} or
-#'   \code{"exponential"})
 #' @param time Time of the population size change
-#' @param end End of the population size change period (used for exponential
-#'   change events)
+#' @param end End of the population size change period (automatically implies
+#'   an exponential change event)
+#' @param how Deprecated argument. Specifying the value of \code{end} now
+#'   automatically implies an exponential resize, leaving it out implies an
+#'   instantaneous size change.
 #'
 #' @return Object of the class \code{slendr_pop}, which contains population
 #'   parameters such as name, time of appearance in the simulation, parent
@@ -504,7 +505,17 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
 #' @export
 #'
 #' @example man/examples/model_definition.R
-resize <- function(pop, N, how, time, end = NULL) {
+resize <- function(pop, N, time, end = NULL, how = NULL) {
+  if (!is.null(how)) {
+    warning("The `how` argument is now deprecated. Setting the `end` time now\n",
+            "automatically implies an exponential size change, leaving it out\n",
+            "implies an instantaneous step change.", call. = FALSE)
+  }
+
+  if (missing(time)) {
+    stop("The `time` of the resize event must be specified", call. = FALSE)
+  }
+
   if (N < 1) stop("resize(): Only positive, non-zero population sizes are allowed", call. = FALSE)
 
   N <- as.integer(round(N))
@@ -514,11 +525,7 @@ resize <- function(pop, N, how, time, end = NULL) {
   if (time == attr(pop, "history")[[1]]$time)
     stop("Population resize cannot happen at the time the population is created", call. = FALSE)
 
-  if (!how %in% c("step", "exponential"))
-    stop("resize(): Only 'step' or 'exponential' are allowed as arguments for the 'how' parameter", call. = FALSE)
-
-  if (how == "exponential" & is.null(end))
-    stop("resize(): Start-end period of the exponential growth must be specified", call. = FALSE)
+  how <- if (is.null(end)) "step" else "exponential"
 
   # get the last active population size
   prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%

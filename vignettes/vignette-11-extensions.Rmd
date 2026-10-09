@@ -366,7 +366,7 @@ afr <- population("AFR", time = 90000, N = 3000)
 
 # first migrants out of Africa
 ooa <- population("OOA", parent = afr, time = 60000, N = 500, remove = 23000) %>%
-  resize(N = 2000, time = 40000, how = "step")
+  resize(N = 2000, time = 40000)
 
 # Eastern hunter-gatherers
 ehg <- population("EHG", parent = ooa, time = 28000, N = 1000, remove = 6000)
