@@ -10,6 +10,13 @@ which schedules the recording of the given number of individuals from every
 population at a given time.
 ([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
 
+- The argument `how =` of the `resize()` function is now deprecated. Specifying
+a `time` of a resize event now implies an immediate, step-wise change of the
+population size, specifying also the `end` time automatically now implies an
+exponential change. Thus, both of these modes of operation remain unchanged, but
+setting `how = "step"` or `how = "exponential"` is now not needed anymore.
+([#7f7269e8](https://github.com/bodkan/slendr/commit/7f7269e8))
+
 - An issue with visualization of "truncated" models (i.e., models compiled with
 the `simulation_length` argument shorter than the default duration of the model)
 which introduced awkward gaps in places of "missing" populations has been fixed.
