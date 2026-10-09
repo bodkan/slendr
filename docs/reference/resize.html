@@ -55,7 +55,7 @@ individuals to the specified value</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resize</span><span class="op">(</span><span class="va">pop</span>, <span class="va">N</span>, <span class="va">how</span>, <span class="va">time</span>, end <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resize</span><span class="op">(</span><span class="va">pop</span>, <span class="va">N</span>, <span class="va">time</span>, end <span class="op">=</span> <span class="cn">NULL</span>, how <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,18 +70,19 @@ individuals to the specified value</p>
 <dd><p>Population size after the change</p></dd>
 
 
-<dt id="arg-how">how<a class="anchor" aria-label="anchor" href="#arg-how"></a></dt>
-<dd><p>How to change the population size (options are <code>"step"</code> or
-<code>"exponential"</code>)</p></dd>
-
-
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
 <dd><p>Time of the population size change</p></dd>
 
 
 <dt id="arg-end">end<a class="anchor" aria-label="anchor" href="#arg-end"></a></dt>
-<dd><p>End of the population size change period (used for exponential
-change events)</p></dd>
+<dd><p>End of the population size change period (automatically implies
+an exponential change event)</p></dd>
+
+
+<dt id="arg-how">how<a class="anchor" aria-label="anchor" href="#arg-how"></a></dt>
+<dd><p>Deprecated argument. Specifying the value of <code>end</code> now
+automatically implies an exponential resize, leaving it out implies an
+instantaneous size change.</p></dd>
 
 </dl></div>
     <div class="section level2">
