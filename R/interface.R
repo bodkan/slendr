@@ -1321,7 +1321,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
       sample_counts <- as.list(rep.int(sample_counts[[1]], times = length(sample_pops)))
       samples <- lapply(seq_along(model$populations), function(i) list(model$populations[[i]], sample_counts[[i]]))
     } else if (!inherits(sample_pops[[1]], "slendr_pop")) {
-      stop("Sampling must be specified as either `list(\"all\", <number>)`\n",
+      stop("Sampling must be specified as either `list(\"each\", <number>)`\n",
            "or `list(<slendr population>, <number>)`.", call. = FALSE)
     }
   }
