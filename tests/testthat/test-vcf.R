@@ -5,7 +5,7 @@ init_env()
 
 pop <- population("pop", time = 1000, N = 100)
 model <- compile_model(pop, generation_time = 1, direction = "backward", serialize = TRUE)
-schedule <- schedule_sampling(model, times = 0, list(pop, 10))
+schedule <- schedule_recording(model, times = 0, list(pop, 10))
 
 # give warning on missing mutations ---------------------------------------
 

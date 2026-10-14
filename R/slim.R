@@ -25,8 +25,8 @@
 #' @param recombination_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
 #' @param schedule A data frame of times at which a given number of individuals
-#'   should be remembered in the tree-sequence (see \code{schedule_sampling} for a
-#'   function that can generate the sampling schedule in the correct format). If
+#'   should be recorded in the tree-sequence (see \code{schedule_recording} for a
+#'   function that can generate such recording schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the final tree-sequence file.
 #' @param ts Should a tree sequence be simulated from the model?
@@ -84,12 +84,12 @@
 #' eur <- model$populations[["EUR"]]
 #' chimp <- model$populations[["CH"]]
 #'
-#' # schedule the sampling of a couple of ancient and present-day individuals
+#' # schedule the recording of a couple of ancient and present-day individuals
 #' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-#' modern <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
-#' ancient <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
+#' modern <- schedule_recording(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
+#' ancient <- schedule_recording(model, times = c(30000, 20000, 10000), list(eur, 1))
 #'
-#' # sampling schedules are just data frames and can be merged easily
+#' # recording schedules are just data frames and can be merged easily
 #' schedule <- rbind(modern, ancient)
 #'
 #' # run a simulation using the SLiM back end from a compiled slendr model object and return
@@ -184,7 +184,7 @@ slim <- function(
 
   if (ts) {
     schedule_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-    schedule_df <- process_sampling(schedule, model, verbose)
+    schedule_df <- process_schedule(schedule, model, verbose)
     readr::write_tsv(schedule_df, schedule_path)
   } else {
     schedule_path <- ""

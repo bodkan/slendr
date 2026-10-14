@@ -114,12 +114,12 @@ test_that("non-serialized models give the same result as serialized models (with
   )
 
   samples_ser <- rbind(
-    schedule_sampling(model_ser, times = 10000, list(ooa, 5), list(ehg, 5)),
-    schedule_sampling(model_ser, times = 1000, list(ana, 5), list(eur, 5))
+    schedule_recording(model_ser, times = 10000, list(ooa, 5), list(ehg, 5)),
+    schedule_recording(model_ser, times = 1000, list(ana, 5), list(eur, 5))
   )
   samples_nonser <- rbind(
-    schedule_sampling(model_nonser, times = 10000, list(ooa, 5), list(ehg, 5)),
-    schedule_sampling(model_nonser, times = 1000, list(ana, 5), list(eur, 5))
+    schedule_recording(model_nonser, times = 10000, list(ooa, 5), list(ehg, 5)),
+    schedule_recording(model_nonser, times = 1000, list(ana, 5), list(eur, 5))
   )
 
   ts_nonser <- msprime(model_nonser, sequence_length = 10000, recombination_rate = 0, random_seed = 42, schedule = samples_nonser) %>%

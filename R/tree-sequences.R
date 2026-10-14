@@ -131,7 +131,7 @@ ts_load <- function(file, model = NULL) {
     "ts_read",
     msg = paste0(
       "Starting with slendr v1.0, please use `ts_read()` to read tree sequences from disk.\n",
-      "(This is just a heads-up for future reference -- no action needed now!)"
+      "(This is a heads-up for future reference -- no immediate action needed.)"
     )
   )
   ts_read(file, model)
@@ -203,7 +203,7 @@ ts_save <- function(ts, file) {
     "ts_write",
     msg = paste0(
       "Starting with slendr v1.0, please use `ts_write()` to write tree sequences to disk.\n",
-      "(This is just a heads-up for future reference -- no action needed now!)"
+      "(This is a heads-up for future reference -- no immediate action needed,)"
     )
   )
   ts_write(ts, file)
@@ -344,7 +344,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   explicitly remembered individuals (i.e. those specified via the
-#'   \code{\link{schedule_sampling}} function will be left in the tree sequence
+#'   \code{\link{schedule_recording}} function will be left in the tree sequence
 #'   after the simplification.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
@@ -712,7 +712,7 @@ ts_metadata <- function(ts) {
 #' p3 <- population("p3", time = 2000, N = 1000, parent = p2)
 #'
 #' model <- compile_model(list(p1, p2, p3), generation_time = 1)
-#' schedule <- schedule_sampling(model, times = 0, list(p1, 10), list(p2, 10), list(p3, 10))
+#' schedule <- schedule_recording(model, times = 0, list(p1, 10), list(p2, 10), list(p3, 10))
 #' samples <- ts_names(model, split = "pop", schedule = schedule)
 #'
 #' # this is how we can compute a single tree-sequence statistic with slendr:
@@ -3160,7 +3160,7 @@ collect_descendants <- function(x, edges) {
 
 # Convert SLiM's dictionaries with the sampling schedule table to
 # a normal R data frame
-get_sampling <- function(metadata) {
+get_schedule <- function(metadata) {
   # again, because of how SLiM's dictionaries are structured, a bit of
   # data munging needs to be performed in order to get a simple data frame
   if (metadata$backend == "SLiM") {
@@ -3213,7 +3213,7 @@ get_slendr_metadata <- function(ts) {
   list(
     version = metadata$version,
     description = metadata$description,
-    sampling = get_sampling(metadata),
+    sampling = get_schedule(metadata),
     sample_names = metadata$sample_names,
     subset_names = metadata$subset_names,
     sample_ids = metadata$sample_ids,

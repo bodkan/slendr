@@ -82,7 +82,7 @@ We will now use those populations to compile two models: the first model will be
 # no gene flow model
 model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, simulation_length = 4500)
 
-samples <- schedule_sampling(
+samples <- schedule_recording(
   model_nogf, times = 4500,
   list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
 )
@@ -92,7 +92,7 @@ gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, proportion = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, simulation_length = 4500)
 
-samples <- schedule_sampling(
+samples <- schedule_recording(
   model_gf, times = 4500,
   list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
 )
@@ -338,7 +338,7 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
   # compile model
   model <- compile_model(pop, generation_time = 15, direction = direction, simulation_length = simulation_length)
 
-  samples <- schedule_sampling(model, times = sampling_time, list(pop, 50))
+  samples <- schedule_recording(model, times = sampling_time, list(pop, 50))
 
   # run the model in SLiM
   ts_slim <- slim(model, sequence_length = seq_len, recombination_rate = rec_rate,

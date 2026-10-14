@@ -342,7 +342,7 @@ model <- compile_model(
   competition = 150e3, mating = 120e3, dispersal = 90e3
 )
 
-samples <- schedule_sampling(
+samples <- schedule_recording(
   model, times = seq(0, 50000, by = 1000),
   list(ehg, 20), list(ana, 20), list(yam, 20), list(eur, 20)
 )

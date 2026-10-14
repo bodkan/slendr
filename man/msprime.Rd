@@ -27,7 +27,7 @@ msprime(
 recombinations per basepair per generation)}
 
 \item{schedule}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{schedule_sampling} for a
+should be remembered in the tree-sequence (see \code{schedule_recording} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the final tree-sequence file.}
@@ -96,8 +96,8 @@ chimp <- model$populations[["CH"]]
 
 # schedule the sampling of a couple of ancient and present-day individuals
 # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-modern <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
-ancient <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+modern <- schedule_recording(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
+ancient <- schedule_recording(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
 
 # sampling schedules are just data frames and can be merged easily
 schedule <- rbind(modern, ancient)

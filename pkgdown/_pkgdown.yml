@@ -58,7 +58,7 @@ reference:
     - msprime
     - compile_model
     - read_model
-    - schedule_sampling
+    - schedule_recording
     - substitute_values
 
   - title: Installation and configuration of external dependencies

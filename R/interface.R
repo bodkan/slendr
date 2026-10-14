@@ -1230,18 +1230,35 @@ area <- function(x) {
          call. = FALSE)
 }
 
-#' Define sampling events for a given set of populations
+#' @inherit schedule_recording
 #'
-#' Schedule sampling events at specified times and, optionally, a given set of
+#' @noRd
+#' @export
+schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
+  .Deprecated(
+    "schedule_sampling",
+    msg = paste0(
+      "Starting with slendr v2.0, please use `schedule_recording()` instead,\n",
+      "as the function has been renamed in a wider effort across slendr to\n",
+      "clarify naming of various modeling components across the package.\n",
+      "(This is a heads-up for future reference -- no immediate action needed.)"
+    )
+  )
+  schedule_recording(model, times, ..., locations = NULL, strict = FALSE)
+}
+
+#' Define recording for a given populations at given times
+#'
+#' Schedule recording events at specified times and, optionally, a given set of
 #' locations on a landscape
 #'
-#' If both times and locations are given, the the sampling will be scheduled on
+#' If both times and locations are given, the recording will be scheduled on
 #' each specified location in each given time-point. Note that for the
 #' time-being, in the interest of simplicity, no sanity checks are performed on
-#' the locations given except the restriction that the sampling points must fall
-#' within the bounding box around the simulated world map. Other than that,
+#' the locations given except the restriction that the points of recording must
+#' fall within the bounding box around the simulated world map. Other than that,
 #' slendr will simply instruct its SLiM backend script to sample individuals as
-#' close to the sampling points given as possible, regardless of whether those
+#' close to the recording points given as possible, regardless of whether those
 #' points lie within a population spatial boundary at that particular moment of
 #' time.
 #'
@@ -1263,7 +1280,7 @@ area <- function(x) {
 #'   will be sampled randomly throughout their spatial boundary.
 #' @param strict Should any occurence of a population not being present at a
 #'   given time result in an error? Default is \code{FALSE}, meaning that
-#'   invalid sampling times for any populations will be quietly ignored.
+#'   invalid times of recording for any populations will be quietly ignored.
 #'
 #' @return Data frame with three columns: time of sampling, population to sample
 #'   from, how many individuals to sample
@@ -1286,14 +1303,14 @@ area <- function(x) {
 #'
 #' # schedule the recording of 10 African and 100 European individuals from a
 #' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-#' schedule_amh <- schedule_sampling(
+#' schedule_amh <- schedule_recording(
 #'   model, times = c(20000, 10000, 5000, 0),
 #'   list(afr, 10), list(eur, 100)
 #' )
 #' # schedule the recording of the Vindija Neanderthal genome
-#' schedule_nea <- schedule_sampling(model, times = 40000, list(nea, 1, "Vindija"))
+#' schedule_nea <- schedule_recording(model, times = 40000, list(nea, 1, "Vindija"))
 #'
-#' # the result of `schedule_sampling` is a simple data frame (note that the locations
+#' # the result of `schedule_recording` is a simple data frame (note that the locations
 #' # of sampling locations have `NA` values because the model is non-spatial)
 #' schedule <- rbind(schedule_amh, schedule_nea)
 #' schedule
@@ -1305,7 +1322,7 @@ area <- function(x) {
 #' ts_samples(ts)
 #'
 #' @export
-schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
+schedule_recording <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
 
@@ -1321,7 +1338,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
       sample_counts <- as.list(rep.int(sample_counts[[1]], times = length(sample_pops)))
       samples <- lapply(seq_along(model$populations), function(i) list(model$populations[[i]], sample_counts[[i]]))
     } else if (!inherits(sample_pops[[1]], "slendr_pop")) {
-      stop("Sampling must be specified as either `list(\"each\", <number>)`\n",
+      stop("Recording instruction must be specified as either `list(\"each\", <number>)`\n",
            "or `list(<slendr population>, <number>)`.", call. = FALSE)
     }
   }
@@ -1330,11 +1347,11 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   pop_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
   missing_names <- setdiff(pop_names, model_names)
   if (length(missing_names))
-    stop("The following sampled populations are not part of the model: ",
+    stop("The following populations scheduled for recording are not part of the model: ",
          paste(missing_names, collapse = ", "), call. = FALSE)
 
   if (is.null(model$world) && !is.null(locations))
-    stop("Sampling locations may only be specified for a spatial model", call. = FALSE)
+    stop("Recording locations may only be specified for a spatial model", call. = FALSE)
 
   if (length(sample_pops) != length(sample_counts))
     stop("Samples must be represented by pairs of <slendr_pop>-<n>", call. = FALSE)
@@ -1343,9 +1360,9 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     stop("Objects to sample from must be of the class 'slendr_pop'", call. = FALSE)
 
   if (!all(purrr::map_lgl(sample_counts, ~ .x > 0 &&.x == round(.x))))
-    stop("Sample counts must be non-negative, non-zero integer numbers", call. = FALSE)
+    stop("Recording counts must be non-negative, non-zero integer numbers", call. = FALSE)
 
-  # make sure that all sampling times fall in the time window of the simulation itself
+  # make sure that all recording times fall in the time window of the simulation itself
   oldest_time <- get_oldest_time(model$populations, model$direction)
   if ((model$direction == "forward" && (any(times > oldest_time + model$orig_length)
                                         || any(times < oldest_time))) ||
@@ -1353,7 +1370,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
                                          || any(times > oldest_time)))) {
 
     if (strict)
-      stop("A sampling event was scheduled outside of the simulation time window", call. = FALSE)
+      stop("A recording event was scheduled outside of the simulation time window", call. = FALSE)
     else if (model$direction == "forward")
       times <- times[times <= oldest_time + model$orig_length]
     else
@@ -1377,7 +1394,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
           if (!strict)
             return(NULL)
           else
-            stop("Cannot schedule sampling for '", pop$pop, "' at time ", t,
+            stop("Cannot schedule recording for '", pop$pop, "' at time ", t,
                  " because\nthe population will not yet be present in the simulation",
                  " at that\npoint. Consider running this function with `strict = FALSE`",
                  " which\nwill automatically retain only valid sampling events.",

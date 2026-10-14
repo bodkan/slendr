@@ -22,8 +22,8 @@ model <- compile_model(
 )
 
 samples <- rbind(
-  schedule_sampling(model, times = 2, list(p1, 2), list(p2, 2)),
-  schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
+  schedule_recording(model, times = 2, list(p1, 2), list(p2, 2)),
+  schedule_recording(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
 slim_ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
@@ -631,9 +631,9 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
 
 test_that("metadata is the same for SLiM and msprime conditional on a model", {
   samples <- rbind(
-    schedule_sampling(model, times = 2, list(p1, 2), list(p2, 2)),
-    schedule_sampling(model, times = 212, list(p1, 5), list(p2, 3)),
-    schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
+    schedule_recording(model, times = 2, list(p1, 2), list(p2, 2)),
+    schedule_recording(model, times = 212, list(p1, 5), list(p2, 3)),
+    schedule_recording(model, times = 300, list(p1, 10), list(p2, 10))
   )
 
   slim_ts <- normalizePath(file.path(model_dir, "output_slim.trees"), winslash = "/", mustWork = FALSE)

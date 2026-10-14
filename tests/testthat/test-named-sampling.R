@@ -12,14 +12,14 @@ model <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam), generat
 
 test_that("number of samples must be a non-zero integer larger than one", {
   msg <- "Sample counts must be non-negative, non-zero integer numbers"
-  expect_error(schedule_sampling(model, times = 45000, list(afr, 10.3)), msg)
-  expect_error(schedule_sampling(model, times = 45000, list(afr, -10)), msg)
-  expect_error(schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, -42, "Ust_Ishim")), msg)
-  expect_error(schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, -42, "Ust_Ishim")), msg)
+  expect_error(schedule_recording(model, times = 45000, list(afr, 10.3)), msg)
+  expect_error(schedule_recording(model, times = 45000, list(afr, -10)), msg)
+  expect_error(schedule_recording(model, times = 45000, list(afr, 10), list(ooa, -42, "Ust_Ishim")), msg)
+  expect_error(schedule_recording(model, times = 45000, list(afr, 10), list(ooa, -42, "Ust_Ishim")), msg)
 })
 
 test_that("named samples are enforced to be unique", {
-  expect_error(schedule_sampling(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1, "Ust_Ishim")),
+  expect_error(schedule_recording(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1, "Ust_Ishim")),
                "Named samples must be unique. The following sample names are duplicated:\nUst_Ishim")
 })
 
@@ -43,50 +43,50 @@ check_ordering <- function(samples, direction) {
 }
 
 test_that("temporal ordering of samples remains consistent with the schedule (msprime)", {
-  schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
+  schedule <- schedule_recording(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   schedule <- rbind(
-    schedule_sampling(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1)),
-    schedule_sampling(model, times = 40000, list(ooa, 1, "Ust_Ishim"))
+    schedule_recording(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1)),
+    schedule_recording(model, times = 40000, list(ooa, 1, "Ust_Ishim"))
   )
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   schedule <- dplyr::bind_rows(
-    schedule_sampling(model, times = 10000, list(afr, 10)),
-    schedule_sampling(model, times = 30000, list(afr, 30)),
-    schedule_sampling(model, times = 40000, list(afr, 40)),
-    schedule_sampling(model, times = 5000, list(afr, 5)),
-    schedule_sampling(model, times = 5000, list(eur, 5)),
-    schedule_sampling(model, times = 1000, list(eur, 1)),
-    schedule_sampling(model, times = 3000, list(eur, 3)),
-    schedule_sampling(model, times = 2000, list(eur, 2))
+    schedule_recording(model, times = 10000, list(afr, 10)),
+    schedule_recording(model, times = 30000, list(afr, 30)),
+    schedule_recording(model, times = 40000, list(afr, 40)),
+    schedule_recording(model, times = 5000, list(afr, 5)),
+    schedule_recording(model, times = 5000, list(eur, 5)),
+    schedule_recording(model, times = 1000, list(eur, 1)),
+    schedule_recording(model, times = 3000, list(eur, 3)),
+    schedule_recording(model, times = 2000, list(eur, 2))
   )
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   # the above tests were testing consistency of times -- here let's check 1-to-1 correspondence
   schedule <- dplyr::bind_rows(
-    schedule_sampling(model, times = 10000, list(afr, 1)),
-    schedule_sampling(model, times = 30000, list(afr, 1)),
-    schedule_sampling(model, times = 40000, list(afr, 1)),
-    schedule_sampling(model, times = 5000, list(afr, 1)),
+    schedule_recording(model, times = 10000, list(afr, 1)),
+    schedule_recording(model, times = 30000, list(afr, 1)),
+    schedule_recording(model, times = 40000, list(afr, 1)),
+    schedule_recording(model, times = 5000, list(afr, 1)),
 
-    schedule_sampling(model, times = 35000, list(ooa, 1)),
-    schedule_sampling(model, times = 41000, list(ooa, 1)),
-    schedule_sampling(model, times = 40000, list(ooa, 1)),
+    schedule_recording(model, times = 35000, list(ooa, 1)),
+    schedule_recording(model, times = 41000, list(ooa, 1)),
+    schedule_recording(model, times = 40000, list(ooa, 1)),
 
-    schedule_sampling(model, times = 5000, list(eur, 1)),
-    schedule_sampling(model, times = 1000, list(eur, 1)),
-    schedule_sampling(model, times = 3000, list(eur, 1)),
-    schedule_sampling(model, times = 2000, list(eur, 1)),
+    schedule_recording(model, times = 5000, list(eur, 1)),
+    schedule_recording(model, times = 1000, list(eur, 1)),
+    schedule_recording(model, times = 3000, list(eur, 1)),
+    schedule_recording(model, times = 2000, list(eur, 1)),
 
-    schedule_sampling(model, times = 10000, list(ehg, 1)),
-    schedule_sampling(model, times = 18000, list(ehg, 1)),
-    schedule_sampling(model, times = 17000, list(ehg, 1)),
-    schedule_sampling(model, times = 9000, list(ehg, 1)),
+    schedule_recording(model, times = 10000, list(ehg, 1)),
+    schedule_recording(model, times = 18000, list(ehg, 1)),
+    schedule_recording(model, times = 17000, list(ehg, 1)),
+    schedule_recording(model, times = 9000, list(ehg, 1)),
   )
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   schedule_ids <- dplyr::arrange(schedule, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id
@@ -95,51 +95,51 @@ test_that("temporal ordering of samples remains consistent with the schedule (ms
 })
 
 test_that("temporal ordering of samples remains consistent with the schedule (SLiM)", {
-  schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
+  schedule <- schedule_recording(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
   ts <- slim(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule)
   samples <- ts_samples(ts)
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   schedule <- rbind(
-    schedule_sampling(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1)),
-    schedule_sampling(model, times = 40000, list(ooa, 1, "Ust_Ishim"))
+    schedule_recording(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1)),
+    schedule_recording(model, times = 40000, list(ooa, 1, "Ust_Ishim"))
   )
   samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   schedule <- dplyr::bind_rows(
-    schedule_sampling(model, times = 10000, list(afr, 10)),
-    schedule_sampling(model, times = 30000, list(afr, 30)),
-    schedule_sampling(model, times = 40000, list(afr, 40)),
-    schedule_sampling(model, times = 5000, list(afr, 5)),
-    schedule_sampling(model, times = 5000, list(eur, 5)),
-    schedule_sampling(model, times = 1000, list(eur, 1)),
-    schedule_sampling(model, times = 3000, list(eur, 3)),
-    schedule_sampling(model, times = 2000, list(eur, 2))
+    schedule_recording(model, times = 10000, list(afr, 10)),
+    schedule_recording(model, times = 30000, list(afr, 30)),
+    schedule_recording(model, times = 40000, list(afr, 40)),
+    schedule_recording(model, times = 5000, list(afr, 5)),
+    schedule_recording(model, times = 5000, list(eur, 5)),
+    schedule_recording(model, times = 1000, list(eur, 1)),
+    schedule_recording(model, times = 3000, list(eur, 3)),
+    schedule_recording(model, times = 2000, list(eur, 2))
   )
   samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
 
   # the above tests were testing consistency of times -- here let's check 1-to-1 correspondence
   schedule <- dplyr::bind_rows(
-    schedule_sampling(model, times = 10000, list(afr, 1)),
-    schedule_sampling(model, times = 30000, list(afr, 1)),
-    schedule_sampling(model, times = 40000, list(afr, 1)),
-    schedule_sampling(model, times = 5000, list(afr, 1)),
+    schedule_recording(model, times = 10000, list(afr, 1)),
+    schedule_recording(model, times = 30000, list(afr, 1)),
+    schedule_recording(model, times = 40000, list(afr, 1)),
+    schedule_recording(model, times = 5000, list(afr, 1)),
 
-    schedule_sampling(model, times = 35000, list(ooa, 1)),
-    schedule_sampling(model, times = 41000, list(ooa, 1)),
-    schedule_sampling(model, times = 40000, list(ooa, 1)),
+    schedule_recording(model, times = 35000, list(ooa, 1)),
+    schedule_recording(model, times = 41000, list(ooa, 1)),
+    schedule_recording(model, times = 40000, list(ooa, 1)),
 
-    schedule_sampling(model, times = 5000, list(eur, 1)),
-    schedule_sampling(model, times = 1000, list(eur, 1)),
-    schedule_sampling(model, times = 3000, list(eur, 1)),
-    schedule_sampling(model, times = 2000, list(eur, 1)),
+    schedule_recording(model, times = 5000, list(eur, 1)),
+    schedule_recording(model, times = 1000, list(eur, 1)),
+    schedule_recording(model, times = 3000, list(eur, 1)),
+    schedule_recording(model, times = 2000, list(eur, 1)),
 
-    schedule_sampling(model, times = 10000, list(ehg, 1)),
-    schedule_sampling(model, times = 18000, list(ehg, 1)),
-    schedule_sampling(model, times = 17000, list(ehg, 1)),
-    schedule_sampling(model, times = 9000, list(ehg, 1)),
+    schedule_recording(model, times = 10000, list(ehg, 1)),
+    schedule_recording(model, times = 18000, list(ehg, 1)),
+    schedule_recording(model, times = 17000, list(ehg, 1)),
+    schedule_recording(model, times = 9000, list(ehg, 1)),
   )
   samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, schedule = schedule))
   schedule_ids <- dplyr::arrange(schedule, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id

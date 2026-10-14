@@ -302,7 +302,7 @@ sort_splits <- function(model) {
 #'   algorithm will be used, ordering populations from the most ancestral to the
 #'   most recent using an in-order tree traversal.
 #' @param file Output file for a figure saved via \code{ggsave}
-#' @param schedule Sampling schedule to be visualized over the model
+#' @param schedule Recording schedule to be visualized over the model
 #' @param ... Optional argument which will be passed to \code{ggsave}
 #'
 #' @return A ggplot2 object with the visualized slendr model
@@ -539,7 +539,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # labels with population names
   # except for outgroups and populations with two or more daughter populations, all
   # population labels will be plotted at the bottom of the figure
-  # (not currently done because of issues with overplotting with sampling labels)
+  # (not currently done because of issues with overplotting with recording labels)
   # end_labels <- model$splits[
   #   model$splits$parent != "__pop_is_ancestor" &
   #   vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
@@ -591,7 +591,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
                               labels = ifelse(max(abs(c(ylim_low, ylim_high))) < 10e6,
                                               scales::label_comma(), NULL))
 
-  # if specified, overlay sampling points over the model
+  # if specified, overlay recording time points over the model
   if (!is.null(schedule)) {
     sampling_points <- dplyr::select(centers, pop, center) %>%
       dplyr::inner_join(schedule, by = "pop") %>%
