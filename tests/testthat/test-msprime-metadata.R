@@ -49,7 +49,7 @@ test_that("msprime and SLiM metadata is exactly the same (forward model)", {
 })
 
 test_that("msprime and SLiM sampling tables are exactly the same (forward model)", {
-  expect_true(all(ts_samples(forward_sts) == ts_samples(forward_mts)))
+  expect_true(all(ts_recorded(forward_sts) == ts_recorded(forward_mts)))
 })
 
 # test_that("sampling more individuals than is the current N triggers warning (forward model)", {
@@ -110,7 +110,7 @@ test_that("msprime and SLiM metadata is exactly the same (backward model)", {
 })
 
 test_that("msprime and SLiM sampling tables are exactly the same (backward model)", {
-  expect_true(all(ts_samples(backward_sts) == ts_samples(backward_mts)))
+  expect_true(all(ts_recorded(backward_sts) == ts_recorded(backward_mts)))
 })
 
 # test_that("sampling more individuals than is the current N triggers warning (backward model)", {

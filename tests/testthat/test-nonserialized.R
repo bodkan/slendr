@@ -65,8 +65,8 @@ test_that("non-serialized models give the same result as serialized models (no s
   expect_s3_class(ts_ser2, "slendr_ts")
   expect_s3_class(ts_ser2, "tskit.trees.TreeSequence")
 
-  expect_true(all(ts_samples(ts_nonser) == ts_samples(ts_ser)))
-  expect_equal(ts_samples(ts_ser), ts_samples(ts_ser2))
+  expect_true(all(ts_recorded(ts_nonser) == ts_recorded(ts_ser)))
+  expect_equal(ts_recorded(ts_ser), ts_recorded(ts_ser2))
 
   # check equivalence of annotated tree-sequence tables
   expect_true(all(ts_nodes(ts_ser) == ts_nodes(ts_nonser), na.rm = TRUE))
@@ -82,7 +82,7 @@ test_that("non-serialized models give the same result as serialized models (no s
   ts_ser_small    <- ts_simplify(ts_ser,    simplify_to = c("EUR_1", "EUR_12", "EUR_42"))
   ts_nonser_small <- ts_simplify(ts_nonser, simplify_to = c("EUR_1", "EUR_12", "EUR_42"))
 
-  expect_true(all(ts_samples(ts_nonser_small) == ts_samples(ts_ser_small)))
+  expect_true(all(ts_recorded(ts_nonser_small) == ts_recorded(ts_ser_small)))
 
   expect_true(all(ts_nodes(ts_ser_small) == ts_nodes(ts_nonser_small), na.rm = TRUE))
   expect_true(all(ts_edges(ts_ser_small) == ts_edges(ts_nonser_small), na.rm = TRUE))
@@ -142,13 +142,13 @@ test_that("non-serialized models give the same result as serialized models (with
   expect_true(all(ts_table(ts_ser, "nodes")       == ts_table(ts_nonser, "nodes"), na.rm = TRUE))
   expect_true(all(ts_table(ts_ser, "mutations")   == ts_table(ts_nonser, "mutations"), na.rm = TRUE))
 
-  expect_true(all(ts_samples(ts_nonser) == ts_samples(ts_ser)))
+  expect_true(all(ts_recorded(ts_nonser) == ts_recorded(ts_ser)))
 
   # check equivalence of simplification for both tree sequences
   ts_ser_small    <- ts_simplify(ts_ser,    simplify_to = c("EUR_1", "ANA_1", "EHG_1"))
   ts_nonser_small <- ts_simplify(ts_nonser, simplify_to = c("EUR_1", "ANA_1", "EHG_1"))
 
-  expect_true(all(ts_samples(ts_nonser_small) == ts_samples(ts_ser_small)))
+  expect_true(all(ts_recorded(ts_nonser_small) == ts_recorded(ts_ser_small)))
 
   expect_true(all(ts_nodes(ts_ser_small) == ts_nodes(ts_nonser_small), na.rm = TRUE))
   expect_true(all(ts_edges(ts_ser_small) == ts_edges(ts_nonser_small), na.rm = TRUE))

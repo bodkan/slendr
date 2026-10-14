@@ -267,24 +267,24 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   ts_write(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_read(tmp_big, model), "slendr_ts")
   expect_s3_class(ts_big_nomodel <- ts_read(tmp_big), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_big_model)) == 142)
-  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_big_model)) == 142)
+  expect_error(ts_recorded(ts_big_nomodel), "Recording schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
   tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_write(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_read(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_read(tmp_small1), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
-  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small1_model)) == 142)
+  expect_error(ts_recorded(ts_small1_nomodel), "Recording schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
   tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_write(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_read(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_read(tmp_small2), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
-  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small2_model)) == 4)
+  expect_error(ts_recorded(ts_small2_nomodel), "Recording schedule can only be extracted")
 })
 
 test_that("sampling table is correctly adjusted after simplification (SLiM)", {
@@ -300,24 +300,24 @@ test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   ts_write(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_read(tmp_big, model), "slendr_ts")
   expect_s3_class(ts_big_nomodel <- ts_read(tmp_big), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_big_model)) == 142)
-  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_big_model)) == 142)
+  expect_error(ts_recorded(ts_big_nomodel), "Recording schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
   tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_write(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_read(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_read(tmp_small1), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
-  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small1_model)) == 142)
+  expect_error(ts_recorded(ts_small1_nomodel), "Recording schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
   tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_write(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_read(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_read(tmp_small2), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
-  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small2_model)) == 4)
+  expect_error(ts_recorded(ts_small2_nomodel), "Recording schedule can only be extracted")
 })
 
 test_that("all sampled populations must be present in the compiled model", {
@@ -374,10 +374,10 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
 
   # implicit sampling
   ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0)
-  s1 <- ts_samples(ts1)
+  s1 <- ts_recorded(ts1)
 
   ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0)
-  s2 <- ts_samples(ts2)
+  s2 <- ts_recorded(ts2)
 
   expect_equal(s1, s2)
 
@@ -385,10 +385,10 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
   schedule <- schedule_recording(model, times = 51, list(a, 4), list(b, 3), list(c, 10))
 
   ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
-  s1_explicit <- ts_samples(ts1)
+  s1_explicit <- ts_recorded(ts1)
 
   ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
-  s2_explicit <- ts_samples(ts2)
+  s2_explicit <- ts_recorded(ts2)
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)
@@ -404,15 +404,15 @@ test_that("implicit and explicit sampling schedules are consistent (backward)", 
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # implicit sampling
-  s1 <- msprime(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
-  s2 <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
+  s1 <- msprime(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recorded()
+  s2 <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recorded()
   expect_equal(s1, s2)
 
   # explicit sampling
   schedule <- schedule_recording(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
 
-  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
-  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
+  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_recorded
+  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_recorded
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)
@@ -427,8 +427,8 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # no explicit sampling tables
-  s1 <- ts_samples(model)
-  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  s1 <- ts_recorded(model)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_recorded
   expect_equal(s1, s2)
 
   # no explicit sampling names
@@ -438,8 +438,8 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
 
   # explicit sampling tables
   schedule <- schedule_recording(model, times = 10, list(a, 3), list(c, 2))
-  s1 <- ts_samples(model, schedule)
-  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  s1 <- ts_recorded(model, schedule)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_recorded
   expect_equal(s1, s2)
 
   # explicit sampling names
@@ -455,8 +455,8 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # no explicit sampling tables
-  s1 <- ts_samples(model)
-  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  s1 <- ts_recorded(model)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_recorded
   expect_equal(s1, s2)
 
   # no explicit sampling names
@@ -466,8 +466,8 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
 
   # explicit sampling tables
   schedule <- schedule_recording(model, times = 10, list(a, 3), list(c, 2))
-  s1 <- ts_samples(model, schedule)
-  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  s1 <- ts_recorded(model, schedule)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_recorded
   expect_equal(s1, s2)
 
   # explicit sampling names
@@ -496,5 +496,5 @@ test_that("batch scheduling gives the correct number of recorded individuals", {
   ts1 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule1)
   ts2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule2)
 
-  expect_equal(ts_samples(ts1), ts_samples(ts2))
+  expect_equal(ts_recorded(ts1), ts_recorded(ts2))
 })

@@ -1379,8 +1379,25 @@ ts_edges <- function(x) {
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 }
 
-#' Extract names and times of individuals of interest in a tree sequence produced
-#' by a slendr model
+#' @inherit ts_recorded
+#'
+#' @noRd
+#' @export
+ts_samples <- function(x, schedule = NULL) {
+  .Deprecated(
+    "ts_samples",
+    msg = paste0(
+      "Starting with slendr v2.0, please use `ts_recorded()` instead,\n",
+      "as the function has been renamed in a wider effort to clarify\n",
+      "the naming of various modeling components across the package.\n",
+      "(This is a heads-up for future reference -- no immediate action needed.)"
+    )
+  )
+  ts_recorded(x, schedule = NULL)
+}
+
+#' Extract names and times of individuals of interest recorded in a tree
+#' sequence produced from a slendr model
 #'
 #' Extracts a table of metadata information about individuals recorded in
 #' a given simulated tree sequence or in a tree sequence which would be
@@ -1391,11 +1408,11 @@ ts_edges <- function(x) {
 #'
 #' @param x Either a tree sequence object of the class \code{slendr_ts}, or
 #'   a compiled slendr model of the class \code{slendr_model}
-#' @param schedule If samples from a model (not yet a tree sequence) are to be
-#'   obtained, this argument can be used to restrict the set of recorded
-#'   individuals
+#' @param schedule If individuals from a model (not yet a tree sequence) are to be
+#'   obtained, this argument can be used to only extract those individuals who
+#'   would be simulated from the model
 #'
-#' @return Table of individuals scheduled for sampling across space and time
+#' @return Table of individuals scheduled for recording across space and time
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
@@ -1409,12 +1426,12 @@ ts_edges <- function(x) {
 #' # load the tree-sequence object from disk
 #' ts <- ts_read(slendr_ts, model)
 #'
-#' # extract the table of individuals scheduled for simulation and sampling
-#' ts_samples(ts)
+#' # extract the table of individuals recorded in the tree sequence
+#' ts_recorded(ts)
 #' @export
-ts_samples <- function(x, schedule = NULL) {
+ts_recorded <- function(x, schedule = NULL) {
   if (inherits(x, "slendr_ts") && is.null(attr(x, "model"))) {
-    stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
+    stop("Recording schedule can only be extracted for tree sequences\ngenerated ",
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
@@ -1452,7 +1469,7 @@ ts_samples <- function(x, schedule = NULL) {
 #'
 #' @export
 ts_names <- function(x, split = NULL, schedule = NULL) {
-  df <- ts_samples(x, schedule = schedule)
+  df <- ts_recorded(x, schedule = schedule)
 
   if (is.null(split)) { # return all names if splitting not requested
     result <- df$name
@@ -2359,7 +2376,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' ts <- ts_read(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
-#' sample_sets <- ts_samples(ts) %>%
+#' sample_sets <- ts_recorded(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
 #'
@@ -2395,7 +2412,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' ts <- ts_read(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
-#' sample_sets <- ts_samples(ts) %>%
+#' sample_sets <- ts_recorded(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
 #'
@@ -2498,7 +2515,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' # load the tree-sequence object from disk
 #' ts <- ts_read(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
-#' samples <- ts_samples(ts) %>% .[.$pop %in% c("AFR", "EUR"), ]
+#' samples <- ts_recorded(ts) %>% .[.$pop %in% c("AFR", "EUR"), ]
 #'
 #' # compute AFS for the given set of individuals
 #' ts_afs(ts, sample_sets = list(samples$name))
@@ -2508,7 +2525,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
   mode <- match.arg(mode)
 
   if (is.null(sample_sets))
-    sample_sets <- list(ts_samples(ts)$name)
+    sample_sets <- list(ts_recorded(ts)$name)
   else if (!is.list(sample_sets))
     sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
@@ -2571,7 +2588,7 @@ get_node_ids <- function(ts, x) {
   if (is.null(x)) {
     ids <- ts_nodes(ts) %>% .[.$sampled, ]$node_id
   } else if (is.character(x)) {
-    if (length(intersect(x, ts_samples(ts)$name)) != length(x))
+    if (length(intersect(x, ts_recorded(ts)$name)) != length(x))
       stop("Not all individual names are among those recorded in the tree sequence", call. = FALSE)
     ids <- ts_nodes(ts) %>% dplyr::filter(name %in% x) %>% .$node_id
   } else if (is.numeric(x)) {

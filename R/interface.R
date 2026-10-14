@@ -1239,8 +1239,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     "schedule_sampling",
     msg = paste0(
       "Starting with slendr v2.0, please use `schedule_recording()` instead,\n",
-      "as the function has been renamed in a wider effort across slendr to\n",
-      "clarify naming of various modeling components across the package.\n",
+      "as the function has been renamed in a wider effort to clarify\n",
+      "the naming of various modeling components across the package.\n",
       "(This is a heads-up for future reference -- no immediate action needed.)"
     )
   )
@@ -1319,7 +1319,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
 #'
 #' # inspect the recorded table of samples
-#' ts_samples(ts)
+#' ts_recorded(ts)
 #'
 #' @export
 schedule_recording <- function(model, times, ..., locations = NULL, strict = FALSE) {

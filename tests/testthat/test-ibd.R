@@ -70,7 +70,7 @@ test_that("IBD of a given minimum length is returned", {
   ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, random_seed = 42)
 
   set.seed(42)
-  samples <- sample(ts_samples(ts)$name, 10)
+  samples <- sample(ts_recorded(ts)$name, 10)
 
   ibd_totals <- ts_ibd(ts, coordinates = TRUE, within = samples, minimum_length = 6e6)
   expect_true(min(ibd_totals$length) >= 6e6)
@@ -123,7 +123,7 @@ test_that("only IBD with MRCA of a given maximum age is reported", {
   ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
 
   set.seed(42)
-  samples <- sample(ts_samples(ts)$name, 10)
+  samples <- sample(ts_recorded(ts)$name, 10)
 
   ibd_totals10 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 10)
   tmrca10 <- get_pairs_tmrca(ts, ibd_totals10)

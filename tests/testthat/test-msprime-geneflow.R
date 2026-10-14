@@ -67,7 +67,7 @@ slim_gf <- ts_read(model = model_gf, file = ts_slim_gf) %>%
   ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
-slim_individuals <- ts_samples(slim_gf) %>%
+slim_individuals <- ts_recorded(slim_gf) %>%
   dplyr::filter(pop %in% c("x1", "x2")) %>%
   dplyr::pull(name)
 
@@ -101,7 +101,7 @@ msprime_gf <- ts_read(model = model_gf, file = ts_msprime_gf) %>%
   ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
-msprime_individuals <- ts_samples(msprime_gf) %>%
+msprime_individuals <- ts_recorded(msprime_gf) %>%
   dplyr::filter(pop %in% c("x1", "x2")) %>%
   dplyr::pull(name)
 

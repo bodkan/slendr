@@ -70,3 +70,9 @@ test_that("`schedule_sampling()` issues a warning on renaming", {
   model <- compile_model(list(pop1, pop2), generation_time = 1)
   expect_warning(schedule_sampling(model, times = 0, list(pop1, 1)), "Starting with slendr v2.0")
 })
+
+test_that("`ts_samples()` issues a warning on renaming", {
+  model <- compile_model(list(pop1, pop2), generation_time = 1)
+  ts <- msprime(model, sequence_length = 1, recombination_rate = 0)
+  expect_warning(ts_samples(ts), "Starting with slendr v2.0")
+})
