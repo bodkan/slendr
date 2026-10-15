@@ -36,7 +36,7 @@ most recent using an in-order tree traversal.}
 
 \item{file}{Output file for a figure saved via \code{ggsave}}
 
-\item{schedule}{Sampling schedule to be visualized over the model}
+\item{schedule}{Recording schedule to be visualized over the model}
 
 \item{...}{Optional argument which will be passed to \code{ggsave}}
 }

@@ -227,13 +227,13 @@ all the way to the present (this is a feature discussed in the basic <a href="vi
 sequence overview</a>):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># one ancient individual every two thousand years</span></span>
-<span><span class="va">ancient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>,</span>
+<span><span class="va">ancient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>,</span>
 <span>                    times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">1</span>, by <span class="op">=</span> <span class="op">-</span><span class="fl">500</span><span class="op">)</span>,</span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ehg</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ana</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">yam</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># present-day Africans and Europeans</span></span>
-<span><span class="va">present</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">present</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">ancient</span>, <span class="va">present</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can simulate data from our model and process the output
@@ -623,7 +623,11 @@ Anatolians split from the ancestral population of Eurasians in Anatolia
 and then expanded in a wave to Europe. We have sampled the following
 individuals:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"ANA"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"ANA"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 48 × 3</span></span></span>
 <span><span class="co">#&gt;    name    time pop  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
@@ -643,7 +647,7 @@ spatio-temporal distribution of ancestral node locations of one of the
 sampled individuals? Let’s pick the last individual and immediately plot
 its spatial ancestry tidyverse-style using the pipe operator
 <code>%&gt;%</code>:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lineages</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"ANA_45"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -675,13 +679,17 @@ using some statistics?</p>
 <p>Lets take one more look at the <code>sf</code> object with the
 locations and times of ancestral nodes of sampled individuals, focusing
 on the following subset of columns:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lineages</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="va">connection</span>, <span class="va">child_time</span>, <span class="va">parent_time</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="va">connection</span>, <span class="va">child_time</span>, <span class="va">parent_time</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Simple feature collection with 14656 features and 2 fields</span></span>
 <span><span class="co">#&gt; Geometry type: LINESTRING</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
@@ -707,7 +715,7 @@ separate them (i.e. branch lengths in the traditional phylogenetic
 sense). We can then use those two quantities to compute how fast (if any
 at all) was the movement between ancestral individuals in different time
 periods of the history of a sample:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distances</span> <span class="op">&lt;-</span> <span class="va">lineages</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>branch_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">parent_time</span> <span class="op">-</span> <span class="va">child_time</span><span class="op">)</span> <span class="op">/</span> <span class="va">model</span><span class="op">$</span><span class="va">generation_time</span>,</span>
 <span>         distance <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html" class="external-link">st_length</a></span><span class="op">(</span><span class="va">connection</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -718,7 +726,7 @@ periods of the history of a sample:</p>
 <p>Let’s also convert the data (absolute distances or distance per
 generation – i.e., the “speed”) into a long format for easier plotting
 side by side:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distances_long</span> <span class="op">&lt;-</span> <span class="va">distances</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">child_time</span> <span class="op">&lt;</span> <span class="fl">60000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"OOA"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -731,7 +739,7 @@ side by side:</p>
 <p>Let’s try to summarise the information about distances “traveled” by
 nodes in different time period by fitting a spline (rather than plotting
 the raw data with individual nodes):</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distances_long</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">child_time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">child_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"loess"</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">child_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

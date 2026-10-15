@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{schedule_recording}
 \alias{schedule_recording}
-\title{Define sampling events for a given set of populations}
+\title{Define recording for a given populations at given times}
 \usage{
 schedule_recording(model, times, ..., locations = NULL, strict = FALSE)
 }
@@ -25,24 +25,24 @@ will be sampled randomly throughout their spatial boundary.}
 
 \item{strict}{Should any occurence of a population not being present at a
 given time result in an error? Default is \code{FALSE}, meaning that
-invalid sampling times for any populations will be quietly ignored.}
+invalid times of recording for any populations will be quietly ignored.}
 }
 \value{
 Data frame with three columns: time of sampling, population to sample
 from, how many individuals to sample
 }
 \description{
-Schedule sampling events at specified times and, optionally, a given set of
+Schedule recording events at specified times and, optionally, a given set of
 locations on a landscape
 }
 \details{
-If both times and locations are given, the the sampling will be scheduled on
+If both times and locations are given, the recording will be scheduled on
 each specified location in each given time-point. Note that for the
 time-being, in the interest of simplicity, no sanity checks are performed on
-the locations given except the restriction that the sampling points must fall
-within the bounding box around the simulated world map. Other than that,
+the locations given except the restriction that the points of recording must
+fall within the bounding box around the simulated world map. Other than that,
 slendr will simply instruct its SLiM backend script to sample individuals as
-close to the sampling points given as possible, regardless of whether those
+close to the recording points given as possible, regardless of whether those
 points lie within a population spatial boundary at that particular moment of
 time.
 

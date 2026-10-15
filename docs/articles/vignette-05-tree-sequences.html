@@ -199,7 +199,7 @@ correct:</p>
 Ideally, we would like to to schedule sampling events at a given time,
 sampling a defined number of individuals from a given population. This
 is why <em>slendr</em> provides a function
-<code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> which serves to define such sampling
+<code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> which serves to define such sampling
 schedule automatically and enforces that only populations which are
 already (i.e. after their appearance in the simulation) or still (before
 they are removed from the simulation) present will be sampled from.</p>
@@ -212,14 +212,14 @@ Neanderthal ancestry proportion using a so-called
 statistic (more on that below, but also see Petr <em>et al.</em>, PNAS
 2019):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nea_samples</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 8</span></span></span>
 <span><span class="co">#&gt;    time pop       n name  y_orig x_orig y     x    </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="text-decoration: underline;">40</span>000 NEA       1 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> <span style="text-decoration: underline;">70</span>000 NEA       1 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span></code></pre>
-<p>As you can see, the <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function simply
+<p>As you can see, the <code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> function simply
 accepts the vector of times at which remembering should be schedule, and
 then a list of pairs
 <code>(&lt;slendr population&gt;, &lt;number of individuals&gt;)</code>
@@ -228,7 +228,7 @@ remembered at time points given in the <code>times</code> vector.</p>
 <p>Next, we want to sample some present-day individuals: an outgroup
 representing a chimpanzee, and a couple of Africans and Europeans:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">present_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">present_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">present_samples</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">#&gt;    time pop       n name  y_orig x_orig y     x    </span></span>
@@ -236,7 +236,7 @@ representing a chimpanzee, and a couple of Africans and Europeans:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     0 CH        1 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>     0 AFR       5 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>     0 EUR      10 <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span></code></pre>
-<p>As you can see above, the <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function
+<p>As you can see above, the <code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> function
 returns a plain old data frame with a very simple structure with three
 columns: time, population name, and the number of individuals. This
 means that you can define sampling events using whatever input data you
@@ -251,7 +251,7 @@ the available <a href="https://www.nature.com/articles/nature17993" class="exter
 ancient DNA data set</a> over the last 50 thousand years by running
 doing this:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">emh_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">40</span>, min <span class="op">=</span> <span class="fl">10000</span>, max <span class="op">=</span> <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">emh_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">40</span>, min <span class="op">=</span> <span class="fl">10000</span>, max <span class="op">=</span> <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">emh_samples</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 40 × 8</span></span></span>
 <span><span class="co">#&gt;     time pop       n name  y_orig x_orig y     x    </span></span>
@@ -269,7 +269,7 @@ doing this:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 30 more rows</span></span></span></code></pre>
 <p>This samples a single ancient European individuals at randomly chosen
 times between 40 and 10 ky ago.</p>
-<p>One nice feature of the <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function is
+<p>One nice feature of the <code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> function is
 that it only schedules sampling events for a population, if that
 population is present in the simulation at a given time. This makes it
 possible to simply take a wide time range for sampling, specify all
@@ -280,8 +280,8 @@ be switched off by setting <code>strict = TRUE</code> like this:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this attempts to sample a Neanderthal individual at a point when Neanderthals</span></span>
 <span><span class="co"># are already extinct, resulting in an error</span></span>
-<span><span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code>Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.</code></pre>
+<span><span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code>Error: Cannot schedule recording for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.</code></pre>
 <p>Now that we already have the <code>model</code> object ready, we can
 simulate data from it, sampling individuals according to our sampling
 schedule. Although we could use the <code><a href="../reference/slim.html">slim()</a></code> function shown
@@ -345,7 +345,7 @@ it as such).</p>
 </h2>
 <p>In addition to automatically named symbolic names, <em>slendr</em>
 also supports fully customized sample names (see <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">here</a>
-and <a href="https://bodkan.net/slendr/reference/schedule_sampling.html">here</a>
+and <a href="https://bodkan.net/slendr/reference/schedule_recording.html">here</a>
 for a bit more detail). This is particularly convenient for referring to
 simulated individuals by their “real-world names”.</p>
 </div>
@@ -397,14 +397,14 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpUyFuS6/file5afd51cdde61"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpS6LuTw/file10cf243716fa"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
 by the SLiM back end (which is not the case here), we can also instruct
 this function to simplify the tree-sequence to only the individuals that
 we explicitly sampled (recall the sampling schedule we set up with the
-<code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function above). Note that we have to
+<code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> function above). Note that we have to
 provide the <code>model</code> object generated by
 <code><a href="../reference/compile_model.html">compile_model()</a></code> above in order to have all model annotation
 information for the simulated tree-sequence data (we have to do this
@@ -842,9 +842,13 @@ which individuals are which based on the specified sampling schedule
 (the names are assigned to individuals based on the order of their
 sampling). We can get an overview of the individuals scheduled for
 sampling (i.e. permanently remembered) and their names with a helper
-function <code><a href="../reference/ts_samples.html">ts_samples()</a></code>:</p>
+function <code>ts_samples()</code>:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 58 × 3</span></span></span>
 <span><span class="co">#&gt;    name   time pop  </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
@@ -873,11 +877,15 @@ simulated data. We can do this using the Patterson’s
 statistic implemented in the <code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code> function in
 <em>slendr</em> (you can find more information about this particular
 version of the statistic in Petr <em>et al.</em>, PNAS 2019):</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first get a table of simulated African and European individuals in the tree-sequence</span></span>
-<span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># estimate the amounts of Neanderthal ancestry in these individuals and add</span></span>
+<span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># estimate the amounts of Neanderthal ancestry in these individuals and add</span></span>
 <span><span class="co"># these values to the table</span></span>
 <span><span class="va">inds</span><span class="op">$</span><span class="va">ancestry</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4ratio</a></span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="va">inds</span><span class="op">$</span><span class="va">name</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>, <span class="st">"AFR_1"</span>, <span class="st">"CH_1"</span><span class="op">)</span><span class="op">$</span><span class="va">alpha</span></span></code></pre></div>
 <p>If we now summarise the inferred Neanderthal distribution in both
@@ -886,7 +894,7 @@ populations, we see that there is no Neanderthal ancestry in Africans
 introgression pulse) but there is a small proportion of Neanderthal
 ancestry in Europeans (consistent with the 3% introgression pulse we
 simulated between):</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">inds</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">ancestry</span>, fill <span class="op">=</span> <span class="va">pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html" class="external-link">geom_boxplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -901,7 +909,7 @@ small amount of sequence.</p>
 <p>We can also plot the trajectory of Neanderthal ancestry in Europe
 during the time-window for which we have simulated ancient and
 present-day DNA samples:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">inds</span>, <span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">ancestry</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -929,7 +937,7 @@ handled by the R package <a href="https://bodkan.net/admixr/" class="external-li
 to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_eigenstrat.html">ts_eigenstrat</a></span><span class="op">(</span><span class="va">ts</span>, prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat"</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; 1282 multiallelic sites (0.206% out of 621331 total) detected and removed</span></span></code></pre>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the
@@ -938,7 +946,7 @@ the proportion of Neanderthal ancestry in a couple of individuals
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 like this (<em>admixr</em> calls this proportion
 <code>alpha</code>):</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/admixr" class="external-link">admixr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span>
@@ -951,7 +959,7 @@ like this (<em>admixr</em> calls this proportion
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  0.004<span style="text-decoration: underline;">08</span> 0.002<span style="text-decoration: underline;">08</span>   1.96</span></span></code></pre>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and
 <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">europeans</span> <span class="op">&lt;-</span> <span class="va">inds</span><span class="op">[</span><span class="va">inds</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span>, <span class="op">]</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
 <span><span class="co"># tskit result</span></span>
@@ -977,11 +985,11 @@ due to an extremely small amount of sequence data simulated here.</p>
 <p>In case you need to process simulated data in some other software,
 you can use the function <code><a href="../reference/ts_vcf.html">ts_vcf()</a></code> to save the simulated
 genotypes in a VCF format:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output.vcf.gz"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can also specify only a subset of individuals to be saved in the
 VCF:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_subset.vcf.gz"</span><span class="op">)</span>,</span>
 <span>       individuals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"AFR_1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1007,7 +1015,7 @@ statistic is implemented by the function <code><a href="../reference/ts_fst.html
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math>
 is to be calculated (i.e. not a window-based calculation), the
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> returns a simple three-column data frame</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1015,7 +1023,7 @@ is to be calculated (i.e. not a window-based calculation), the
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.049<span style="text-decoration: underline;">5</span></span></span></code></pre>
 <p>In case a non-named list of sample sets was provided, set names are
 generated automatically:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1025,7 +1033,7 @@ generated automatically:</p>
 the sample sets appropriately.</p>
 <p>In case more than two sample sets are specified, all pairwise
 statistics are computed:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,</span>
 <span>                              eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span>
 <span>                              nea <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -1046,7 +1054,7 @@ new R users, but we highly encourage you to get used to them as they
 allow extremely concise and elegant handling of structured data within
 normal data frames (you can start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
 introduction).</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define breakpoints between 20 windows</span></span>
 <span><span class="va">breakpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ts</span><span class="op">$</span><span class="va">sequence_length</span>, length.out <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span>
 <span></span>
@@ -1070,7 +1078,7 @@ introduction).</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>s</mi></msub><mi>t</mi></mrow><annotation encoding="application/x-tex">F_st</annotation></semantics></math>
 values for the <code>afr-vs-eur</code> calculation (first row of the
 table above):</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">win_fst</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">Fst</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $`1`</span></span>
 <span><span class="co">#&gt;  [1] 0.04241163 0.06803338 0.04129167 0.06031210 0.05516414 0.03059425</span></span>
@@ -1087,7 +1095,7 @@ as <code><a href="../reference/ts_fst.html">ts_fst()</a></code> shown above.</p>
 <p>If a non-window version is to be calculated, we get a single
 genome-wide values for each sample set (named or non-named list of
 character vectors with individual names):</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set           D</span></span>
@@ -1100,7 +1108,7 @@ column as a list column of vectors with
 element being the Tajima’s D value for the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
 window:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span>, windows <span class="op">=</span> <span class="va">breakpoints</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set   D           </span></span>
@@ -1120,13 +1128,17 @@ Let’s find out.</p>
 <p>First we extract individuals from all populations, creating a list of
 character vectors for each group (which is what functions such as
 <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code> expects as an input):</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get sampled individuals from all populations</span></span>
-<span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sample_sets</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sample_sets</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $AFR</span></span>
 <span><span class="co">#&gt; [1] "AFR_1" "AFR_2" "AFR_3" "AFR_4" "AFR_5"</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1146,7 +1158,7 @@ character vectors for each group (which is what functions such as
 <span><span class="co">#&gt; [1] "NEA_1" "NEA_2"</span></span></code></pre>
 <p>Now we can calculate diversity in each population and sort the
 results in an increasing order of diversity:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
 <span><span class="co">#&gt;   set   diversity</span></span>
@@ -1169,7 +1181,7 @@ would expect the lowest divergence between the two modern human groups
 two modern humans, and all three groups (<code>AFR</code>,
 <code>EUR</code> and <code>NEA</code>) should have equal, much deeper
 divergence from the outgroup chimpanzee <code>CH</code>.</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y     divergence</span></span>

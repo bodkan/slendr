@@ -154,7 +154,11 @@ applicable, its just the presentation which has changed.</p>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span> <span class="op">/</span> <span class="va">scaling</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span>
 <span></span>
 <span><span class="co"># panel C</span></span>
 <span><span class="va">divergence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">samples</span><span class="op">$</span><span class="va">name</span>, <span class="va">samples</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span></span>
@@ -259,10 +263,14 @@ applicable, its just the presentation which has changed.</p>
 <span></span>
 <span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">heterozygosity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">heterozygosity</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pi <span class="op">=</span> <span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">name</span><span class="op">)</span><span class="op">$</span><span class="va">diversity</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pi <span class="op">=</span> <span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">name</span><span class="op">)</span><span class="op">$</span><span class="va">diversity</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plotting-code-1">Plotting code<a class="anchor" aria-label="anchor" href="#plotting-code-1"></a>
@@ -388,7 +396,7 @@ applicable, its just the presentation which has changed.</p>
 <span>  competition <span class="op">=</span> <span class="fl">150e3</span>, mating <span class="op">=</span> <span class="fl">120e3</span>, dispersal <span class="op">=</span> <span class="fl">90e3</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50000</span>, by <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ehg</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ana</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">yam</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -576,22 +584,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.0569972</td>
+<td align="right">5.5691825</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">11.2419740</td>
+<td align="right">11.8799151</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.0734841</td>
+<td align="right">3.4621296</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.6475592</td>
+<td align="right">0.6819432</td>
 <td align="left">secs</td>
 </tr>
 </tbody>
