@@ -831,25 +831,17 @@ test_that("ts_names(ts) returns a simple character vector", {
 })
 
 test_that("ts_names(ts, split = 'pop') returns a list of character vectors", {
-  expect_type(ts_names(ts_msprime, split = "pop"), "list")
-  expect_type(ts_names(ts_slim, split = "pop"), "list")
+  expect_type(ts_names(ts_msprime, split = TRUE), "list")
+  expect_type(ts_names(ts_slim, split = TRUE), "list")
 
-  expect_true(length(ts_names(ts_msprime, split = "pop")) == 2)
-  expect_true(length(ts_names(ts_slim, split = "pop")) == 2)
-})
-
-test_that("ts_names(ts, split = 'time') returns a list of character vectors", {
-  expect_type(ts_names(ts_msprime, split = "time"), "list")
-  expect_type(ts_names(ts_slim, split = "time"), "list")
-
-  expect_true(length(ts_names(ts_msprime, split = "time")) == length(unique(samples$time)))
-  expect_true(length(ts_names(ts_slim, split = "time")) == length(unique(samples$time)))
+  expect_true(length(ts_names(ts_msprime, split = TRUE)) == 2)
+  expect_true(length(ts_names(ts_slim, split = TRUE)) == 2)
 })
 
 # test replicates ---------------------------------------------------------
 
 test_that("replicates are computed correctly", {
-  samples <- ts_names(model, split = "pop")
+  samples <- ts_names(model, split = TRUE)
 
   set.seed(42)
   ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)

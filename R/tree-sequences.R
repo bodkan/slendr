@@ -713,7 +713,7 @@ ts_metadata <- function(ts) {
 #'
 #' model <- compile_model(list(p1, p2, p3), generation_time = 1)
 #' schedule <- schedule_recording(model, times = 0, list(p1, 10), list(p2, 10), list(p3, 10))
-#' samples <- ts_names(model, split = "pop", schedule = schedule)
+#' samples <- ts_names(model, split = TRUE, schedule = schedule)
 #'
 #' # this is how we can compute a single tree-sequence statistic with slendr:
 #' # 1. first we simulate a tree sequence from a model
@@ -1454,11 +1454,9 @@ ts_recorded <- function(x, schedule = NULL) {
 #'
 #' @param x Either a tree sequence object of the class \code{slendr_ts}, or
 #'   a compiled slendr model of the class \code{slendr_model}
-#' @param split Should sample names in the tree sequence be split by a column
-#'   (a population or time column)? Default is \code{NULL} and all names of
-#'   samples will be returned as a single character vector. If set to "pop" or
-#'   "time", a list of character vectors will be returned, one vector for each
-#'   unique "pop" or "time" grouping.
+#' @param split Should sample names in the tree sequence be split by population?
+#'   If set to \code{TRUE}, a list of character vectors will be returned,
+#'   one vector for each population.
 #' @param schedule If samples from a model (not yet a tree sequence) are to be
 #'   obtained, this argument can be used to restrict the set of recorded
 #'   individuals
@@ -1468,15 +1466,14 @@ ts_recorded <- function(x, schedule = NULL) {
 #'   or sampling time.
 #'
 #' @export
-ts_names <- function(x, split = NULL, schedule = NULL) {
+ts_names <- function(x, split = FALSE, schedule = NULL) {
   df <- ts_recorded(x, schedule = schedule)
 
-  if (is.null(split)) { # return all names if splitting not requested
+  if (split) {
+    result <- df %>% split(., .[["pop"]]) %>% lapply(`[[`, "name")
+  } else {
     result <- df$name
-  } else if (split %in% colnames(df)) { # otherwise split by a given column
-    result <- df %>% split(., .[[split]]) %>% lapply(`[[`, "name")
-  } else
-    stop("Column '", split, "' not present in the samples table", call. = FALSE)
+  }
 
   result
 }
@@ -2296,7 +2293,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' ts <- ts_read(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
-#' sample_sets <- ts_names(ts, split = "pop")
+#' sample_sets <- ts_names(ts, split = TRUE)
 #'
 #' # compute the divergence between individuals from each sample set (list of
 #' # individual names generated in the previous step)
