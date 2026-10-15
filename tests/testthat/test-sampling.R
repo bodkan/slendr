@@ -32,7 +32,7 @@ test_that("invalid sampling results in a warning", {
   expect_null(res)
 })
 
-msg <- "A sampling event was scheduled outside of the simulation time window"
+msg <- "A recording event was scheduled outside of the simulation time window"
 
 test_that("sampling before a simulation start (forward)", {
   p1 <- population(name = "p1", time = 10, N = 1, remove = 100)
@@ -224,7 +224,7 @@ test_that("sampling locations may only be given for spatial models", {
                          competition = 0, mating = 1, dispersal = 10)
   expect_error(
     schedule_recording(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE),
-    "Sampling locations may only be specified for a spatial model"
+    "Recording locations may only be specified for a spatial model"
   )
 })
 
@@ -337,17 +337,17 @@ test_that("all sampled populations must be present in the compiled model", {
 
   expect_error(
     schedule_recording(model, times = 2000, list(p1, 10), list(p2, 10), list(p3, 10), list(p4, 10), list(p5, 10)),
-    "The following sampled populations are not part of the model: p1, p2, p3, p4, p5"
+    "The following populations scheduled for recording are not part of the model: p1, p2, p3, p4, p5"
   )
 
   expect_error(
     schedule_recording(model, times = 2000, list(pA, 10), list(p2, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
-    "The following sampled populations are not part of the model: p2, p4"
+    "The following populations scheduled for recording are not part of the model: p2, p4"
   )
 
   expect_error(
     schedule_recording(model, times = 2000, list(pA, 10), list(pB, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
-    "The following sampled populations are not part of the model: p4"
+    "The following populations scheduled for recording are not part of the model: p4"
   )
 
   expect_s3_class(
@@ -365,7 +365,7 @@ test_that("all sampled populations must be present in the compiled model", {
 # this test makes sure both msprime and SLiM sampling tables are consistent and
 # that they are also consistent compared to implicit sampling.
 
-test_that("implicit and explicit sampling schedules are consistent (forward)", {
+test_that("implicit and explicit recording schedules are consistent (forward)", {
   a <- population("a", time = 1, N = 4)
   c <- population("c", time = 10, N = 10, parent = a)
   b <- population("b", time = 30, N = 3, parent = c)
@@ -396,7 +396,7 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
   expect_equal(s1_explicit, s2_explicit)
 })
 
-test_that("implicit and explicit sampling schedules are consistent (backward)", {
+test_that("implicit and explicit recording schedules are consistent (backward)", {
   a <- population("a", time = 100, N = 4)
   c <- population("c", time = 80, N = 10, parent = a)
   b <- population("b", time = 20, N = 3, parent = c)
@@ -483,10 +483,10 @@ test_that("batch scheduling gives the correct number of recorded individuals", {
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   expect_error(schedule_recording(model, times = 0, list("each", -3)),
-               "Sample counts must be non-negative, non-zero integer numbers")
+               "Recording counts must be non-negative, non-zero integer numbers")
 
   expect_error(schedule_recording(model, times = 0, list("hello", -3)),
-               "Sampling must be specified as either")
+               "Recording instruction must be specified as either")
 
   schedule1 <- schedule_recording(model, times = 0, list(a, 3), list(b, 3), list(c, 3))
   schedule2 <- schedule_recording(model, times = 0, list("each", 3))

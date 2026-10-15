@@ -1354,10 +1354,10 @@ schedule_recording <- function(model, times, ..., locations = NULL, strict = FAL
     stop("Recording locations may only be specified for a spatial model", call. = FALSE)
 
   if (length(sample_pops) != length(sample_counts))
-    stop("Samples must be represented by pairs of <slendr_pop>-<n>", call. = FALSE)
+    stop("Recording events must be represented by pairs of <slendr_pop>-<n>", call. = FALSE)
 
   if (!all(purrr::map_lgl(sample_pops, ~ inherits(.x, "slendr_pop"))))
-    stop("Objects to sample from must be of the class 'slendr_pop'", call. = FALSE)
+    stop("Population objects must be of the class 'slendr_pop'", call. = FALSE)
 
   if (!all(purrr::map_lgl(sample_counts, ~ .x > 0 &&.x == round(.x))))
     stop("Recording counts must be non-negative, non-zero integer numbers", call. = FALSE)

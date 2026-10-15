@@ -11,7 +11,7 @@ yam <- population("YAM", time = 7000, N = 5, parent = ehg, remove = 2500)
 model <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam), generation_time = 30)
 
 test_that("number of samples must be a non-zero integer larger than one", {
-  msg <- "Sample counts must be non-negative, non-zero integer numbers"
+  msg <- "Recording counts must be non-negative, non-zero integer numbers"
   expect_error(schedule_recording(model, times = 45000, list(afr, 10.3)), msg)
   expect_error(schedule_recording(model, times = 45000, list(afr, -10)), msg)
   expect_error(schedule_recording(model, times = 45000, list(afr, 10), list(ooa, -42, "Ust_Ishim")), msg)
