@@ -10,6 +10,15 @@ which schedules the recording of the given number of individuals from every
 population at a given time.
 ([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
 
+- The `split = "pop"` or `split = "time"` options of `ts_names()` has been
+retired. In reality, only the `split = "pop"` has any application, which is  why
+the function now operates as either `split = FALSE` (the default, and also
+matching the previous default behavior) or `split = TRUE` (equivalent to `split
+= "pop"`). Note that, of course, the original behaviour can be easily recovered
+by applying the base-R function `split()` on the result of the `ts_recorded()`
+table.
+([#ce28fa21](https://github.com/bodkan/slendr/commit/ce28fa21))
+  
 - The argument `how =` of the `resize()` function is now deprecated. Specifying
 a `time` of a resize event now implies an immediate, step-wise change of the
 population size, specifying also the `end` time automatically now implies an
