@@ -2189,6 +2189,9 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
   })
 
   n_sets <- length(sample_sets)
+  if (n_sets < 2) {
+    stop("Multi-way statistics require at least two 'sets' of samples", call. = FALSE)
+  }
 
   # generate all pairwise indexes required by tskit for more than
   # two sample sets
