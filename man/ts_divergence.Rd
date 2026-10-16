@@ -47,7 +47,7 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 ts <- ts_read(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 
 # collect sampled individuals from all populations in a list
-sample_sets <- ts_names(ts, split = "pop")
+sample_sets <- ts_names(ts, split = TRUE)
 
 # compute the divergence between individuals from each sample set (list of
 # individual names generated in the previous step)

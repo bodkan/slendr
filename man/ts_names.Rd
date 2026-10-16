@@ -5,17 +5,15 @@
 \title{Extract names of individuals of interest in a tree sequence produced
 by a slendr model}
 \usage{
-ts_names(x, split = NULL, schedule = NULL)
+ts_names(x, split = FALSE, schedule = NULL)
 }
 \arguments{
 \item{x}{Either a tree sequence object of the class \code{slendr_ts}, or
 a compiled slendr model of the class \code{slendr_model}}
 
-\item{split}{Should sample names in the tree sequence be split by a column
-(a population or time column)? Default is \code{NULL} and all names of
-samples will be returned as a single character vector. If set to "pop" or
-"time", a list of character vectors will be returned, one vector for each
-unique "pop" or "time" grouping.}
+\item{split}{Should sample names in the tree sequence be split by population?
+If set to \code{TRUE}, a list of character vectors will be returned,
+one vector for each population.}
 
 \item{schedule}{If samples from a model (not yet a tree sequence) are to be
 obtained, this argument can be used to restrict the set of recorded

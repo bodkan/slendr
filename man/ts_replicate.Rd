@@ -30,7 +30,7 @@ p3 <- population("p3", time = 2000, N = 1000, parent = p2)
 
 model <- compile_model(list(p1, p2, p3), generation_time = 1)
 schedule <- schedule_recording(model, times = 0, list(p1, 10), list(p2, 10), list(p3, 10))
-samples <- ts_names(model, split = "pop", schedule = schedule)
+samples <- ts_names(model, split = TRUE, schedule = schedule)
 
 # this is how we can compute a single tree-sequence statistic with slendr:
 # 1. first we simulate a tree sequence from a model
