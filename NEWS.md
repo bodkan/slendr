@@ -1,5 +1,9 @@
 # _slendr_ (development version)
 
+- `ts_names()` and `ts_recorded()` now properly catch an error when an invalid
+argument `ts` is set (i.e., an object which is not of the class `slendr_ts`).
+([#876114e7](https://github.com/bodkan/slendr/commit/876114e7))
+
 - A new function `ts_replicate()` can be used to automate the computation of a
 given tree-sequence statistical expression across a number of replicates.
 ([#f83d6d9c](https://github.com/bodkan/slendr/commit/f83d6d9c))
