@@ -1430,14 +1430,19 @@ ts_samples <- function(x, schedule = NULL) {
 #' ts_recorded(ts)
 #' @export
 ts_recorded <- function(x, schedule = NULL) {
-  if (inherits(x, "slendr_ts") && is.null(attr(x, "model"))) {
-    stop("Recording schedule can only be extracted for tree sequences\ngenerated ",
-         "from a slendr model. To access information about times and\nlocations ",
-         "of nodes and individuals from non-slendr tree sequences,\nuse the ",
-         "function ts_nodes().\n", call. = FALSE)
+  if (inherits(x, "slendr_ts")) {
+    if (is.null(attr(x, "model"))) {
+      stop("Recording schedule can only be extracted for tree sequences\ngenerated ",
+           "from a slendr model. To access information about times and\nlocations ",
+           "of nodes and individuals from non-slendr tree sequences,\nuse the ",
+           "function ts_nodes().\n", call. = FALSE)
+    }
   } else if (inherits(x, "slendr_model")) {
     init_env(uv = TRUE)
     x <- msprime(x, sequence_length = 1, recombination_rate = 0, schedule = schedule)
+  } else {
+    stop("Information about recorded individuals can only be obtained from\n",
+         "a slendr tree sequence or a slendr model object.", call. = FALSE)
   }
 
   samples <- attr(x, "metadata")$sampling
