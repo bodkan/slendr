@@ -5,12 +5,13 @@
 #'
 #' @param uv Should an ephemeral Python environment be created via uv (instead
 #'   of activating a permanent virtual environment created via \code{setup_env})?
+#'   By default set to \code{TRUE}.
 #' @param quiet Should informative messages be printed to the console? (DEPRECATED)
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-init_env <- function(uv = FALSE, quiet = NULL) {
+init_env <- function(uv = TRUE, quiet = NULL) {
   if (!is.null(quiet)) {
     message("The `quiet` argument of `init_env()` has been deprecated (the function",
             " is now \"quiet\" by default).")
@@ -26,7 +27,7 @@ init_env <- function(uv = FALSE, quiet = NULL) {
     stop("Could not activate a Python environment for slendr because it is\n",
          "not present on your system:\n\n", DEPS$env, "\n\n",
          "To set up a Python environment, you first need to run `setup_env()` or\n",
-         "call `init_env(uv = TRUE)` to create an ephemeral Python environment.",
+         "call `init_env()` to create an ephemeral Python environment.",
          call. = FALSE)
   }
 
