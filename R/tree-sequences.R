@@ -1381,7 +1381,6 @@ ts_edges <- function(x) {
 
 #' @inherit ts_recorded
 #'
-#' @noRd
 #' @export
 ts_samples <- function(x, schedule = NULL) {
   .Deprecated(
