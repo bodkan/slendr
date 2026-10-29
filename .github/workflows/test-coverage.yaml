@@ -25,32 +25,32 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install libpng-dev
 
-      - name: Install ADMIXTOOLS dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
-
-      - name: Compile and install ADMIXTOOLS (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          # create a single directory for all external software
-          mkdir -p ~/deps
-          cd ~/deps
-
-          # download and unpack the ADMIXTOOLS source code
-          curl -LO https://github.com/DReichLab/AdmixTools/archive/v7.0.2.tar.gz
-          tar xf v7.0.2.tar.gz
-          cd AdmixTools-7.0.2
-
-          # set compiler flags (compilation on macOS was failing unable to find
-          # openblas library files)
-          export LDFLAGS="-L/usr/local/opt/openblas/lib"
-          export CPPFLAGS="-I/usr/local/opt/openblas/include"
-
-          # compile ADMIXTOOLS and move binaries under bin/
-          cd src
-          make clobber
-          make LDLIBS="-llapack" all
-          make install
+      # - name: Install ADMIXTOOLS dependencies (Linux)
+      #   if: runner.os == 'Linux'
+      #   run: sudo apt-get update && sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
+      #
+      # - name: Compile and install ADMIXTOOLS (Linux)
+      #   if: runner.os == 'Linux'
+      #   run: |
+      #     # create a single directory for all external software
+      #     mkdir -p ~/deps
+      #     cd ~/deps
+      #
+      #     # download and unpack the ADMIXTOOLS source code
+      #     curl -LO https://github.com/DReichLab/AdmixTools/archive/v7.0.2.tar.gz
+      #     tar xf v7.0.2.tar.gz
+      #     cd AdmixTools-7.0.2
+      #
+      #     # set compiler flags (compilation on macOS was failing unable to find
+      #     # openblas library files)
+      #     export LDFLAGS="-L/usr/local/opt/openblas/lib"
+      #     export CPPFLAGS="-I/usr/local/opt/openblas/include"
+      #
+      #     # compile ADMIXTOOLS and move binaries under bin/
+      #     cd src
+      #     make clobber
+      #     make LDLIBS="-llapack" all
+      #     make install
 
           # we need to do this in bash because of $OSTYPE above
         shell: bash
