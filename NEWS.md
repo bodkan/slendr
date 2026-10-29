@@ -1,3 +1,5 @@
+# slendr 1.6.0
+
 # _slendr_ (development version)
 
 - The `init_env()` function now creates an ephemeral Python environment using
