@@ -736,9 +736,9 @@ ts_replicate <- function(n, expr, parallel = NULL) {
   }
 
   if (is.null(parallel)) {
-    df_list <- lapply(1:n, eval(substitute(function(...) expr), env = parent.frame(1)))
+    df_list <- lapply(1:n, eval(substitute(function(...) expr), envir = parent.frame(1)))
   } else if (parallel %% 1 == 0 || parallel > 0){
-    df_list <- parallel::mclapply(1:n, eval(substitute(function(...) expr), env = parent.frame(1)), mc.cores = parallel)
+    df_list <- parallel::mclapply(1:n, eval(substitute(function(...) expr), envir = parent.frame(1)), mc.cores = parallel)
   } else {
     stop("Invalid value of the argument `parallel`", call. = FALSE)
   }
