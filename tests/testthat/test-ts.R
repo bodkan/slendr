@@ -853,5 +853,5 @@ test_that("replicates are computed correctly", {
   })
 
   expect_true(nrow(df2) == n)
-  expect_equal(df1, df2[1, c("A", "B", "f2")])
+  expect_equal(df1, df2[1, c("A", "B", "statistic", "f2")])
 })
