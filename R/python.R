@@ -17,7 +17,7 @@ init_env <- function(uv = TRUE, quiet = NULL) {
             " is now \"quiet\" by default).")
   }
 
-  if (uv) {
+  if (uv && Sys.getenv("SLENDR_UV") != "FALSE") {
     reticulate::py_require(packages = DEPS$modules, python_version = DEPS$python)
   } else if (is_slendr_condaenv_present()) {
     reticulate::use_condaenv(DEPS$env)
