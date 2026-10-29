@@ -11,6 +11,11 @@
   different machines where ephemeral Python environments might turn out to be
   wasteful), the old behavior is therefore still available.
 ([#adb0de99](https://github.com/bodkan/slendr/commit/adb0de99))
+
+- Data frames produces by various $f$-statistics now include a column `statistic`
+  containing a convenient readable name of each triplet, quartet, etc., in the
+  usual naming conventions.
+([#36cb1d14](https://github.com/bodkan/slendr/commit/36cb1d14))
   
 - `ts_names()` and `ts_recorded()` now properly catch an error when an invalid
 argument `ts` is set (i.e., an object which is not of the class `slendr_ts`).
