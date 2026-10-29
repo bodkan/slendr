@@ -47,7 +47,6 @@ test_that("gene-flow rate must be a value between 0 and 1", {
 })
 
 test_that("populations must be already created for a gene flow to happen (forward model)", {
-  skip_if(!check_dependencies(python = TRUE))
   init_env()
 
   pop1 <- population("pop1", N = 100, time = 100)

@@ -1,3 +1,5 @@
+init_env()
+
 #
 # population calls
 #
@@ -40,7 +42,6 @@ test_that("parent cannot be scheduled for removal before a daughter splits (forw
 
   # successful model definition in slendr is one thing, but let's make sure the
   # simulation themselves really run
-  skip_if(!check_dependencies(python = TRUE))
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
 })
@@ -57,7 +58,6 @@ test_that("parent cannot be scheduled for removal before a daughter splits (back
 
   # successful model definition in slendr is one thing, but let's make sure the
   # simulation themselves really run
-  skip_if(!check_dependencies(python = TRUE))
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
 })
@@ -138,9 +138,6 @@ test_that("only strings fitting the requirements of valid Python identifiers can
   for (n in invalid_names) {
     expect_error(population(n, time = 1000, N = 100), error_msg)
   }
-
-  skip_if(!check_dependencies(python = TRUE))
-  init_env()
 
   # msprime passes
   for (n in valid_names) {

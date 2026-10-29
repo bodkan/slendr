@@ -1,5 +1,3 @@
-skip_if(!check_dependencies(python = TRUE))
-
 library(slendr)
 init_env()
 

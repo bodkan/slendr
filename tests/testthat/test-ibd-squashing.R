@@ -5,7 +5,6 @@
 
 skip_if(TRUE)
 
-skip_if(!check_dependencies(python = TRUE))
 init_env()
 
 reticulate::py_run_string("import warnings; import msprime; warnings.simplefilter('ignore', msprime.TimeUnitsMismatchWarning)")

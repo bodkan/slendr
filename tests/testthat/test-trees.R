@@ -1,4 +1,4 @@
-skip_if(!check_dependencies(python = TRUE))
+init_env()
 
 map <- world(xrange = c(1, 100), yrange = c(1, 100), landscape = "blank")
 

@@ -1,4 +1,3 @@
-skip_if(!check_dependencies(python = TRUE))
 init_env()
 
 anc_all <- population("ancestor_all", time = 700e3, N = 10000)

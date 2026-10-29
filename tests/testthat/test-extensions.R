@@ -1,4 +1,4 @@
-skip_if(!check_dependencies(python = TRUE, slim = TRUE))
+skip_if(!check_dependencies(slim = TRUE))
 
 init_env()
 

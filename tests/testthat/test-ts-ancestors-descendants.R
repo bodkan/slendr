@@ -1,4 +1,4 @@
-skip_if(!check_dependencies(python = TRUE) || Sys.info()[["sysname"]] == "Windows")
+skip_if(Sys.info()[["sysname"]] == "Windows")
 init_env()
 
 pop <- population("POP", time = 1, N = 100)

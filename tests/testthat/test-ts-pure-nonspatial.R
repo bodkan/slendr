@@ -1,5 +1,3 @@
-skip_if(!check_dependencies(python = TRUE))
-
 init_env()
 
 set.seed(42)
