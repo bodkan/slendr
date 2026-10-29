@@ -2073,7 +2073,9 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
   result <- fstat(ts, "f2", list(A, B), mode, windows, span_normalise)
-  dplyr::tibble(A = concat(A), B = concat(B), f2 = result)
+  dplyr::tibble(A = concat(A), B = concat(B),
+                statistic = paste0("f2(", A, ";", B, ")"),
+                f2 = result)
 }
 
 #' @rdname ts_f4ratio
@@ -2083,7 +2085,9 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
   result <- fstat(ts, "f3", list(A, B, C), mode, windows, span_normalise)
-  dplyr::tibble(A = concat(A), B = concat(B), C = concat(C), f3 = result)
+  dplyr::tibble(A = concat(A), B = concat(B), C = concat(C),
+                statistic = paste0("f3(", A, ";", B, ",", C, ")"),
+                f3 = result)
 }
 
 #' @rdname ts_f4ratio
@@ -2093,6 +2097,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
   mode <- match.arg(mode)
   result <- fstat(ts, "f4", list(W, X, Y, Z), mode, windows, span_normalise)
   dplyr::tibble(W = concat(W), X = concat(X), Y = concat(Y), Z = concat(Z),
+                statistic = paste0("f4(", W, ",", X, ";", Y, ",", Z, ")"),
                 f4 = result)
 }
 
@@ -2178,7 +2183,9 @@ ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_norma
         ts_f4(ts, A, O, X[i], C, mode = mode)$f4 /
         ts_f4(ts, A, O, B, C, mode = mode)$f4
       dplyr::tibble(X = concat(X[i]), A = concat(A), B = concat(B),
-                    C = concat(C), O = concat(O), alpha)
+                    C = concat(C), O = concat(O),
+                    statistic = paste0("f4-ratio(", X, ";", A, ",", B, ",", C, ",", O, ")"),
+                    alpha)
     }
   )
 }
