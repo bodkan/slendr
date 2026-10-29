@@ -42,3 +42,4 @@ ts <- ts_read(slendr_ts, model)
 # extract the table of individuals recorded in the tree sequence
 ts_recorded(ts)
 }
+\keyword{internal}

@@ -1232,6 +1232,7 @@ area <- function(x) {
 
 #' @inherit schedule_recording
 #'
+#' @keywords internal
 #' @export
 schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   .Deprecated(
