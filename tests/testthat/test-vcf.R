@@ -1,4 +1,3 @@
-library(slendr)
 init_env()
 
 pop <- population("pop", time = 1000, N = 100)
