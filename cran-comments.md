@@ -1,5 +1,5 @@
-I modified the unit testing suite so that less important tests are only ran on
-my local test machines but are skipped on CRAN to reduce computational time.
+I made the unit testing suite more efficient to reduce the computational time of
+CRAN checks.
 
 # R CMD check results
 
