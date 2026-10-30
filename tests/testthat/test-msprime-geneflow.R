@@ -34,7 +34,7 @@ a <- population("a", parent = b, time = 1500, N = 10)
 # no gene flow model
 model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200)
 
-samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_recording(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 ts_slim_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
@@ -47,7 +47,7 @@ gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, proportion = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200)
 
-samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_recording(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 ts_slim_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
@@ -67,7 +67,7 @@ slim_gf <- ts_read(model = model_gf, file = ts_slim_gf) %>%
   ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
-slim_individuals <- ts_samples(slim_gf) %>%
+slim_individuals <- ts_recorded(slim_gf) %>%
   dplyr::filter(pop %in% c("x1", "x2")) %>%
   dplyr::pull(name)
 
@@ -101,7 +101,7 @@ msprime_gf <- ts_read(model = model_gf, file = ts_msprime_gf) %>%
   ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
-msprime_individuals <- ts_samples(msprime_gf) %>%
+msprime_individuals <- ts_recorded(msprime_gf) %>%
   dplyr::filter(pop %in% c("x1", "x2")) %>%
   dplyr::pull(name)
 

@@ -39,13 +39,13 @@ forward_const_dir <- file.path(tempdir(), "forward_const")
 forward_const_pop <- population("forward_const_pop", time = 1, N = N, map = FALSE)
 forward_const_model <- compile_model(forward_const_pop, path = forward_const_dir, generation_time = 1,
                                overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-forward_const_samples <- schedule_sampling(forward_const_model, times = 5001, list(forward_const_pop, n_samples))
+forward_const_samples <- schedule_recording(forward_const_model, times = 5001, list(forward_const_pop, n_samples))
 
 backward_const_dir <- file.path(tempdir(), "backward_const")
 backward_const_pop <- population("backward_const_pop", time = 5000, N = N, map = FALSE)
 backward_const_model <- compile_model(backward_const_pop, path = backward_const_dir , generation_time = 1,
                                 overwrite = TRUE, force = TRUE, direction = "backward")
-backward_const_samples <- schedule_sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
+backward_const_samples <- schedule_recording(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
 const_ts <- run_slim_msprime(
   forward_const_model, backward_const_model,
@@ -60,14 +60,14 @@ forward_contr_pop <- population("forward_contr_pop", time = 1, N = N, map = FALS
   resize(time = 2001, N = N / N_factor)
 forward_contr_model <- compile_model(forward_contr_pop, path = forward_contr_dir, generation_time = 1,
                                overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-forward_contr_samples <- schedule_sampling(forward_contr_model, times = 5001, list(forward_contr_pop, n_samples))
+forward_contr_samples <- schedule_recording(forward_contr_model, times = 5001, list(forward_contr_pop, n_samples))
 
 backward_contr_dir <- file.path(tempdir(), "backward_contr")
 backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N / N_factor)
 backward_contr_model <- compile_model(backward_contr_pop, path = backward_contr_dir, generation_time = 1,
                                 overwrite = TRUE, force = TRUE, direction = "backward")
-backward_contr_samples <- schedule_sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
+backward_contr_samples <- schedule_recording(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
 
 contr_ts <- run_slim_msprime(
   forward_contr_model, backward_contr_model,
@@ -82,14 +82,14 @@ forward_expansion_pop <- population("forward_expansion_pop", time = 1, N = N, ma
   resize(time = 2001, N = N * N_factor)
 forward_expansion_model <- compile_model(forward_expansion_pop, path = forward_expansion_dir, generation_time = 1,
                                    overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-forward_expansion_samples <- schedule_sampling(forward_expansion_model, times = 5001, list(forward_expansion_pop, n_samples))
+forward_expansion_samples <- schedule_recording(forward_expansion_model, times = 5001, list(forward_expansion_pop, n_samples))
 
 backward_expansion_dir <- file.path(tempdir(), "backward_expansion")
 backward_expansion_pop <- population("backward_expansion_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N * N_factor)
 backward_expansion_model <- compile_model(backward_expansion_pop, path = backward_expansion_dir, generation_time = 1,
                                     overwrite = TRUE, force = TRUE, direction = "backward")
-backward_expansion_samples <- schedule_sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
+backward_expansion_samples <- schedule_recording(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
 expansion_ts <- run_slim_msprime(
   forward_expansion_model, backward_expansion_model,
@@ -104,14 +104,14 @@ forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N / N_fac
   resize(time = 2001, end = 3001, N = N)
 forward_exp_inc_model <- compile_model(forward_exp_inc_pop, path = forward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-forward_exp_inc_samples <- schedule_sampling(forward_exp_inc_model, times = 5001, list(forward_exp_inc_pop, n_samples))
+forward_exp_inc_samples <- schedule_recording(forward_exp_inc_model, times = 5001, list(forward_exp_inc_pop, n_samples))
 
 backward_exp_inc_dir <- file.path(tempdir(), "backward_exp_inc")
 backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N)
 backward_exp_inc_model <- compile_model(backward_exp_inc_pop, path = backward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-backward_exp_inc_samples <- schedule_sampling(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
+backward_exp_inc_samples <- schedule_recording(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
 
 exp_inc_ts <- run_slim_msprime(
   forward_exp_inc_model, backward_exp_inc_model,
@@ -126,14 +126,14 @@ forward_exp_decr_pop <- population("forward_exp_decr_pop", time = 1, N = N, map 
   resize(time = 2001, end = 3001, N = N / N_factor)
 forward_exp_decr_model <- compile_model(forward_exp_decr_pop, path = forward_exp_decr_dir, generation_time = 1,
                                  overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-forward_exp_decr_samples <- schedule_sampling(forward_exp_decr_model, times = 5001, list(forward_exp_decr_pop, n_samples))
+forward_exp_decr_samples <- schedule_recording(forward_exp_decr_model, times = 5001, list(forward_exp_decr_pop, n_samples))
 
 backward_exp_decr_dir <- file.path(tempdir(), "backward_exp_decr")
 backward_exp_decr_pop <- population("backward_exp_decr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N / N_factor)
 backward_exp_decr_model <- compile_model(backward_exp_decr_pop, path = backward_exp_decr_dir, generation_time = 1,
                                   overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
-backward_exp_decr_samples <- schedule_sampling(backward_exp_decr_model, times = 5001, list(backward_exp_decr_pop, n_samples))
+backward_exp_decr_samples <- schedule_recording(backward_exp_decr_model, times = 5001, list(backward_exp_decr_pop, n_samples))
 
 exp_decr_ts <- run_slim_msprime(
   forward_exp_decr_model, backward_exp_decr_model,

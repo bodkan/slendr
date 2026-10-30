@@ -857,8 +857,8 @@ model <- compile_model(
 We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
 
 ```{r}
-nea_samples <- schedule_sampling(model, times = 50000, list(nea, 1))
-modern_samples <- schedule_sampling(model, times = 0, list(eur, 100))
+nea_samples <- schedule_recording(model, times = 50000, list(nea, 1))
+modern_samples <- schedule_recording(model, times = 0, list(eur, 100))
 
 samples <- rbind(nea_samples, modern_samples)
 ```

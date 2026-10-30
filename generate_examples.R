@@ -29,8 +29,8 @@ model <- compile_model(
 
 # plot_model(model, sizes = FALSE, order = c("CH", "EUR", "NEA", "AFR"), log = TRUE)
 
-nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
-present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 5))
+nea_samples <- schedule_recording(model, times = c(70000, 40000), list(nea, 1))
+present_samples <- schedule_recording(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 5))
 
 # SLiM tree sequence
 ts_slim <- slim(

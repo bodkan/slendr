@@ -28,7 +28,7 @@ model <- compile_model(
 #   order = c("AFR", "EUR", "nonAFR", "PAP", "ancestor_all", "DEN", "ancestor_archaics", "NEA")
 # )
 
-samples <- schedule_sampling(model, times = 0, list(eur, 25), list(pap, 25))
+samples <- schedule_recording(model, times = 0, list(eur, 25), list(pap, 25))
 
 ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, schedule = samples, random_seed = 42)
 

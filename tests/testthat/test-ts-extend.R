@@ -5,7 +5,7 @@ init_env()
 pop <- population("pop", N = 1000, time = 1)
 model <- compile_model(list(pop), generation_time = 1, direction = "forward", simulation_length = 1000, serialize = FALSE)
 
-schedule <- schedule_sampling(model, times = 1001, list(pop, 10))
+schedule <- schedule_recording(model, times = 1001, list(pop, 10))
 
 test_that("number of iterations must be a non-negative, non-zero integer", {
   error_msg <- "Iterations number must be a non-negative, non-zero integer"

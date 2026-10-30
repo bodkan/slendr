@@ -13,7 +13,7 @@ model <- compile_model(
   overwrite = TRUE, force = TRUE
 )
 
-samples <- schedule_sampling(model, times = 100, list(pop, 10))
+samples <- schedule_recording(model, times = 100, list(pop, 10))
 
 slim_ts <- normalizePath(tempfile(fileext = ".slim.trees"), winslash = "/", mustWork = FALSE)
 msprime_ts <- normalizePath(tempfile(fileext = ".msprime.trees"), winslash = "/", mustWork = FALSE)

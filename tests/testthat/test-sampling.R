@@ -1,4 +1,4 @@
-msg <- "Cannot schedule sampling"
+msg <- "Cannot schedule recording"
 
 skip_if(!check_dependencies(python = TRUE))
 
@@ -9,8 +9,8 @@ test_that("sampling from a population which is not present is prevented (forward
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
   model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, simulation_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
-  expect_error(schedule_sampling(model, time = 15, list(p2, 3), strict = TRUE), msg) # pre-split
-  expect_error(schedule_sampling(model, time = 1000, list(p2, 3), strict = TRUE), msg) # post-removal
+  expect_error(schedule_recording(model, time = 15, list(p2, 3), strict = TRUE), msg) # pre-split
+  expect_error(schedule_recording(model, time = 1000, list(p2, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("sampling from a population which is not present is prevented (backward)", {
@@ -18,8 +18,8 @@ test_that("sampling from a population which is not present is prevented (backwar
   p1 <- population(name = "p1", time = 1000, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 900, N = 1, center = c(1, 1), radius = 10, remove = 100)
   model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, simulation_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
-  expect_error(schedule_sampling(model, time = 950, list(p2, 3), strict = TRUE), msg) # pre-split
-  expect_error(schedule_sampling(model, time = 5, list(p2, 3), strict = TRUE), msg) # post-removal
+  expect_error(schedule_recording(model, time = 950, list(p2, 3), strict = TRUE), msg) # pre-split
+  expect_error(schedule_recording(model, time = 5, list(p2, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("invalid sampling results in a warning", {
@@ -27,37 +27,37 @@ test_that("invalid sampling results in a warning", {
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
   model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, simulation_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
-  expect_warning(schedule_sampling(model, times = 10000, list(p1, 1), list(p2, 1)), "No valid sampling events were retained")
-  suppressWarnings({res <- schedule_sampling(model, times = 10000, list(p1, 1), list(p2, 1))})
+  expect_warning(schedule_recording(model, times = 10000, list(p1, 1), list(p2, 1)), "No valid sampling events were retained")
+  suppressWarnings({res <- schedule_recording(model, times = 10000, list(p1, 1), list(p2, 1))})
   expect_null(res)
 })
 
-msg <- "A sampling event was scheduled outside of the simulation time window"
+msg <- "A recording event was scheduled outside of the simulation time window"
 
 test_that("sampling before a simulation start (forward)", {
   p1 <- population(name = "p1", time = 10, N = 1, remove = 100)
   model <- compile_model(populations = p1, path = tempdir(), generation_time = 1, simulation_length = 1000, overwrite = TRUE, force = TRUE)
-  expect_error(schedule_sampling(model, time = 5, list(p1, 3), strict = TRUE), msg) # pre-split
-  expect_error(schedule_sampling(model, time = 2000, list(p1, 3), strict = TRUE), msg) # post-removal
+  expect_error(schedule_recording(model, time = 5, list(p1, 3), strict = TRUE), msg) # pre-split
+  expect_error(schedule_recording(model, time = 2000, list(p1, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("sampling before a simulation start (backward)", {
   p1 <- population(name = "p1", time = 1000, N = 1, remove = 100)
   model <- compile_model(populations = p1, path = tempdir(), generation_time = 1, simulation_length = 100, overwrite = TRUE, force = TRUE)
-  expect_error(schedule_sampling(model, time = 1005, list(p1, 3), strict = TRUE), msg) # pre-split
-  expect_error(schedule_sampling(model, time = 10, list(p1, 3), strict = TRUE), msg) # post-removal
+  expect_error(schedule_recording(model, time = 1005, list(p1, 3), strict = TRUE), msg) # pre-split
+  expect_error(schedule_recording(model, time = 10, list(p1, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("sampling in the same generation of the split is prevented (forward)", {
   p1 <- population(name = "p1", time = 1, N = 1, remove = 50)
   model <- compile_model(populations = p1, path = tempdir(), generation_time = 25, simulation_length = 100, overwrite = TRUE, force = TRUE)
-  expect_warning(schedule_sampling(model, time = 3, list(p1, 3)), "No valid sampling")
+  expect_warning(schedule_recording(model, time = 3, list(p1, 3)), "No valid sampling")
 })
 
 test_that("sampling in the same generation of the split is prevented (backward)", {
   p1 <- population(name = "p1", time = 100, N = 1, remove = 10)
   model <- compile_model(populations = p1, path = tempdir(), generation_time = 25, overwrite = TRUE, force = TRUE)
-  expect_warning(schedule_sampling(model, time = 97, list(p1, 3)), "No valid sampling")
+  expect_warning(schedule_recording(model, time = 97, list(p1, 3)), "No valid sampling")
 })
 
 # spatial sampling --------------------------------------------------------
@@ -85,7 +85,7 @@ test_that("sampling is as close to the a single specified position as possible",
                    competition = 10, mating = 10, dispersal = 10,
                    simulation_length = simulation_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
-  samples <- schedule_sampling(model, times = times, locations = locations, list(pop, n_samples))
+  samples <- schedule_recording(model, times = times, locations = locations, list(pop, n_samples))
   ts <- slim(model, sequence_length = 1, recombination_rate = 0, schedule = samples,
        method = "batch", locations = locations_file, verbose = FALSE)
 
@@ -143,8 +143,8 @@ test_that("sampling is as close to the multiple specified positions as possible"
                    simulation_length = simulation_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- rbind(
-    schedule_sampling(model, times = times[1], locations = locations[1], list(pop, n_samples)),
-    schedule_sampling(model, times = times[2], locations = locations[2], list(pop, n_samples))
+    schedule_recording(model, times = times[1], locations = locations[1], list(pop, n_samples)),
+    schedule_recording(model, times = times[2], locations = locations[2], list(pop, n_samples))
   )
 
   ts <- slim(model, sequence_length = 1, recombination_rate = 0, schedule = samples,
@@ -223,8 +223,8 @@ test_that("sampling locations may only be given for spatial models", {
                          resolution = 1, simulation_length = 1000,
                          competition = 0, mating = 1, dispersal = 10)
   expect_error(
-    schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE),
-    "Sampling locations may only be specified for a spatial model"
+    schedule_recording(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE),
+    "Recording locations may only be specified for a spatial model"
   )
 })
 
@@ -239,17 +239,17 @@ test_that("a mix of spatial and non-spatial samplings is not allowed for a singl
                          resolution = 1, simulation_length = 1000,
                          competition = 0, mating = 1, dispersal = 10)
   )
-  s1 <- schedule_sampling(model, time = 35, list(p1, 3), strict = TRUE)
-  s2 <- schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE)
+  s1 <- schedule_recording(model, time = 35, list(p1, 3), strict = TRUE)
+  s2 <- schedule_recording(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE)
   # this gives error
-  s3 <- schedule_sampling(model, time = 35, list(p2, 5), strict = TRUE)
+  s3 <- schedule_recording(model, time = 35, list(p2, 5), strict = TRUE)
   s <- rbind(s1, s2, s3)
   expect_error(
     slim(model, schedule = s, sequence_length = 1000, recombination_rate = 0),
     "For each population, samples must be all spatial or all non-spatial.\nThis is not true for the following populations: p2"
   )
   # this passes
-  s3 <- schedule_sampling(model, time = 35, list(p2, 5), locations = list(c(10, 15)), strict = TRUE)
+  s3 <- schedule_recording(model, time = 35, list(p2, 5), locations = list(c(10, 15)), strict = TRUE)
   s <- rbind(s1, s2, s3)
   expect_s3_class(slim(model, schedule = s, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
 })
@@ -267,24 +267,24 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   ts_write(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_read(tmp_big, model), "slendr_ts")
   expect_s3_class(ts_big_nomodel <- ts_read(tmp_big), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_big_model)) == 142)
-  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_big_model)) == 142)
+  expect_error(ts_recorded(ts_big_nomodel), "Recording schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
   tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_write(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_read(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_read(tmp_small1), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
-  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small1_model)) == 142)
+  expect_error(ts_recorded(ts_small1_nomodel), "Recording schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
   tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_write(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_read(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_read(tmp_small2), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
-  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small2_model)) == 4)
+  expect_error(ts_recorded(ts_small2_nomodel), "Recording schedule can only be extracted")
 })
 
 test_that("sampling table is correctly adjusted after simplification (SLiM)", {
@@ -300,24 +300,24 @@ test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   ts_write(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_read(tmp_big, model), "slendr_ts")
   expect_s3_class(ts_big_nomodel <- ts_read(tmp_big), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_big_model)) == 142)
-  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_big_model)) == 142)
+  expect_error(ts_recorded(ts_big_nomodel), "Recording schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
   tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_write(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_read(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_read(tmp_small1), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
-  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small1_model)) == 142)
+  expect_error(ts_recorded(ts_small1_nomodel), "Recording schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
   tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_write(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_read(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_read(tmp_small2), "slendr_ts")
-  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
-  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+  expect_true(nrow(ts_recorded(ts_small2_model)) == 4)
+  expect_error(ts_recorded(ts_small2_nomodel), "Recording schedule can only be extracted")
 })
 
 test_that("all sampled populations must be present in the compiled model", {
@@ -336,22 +336,22 @@ test_that("all sampled populations must be present in the compiled model", {
   p5 <- population("p5", time = 1300, N = 1000, parent = p4)
 
   expect_error(
-    schedule_sampling(model, times = 2000, list(p1, 10), list(p2, 10), list(p3, 10), list(p4, 10), list(p5, 10)),
-    "The following sampled populations are not part of the model: p1, p2, p3, p4, p5"
+    schedule_recording(model, times = 2000, list(p1, 10), list(p2, 10), list(p3, 10), list(p4, 10), list(p5, 10)),
+    "The following populations scheduled for recording are not part of the model: p1, p2, p3, p4, p5"
   )
 
   expect_error(
-    schedule_sampling(model, times = 2000, list(pA, 10), list(p2, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
-    "The following sampled populations are not part of the model: p2, p4"
+    schedule_recording(model, times = 2000, list(pA, 10), list(p2, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
+    "The following populations scheduled for recording are not part of the model: p2, p4"
   )
 
   expect_error(
-    schedule_sampling(model, times = 2000, list(pA, 10), list(pB, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
-    "The following sampled populations are not part of the model: p4"
+    schedule_recording(model, times = 2000, list(pA, 10), list(pB, 10), list(pC, 10), list(p4, 10), list(pD, 10)),
+    "The following populations scheduled for recording are not part of the model: p4"
   )
 
   expect_s3_class(
-    schedule_sampling(model, times = 2000, list(pA, 10), list(pB, 10), list(pC, 10), list(pD, 10), list(pD, 10)),
+    schedule_recording(model, times = 2000, list(pA, 10), list(pB, 10), list(pC, 10), list(pD, 10), list(pD, 10)),
     "data.frame"
   )
 })
@@ -365,7 +365,7 @@ test_that("all sampled populations must be present in the compiled model", {
 # this test makes sure both msprime and SLiM sampling tables are consistent and
 # that they are also consistent compared to implicit sampling.
 
-test_that("implicit and explicit sampling schedules are consistent (forward)", {
+test_that("implicit and explicit recording schedules are consistent (forward)", {
   a <- population("a", time = 1, N = 4)
   c <- population("c", time = 10, N = 10, parent = a)
   b <- population("b", time = 30, N = 3, parent = c)
@@ -374,21 +374,21 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
 
   # implicit sampling
   ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0)
-  s1 <- ts_samples(ts1)
+  s1 <- ts_recorded(ts1)
 
   ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0)
-  s2 <- ts_samples(ts2)
+  s2 <- ts_recorded(ts2)
 
   expect_equal(s1, s2)
 
   # explicit sampling
-  schedule <- schedule_sampling(model, times = 51, list(a, 4), list(b, 3), list(c, 10))
+  schedule <- schedule_recording(model, times = 51, list(a, 4), list(b, 3), list(c, 10))
 
   ts1 <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
-  s1_explicit <- ts_samples(ts1)
+  s1_explicit <- ts_recorded(ts1)
 
   ts2 <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule)
-  s2_explicit <- ts_samples(ts2)
+  s2_explicit <- ts_recorded(ts2)
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)
@@ -396,7 +396,7 @@ test_that("implicit and explicit sampling schedules are consistent (forward)", {
   expect_equal(s1_explicit, s2_explicit)
 })
 
-test_that("implicit and explicit sampling schedules are consistent (backward)", {
+test_that("implicit and explicit recording schedules are consistent (backward)", {
   a <- population("a", time = 100, N = 4)
   c <- population("c", time = 80, N = 10, parent = a)
   b <- population("b", time = 20, N = 3, parent = c)
@@ -404,15 +404,15 @@ test_that("implicit and explicit sampling schedules are consistent (backward)", 
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # implicit sampling
-  s1 <- msprime(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
-  s2 <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_samples()
+  s1 <- msprime(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recorded()
+  s2 <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recorded()
   expect_equal(s1, s2)
 
   # explicit sampling
-  schedule <- schedule_sampling(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
+  schedule <- schedule_recording(model, times = 0, list(c, 10), list(a, 4), list(b, 3))
 
-  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
-  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_samples
+  s1_explicit <- msprime(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_recorded
+  s2_explicit <- slim(model, sequence_length = 1000, recombination_rate = 0, schedule = schedule) %>% ts_recorded
 
   expect_equal(s1, s1_explicit)
   expect_equal(s2, s2_explicit)
@@ -427,8 +427,8 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # no explicit sampling tables
-  s1 <- ts_samples(model)
-  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  s1 <- ts_recorded(model)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_recorded
   expect_equal(s1, s2)
 
   # no explicit sampling names
@@ -437,9 +437,9 @@ test_that("pre- and post-simulation samples are the same (msprime)", {
   expect_equal(n1, n2)
 
   # explicit sampling tables
-  schedule <- schedule_sampling(model, times = 10, list(a, 3), list(c, 2))
-  s1 <- ts_samples(model, schedule)
-  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  schedule <- schedule_recording(model, times = 10, list(a, 3), list(c, 2))
+  s1 <- ts_recorded(model, schedule)
+  s2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_recorded
   expect_equal(s1, s2)
 
   # explicit sampling names
@@ -455,8 +455,8 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
   model <- compile_model(list(a, b, c), generation_time = 1)
 
   # no explicit sampling tables
-  s1 <- ts_samples(model)
-  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_samples
+  s1 <- ts_recorded(model)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8) %>% ts_recorded
   expect_equal(s1, s2)
 
   # no explicit sampling names
@@ -465,9 +465,9 @@ test_that("pre- and post-simulation samples are the same (SLiM)", {
   expect_equal(n1, n2)
 
   # explicit sampling tables
-  schedule <- schedule_sampling(model, times = 10, list(a, 3), list(c, 2))
-  s1 <- ts_samples(model, schedule)
-  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_samples
+  schedule <- schedule_recording(model, times = 10, list(a, 3), list(c, 2))
+  s1 <- ts_recorded(model, schedule)
+  s2 <- slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule) %>% ts_recorded
   expect_equal(s1, s2)
 
   # explicit sampling names
@@ -482,19 +482,19 @@ test_that("batch scheduling gives the correct number of recorded individuals", {
   b <- population("b", time = 20, N = 3, parent = c)
   model <- compile_model(list(a, b, c), generation_time = 1)
 
-  expect_error(schedule_sampling(model, times = 0, list("each", -3)),
-               "Sample counts must be non-negative, non-zero integer numbers")
+  expect_error(schedule_recording(model, times = 0, list("each", -3)),
+               "Recording counts must be non-negative, non-zero integer numbers")
 
-  expect_error(schedule_sampling(model, times = 0, list("hello", -3)),
-               "Sampling must be specified as either")
+  expect_error(schedule_recording(model, times = 0, list("hello", -3)),
+               "Recording instruction must be specified as either")
 
-  schedule1 <- schedule_sampling(model, times = 0, list(a, 3), list(b, 3), list(c, 3))
-  schedule2 <- schedule_sampling(model, times = 0, list("each", 3))
+  schedule1 <- schedule_recording(model, times = 0, list(a, 3), list(b, 3), list(c, 3))
+  schedule2 <- schedule_recording(model, times = 0, list("each", 3))
 
   expect_equal(schedule1, schedule2)
 
   ts1 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule1)
   ts2 <- msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule2)
 
-  expect_equal(ts_samples(ts1), ts_samples(ts2))
+  expect_equal(ts_recorded(ts1), ts_recorded(ts2))
 })

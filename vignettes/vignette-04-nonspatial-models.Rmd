@@ -74,10 +74,10 @@ model <- compile_model(
 
 Using the `plot_map()` function doesn't make sense, as there are no spatial maps to plot. However, we can still plot the demographic graph, verifying that the model has been specified correctly using the function `plot_model()` as shown below.
 
-Let's say we also want to schedule specific sampling events at specific times (which record only specified individuals in a tree sequence). We can use `schedule_sampling()` to do just that:
+Let's say we also want to schedule specific sampling events at specific times (which record only specified individuals in a tree sequence). We can use `schedule_recording()` to do just that:
 
 ```{r}
-samples <- schedule_sampling(
+samples <- schedule_recording(
   model,
   times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
   list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
@@ -129,13 +129,13 @@ As we can see, `extract_parameters()` returns a list of data frames, one data fr
 As an addendum, it is worth mentioning that in addition to automatically naming recorded samples according to the format of `"<population>_<number>"`, _slendr_ supports uniquely named samples. For instance, imagine that we want to record an ancient individual representing a 45.000 years old hunter gatherer known as Ust'-Ishim (Fu, _et al., Nature, 2014). We could include this sample among our other, generically named, samples like this:
 
 ```{r}
-schedule_amh <- schedule_sampling(
+schedule_amh <- schedule_recording(
   model,
   times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
   list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
 )
 
-schedule_ui <- schedule_sampling(model, times = 45000, list(ooa, 1, "Ust_Ishim"))
+schedule_ui <- schedule_recording(model, times = 45000, list(ooa, 1, "Ust_Ishim"))
 
 # bind the two tables together into a single schedule
 schedule <- rbind(schedule_amh, schedule_ui)

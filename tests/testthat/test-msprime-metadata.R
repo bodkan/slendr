@@ -23,8 +23,8 @@ forward_model <- compile_model(populations = list(a, b, x1, x2, c, o), path = fo
                  description = "The most incredible popgen model ever")
 
 forward_samples <- rbind(
-  schedule_sampling(forward_model, times = 2200, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
-  schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
+  schedule_recording(forward_model, times = 2200, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
+  schedule_recording(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
 ts_forward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
@@ -49,11 +49,11 @@ test_that("msprime and SLiM metadata is exactly the same (forward model)", {
 })
 
 test_that("msprime and SLiM sampling tables are exactly the same (forward model)", {
-  expect_true(all(ts_samples(forward_sts) == ts_samples(forward_mts)))
+  expect_true(all(ts_recorded(forward_sts) == ts_recorded(forward_mts)))
 })
 
 # test_that("sampling more individuals than is the current N triggers warning (forward model)", {
-#   forward_samples <- schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(x1, 1000), list(x2, 1000))
+#   forward_samples <- schedule_recording(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(x1, 1000), list(x2, 1000))
 #   expect_warning(
 #     slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = forward_samples, random_seed = seed),
 #     "There were some warnings during the simulation run"
@@ -84,8 +84,8 @@ backward_model <- compile_model(populations = list(a, b, x1, x2, c, o), path = b
 # should only sample the maximum that is available, but what does msprime do
 # here?)
 backward_samples <- rbind(
-  schedule_sampling(backward_model, times = 0, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
-  schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
+  schedule_recording(backward_model, times = 0, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
+  schedule_recording(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
 ts_backward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
@@ -110,11 +110,11 @@ test_that("msprime and SLiM metadata is exactly the same (backward model)", {
 })
 
 test_that("msprime and SLiM sampling tables are exactly the same (backward model)", {
-  expect_true(all(ts_samples(backward_sts) == ts_samples(backward_mts)))
+  expect_true(all(ts_recorded(backward_sts) == ts_recorded(backward_mts)))
 })
 
 # test_that("sampling more individuals than is the current N triggers warning (backward model)", {
-#   backward_samples <- schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1000), list(x1, 10), list(x2, 10), list(c, 1000))
+#   backward_samples <- schedule_recording(backward_model, times = c(123, 250, 1000), list(a, 1000), list(x1, 10), list(x2, 10), list(c, 1000))
 #   expect_warning(
 #     slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, schedule = backward_samples, random_seed = seed),
 #     "There were some warnings during the simulation run"

@@ -1,5 +1,3 @@
-Fixed various issues related to handling Python environments through the 'reticulate' R package and other minor bugfixes.
-
 # R CMD check results
 
 There were no ERRORs, no WARNINGs, no NOTEs.

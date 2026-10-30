@@ -18,7 +18,7 @@ ts_simplify(
 
 \item{simplify_to}{A character vector of individual names. If NULL, all
 explicitly remembered individuals (i.e. those specified via the
-\code{\link{schedule_sampling}} function will be left in the tree sequence
+\code{\link{schedule_recording}} function will be left in the tree sequence
 after the simplification.}
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all

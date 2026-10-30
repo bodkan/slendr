@@ -59,9 +59,20 @@ test_that("rate argument is correctly distributed into an overall proportion", {
 
 test_that("`samples` argument is deprecated in favour of `schedule`", {
   model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 100)
-  schedule <- schedule_sampling(model, times = 470, list(pop1, 1))
+  schedule <- schedule_recording(model, times = 470, list(pop1, 1))
   expect_warning(msprime(model, sequence_length = 1, recombination_rate = 1e-8, samples = schedule))
   expect_warning(slim(model, sequence_length = 1, recombination_rate = 1e-8, samples = schedule))
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule), "slendr_ts")
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 1e-8, schedule = schedule), "slendr_ts")
+})
+
+test_that("`schedule_sampling()` issues a warning on renaming", {
+  model <- compile_model(list(pop1, pop2), generation_time = 1)
+  expect_warning(schedule_sampling(model, times = 0, list(pop1, 1)), "Starting with slendr v2.0")
+})
+
+test_that("`ts_samples()` issues a warning on renaming", {
+  model <- compile_model(list(pop1, pop2), generation_time = 1)
+  ts <- msprime(model, sequence_length = 1, recombination_rate = 0)
+  expect_warning(ts_samples(ts), "Starting with slendr v2.0")
 })

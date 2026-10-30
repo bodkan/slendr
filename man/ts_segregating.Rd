@@ -49,7 +49,7 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 ts <- ts_read(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 
 # collect sampled individuals from all populations in a list
-sample_sets <- ts_samples(ts) \%>\%
+sample_sets <- ts_recorded(ts) \%>\%
   split(., .$pop) \%>\%
   lapply(function(pop) pop$name)
 

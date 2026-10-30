@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{schedule_sampling}
 \alias{schedule_sampling}
-\title{Define sampling events for a given set of populations}
+\title{Define recording for a given populations at given times}
 \usage{
 schedule_sampling(model, times, ..., locations = NULL, strict = FALSE)
 }
@@ -25,24 +25,24 @@ will be sampled randomly throughout their spatial boundary.}
 
 \item{strict}{Should any occurence of a population not being present at a
 given time result in an error? Default is \code{FALSE}, meaning that
-invalid sampling times for any populations will be quietly ignored.}
+invalid times of recording for any populations will be quietly ignored.}
 }
 \value{
 Data frame with three columns: time of sampling, population to sample
 from, how many individuals to sample
 }
 \description{
-Schedule sampling events at specified times and, optionally, a given set of
+Schedule recording events at specified times and, optionally, a given set of
 locations on a landscape
 }
 \details{
-If both times and locations are given, the the sampling will be scheduled on
+If both times and locations are given, the recording will be scheduled on
 each specified location in each given time-point. Note that for the
 time-being, in the interest of simplicity, no sanity checks are performed on
-the locations given except the restriction that the sampling points must fall
-within the bounding box around the simulated world map. Other than that,
+the locations given except the restriction that the points of recording must
+fall within the bounding box around the simulated world map. Other than that,
 slendr will simply instruct its SLiM backend script to sample individuals as
-close to the sampling points given as possible, regardless of whether those
+close to the recording points given as possible, regardless of whether those
 points lie within a population spatial boundary at that particular moment of
 time.
 
@@ -68,14 +68,14 @@ nea <- model$populations[["NEA"]]
 
 # schedule the recording of 10 African and 100 European individuals from a
 # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-schedule_amh <- schedule_sampling(
+schedule_amh <- schedule_recording(
   model, times = c(20000, 10000, 5000, 0),
   list(afr, 10), list(eur, 100)
 )
 # schedule the recording of the Vindija Neanderthal genome
-schedule_nea <- schedule_sampling(model, times = 40000, list(nea, 1, "Vindija"))
+schedule_nea <- schedule_recording(model, times = 40000, list(nea, 1, "Vindija"))
 
-# the result of `schedule_sampling` is a simple data frame (note that the locations
+# the result of `schedule_recording` is a simple data frame (note that the locations
 # of sampling locations have `NA` values because the model is non-spatial)
 schedule <- rbind(schedule_amh, schedule_nea)
 schedule
@@ -84,6 +84,7 @@ schedule
 ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
 
 # inspect the recorded table of samples
-ts_samples(ts)
+ts_recorded(ts)
 
 }
+\keyword{internal}

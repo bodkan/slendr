@@ -56,7 +56,7 @@ CRAN release: 2025-07-31
 
 - *slendr* now allows recording of specific singular samples under
   unique names. See the documentation to
-  [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
+  [`schedule_recording()`](https://bodkan.net/slendr/reference/schedule_recording.md)
   for an example. ([PR](https://github.com/bodkan/slendr/pull/181)
   [\#181](https://github.com/bodkan/slendr/issues/181))
 
@@ -104,7 +104,7 @@ particularly its new “SLiM extension” mechanism) requires SLiM 5.0
   ([PR](https://github.com/bodkan/slendr/pull/173)
   [\#173](https://github.com/bodkan/slendr/issues/173))
 
-- [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
+- [`schedule_recording()`](https://bodkan.net/slendr/reference/schedule_recording.md)
   now checks that all sampled populations are actually present in the
   compiled model
   ([\#97abf75](https://github.com/bodkan/slendr/commit/97abf75))
@@ -302,7 +302,7 @@ CRAN release: 2024-02-21
 - [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md)
   has a new optional argument `samples =` which will – when set to a
   result of a sampling schedule created by
-  [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
+  [`schedule_recording()`](https://bodkan.net/slendr/reference/schedule_recording.md)
   – visualize the counts of samples to be recorded at each given
   time-point.
   ([\#d72ac5](https://github.com/bodkan/slendr/commit/d72ac5))

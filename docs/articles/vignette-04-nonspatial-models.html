@@ -154,10 +154,10 @@ demographic graph, verifying that the model has been specified correctly
 using the function <code><a href="../reference/plot_model.html">plot_model()</a></code> as shown below.</p>
 <p>Let’s say we also want to schedule specific sampling events at
 specific times (which record only specified individuals in a tree
-sequence). We can use <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> to do just
+sequence). We can use <code><a href="../reference/schedule_recording.html">schedule_recording()</a></code> to do just
 that:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5000</span>, <span class="fl">12000</span>, <span class="fl">20000</span>, <span class="fl">35000</span>, <span class="fl">39000</span>, <span class="fl">43000</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ehg</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">yam</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ana</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -257,13 +257,13 @@ gatherer known as Ust’-Ishim (Fu, _et al., Nature, 2014). We could
 include this sample among our other, generically named, samples like
 this:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schedule_amh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">schedule_amh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5000</span>, <span class="fl">12000</span>, <span class="fl">20000</span>, <span class="fl">35000</span>, <span class="fl">39000</span>, <span class="fl">43000</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ehg</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">yam</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ana</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">schedule_ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">45000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span>, <span class="st">"Ust_Ishim"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">schedule_ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_recording.html">schedule_recording</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">45000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span>, <span class="st">"Ust_Ishim"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># bind the two tables together into a single schedule</span></span>
 <span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">schedule_amh</span>, <span class="va">schedule_ui</span><span class="op">)</span></span></code></pre></div>
@@ -274,7 +274,11 @@ this:</p>
 that the Ust’-Ishim individual is stored under its proper symbolic
 name:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
+<span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
+<span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
+<span><span class="co">#&gt; (This is a heads-up for future reference -- no immediate action needed.)</span></span></code></pre>
 <pre><code><span><span class="co">#&gt;         name  time pop</span></span>
 <span><span class="co">#&gt; 1  Ust_Ishim 45000 OOA</span></span>
 <span><span class="co">#&gt; 2      AFR_1 43000 AFR</span></span>
@@ -313,7 +317,7 @@ name:</p>
 <span><span class="co">#&gt; 35    EUR_12     0 EUR</span></span></code></pre>
 <p>When we later compute summary statistics on tree sequences, this
 makes referring to specific individuals even more convenient:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"AFR_1"</span>, B <span class="op">=</span> <span class="st">"EUR_1"</span>, C <span class="op">=</span> <span class="st">"Ust_Ishim"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
 <span><span class="co">#&gt;   A     B     C            f3</span></span>

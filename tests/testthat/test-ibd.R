@@ -10,7 +10,7 @@ init_env()
 test_that("aggregate ts_ibd(ts, coordinates = TRUE) matches IBD totals", {
   pop <- population("POP", time = 1, N = 1000)
   model <- compile_model(populations = pop, generation_time = 1, simulation_length = 1000)
-  schedule <- schedule_sampling(model, times = 1001, list(pop, 5))
+  schedule <- schedule_recording(model, times = 1001, list(pop, 5))
 
   ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = schedule)
 
@@ -35,7 +35,7 @@ model <- compile_model(populations = list(pop1, pop2),
                         generation_time = 1, simulation_length = 2000)
 
 ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
-samples <- ts_names(ts, split = "pop")
+samples <- ts_names(ts, split = TRUE)
 
 pop1_samples <- sample(samples$POP1, 20)
 pop2_samples <- sample(samples$POP2, 20)
@@ -70,7 +70,7 @@ test_that("IBD of a given minimum length is returned", {
   ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, random_seed = 42)
 
   set.seed(42)
-  samples <- sample(ts_samples(ts)$name, 10)
+  samples <- sample(ts_recorded(ts)$name, 10)
 
   ibd_totals <- ts_ibd(ts, coordinates = TRUE, within = samples, minimum_length = 6e6)
   expect_true(min(ibd_totals$length) >= 6e6)
@@ -123,7 +123,7 @@ test_that("only IBD with MRCA of a given maximum age is reported", {
   ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
 
   set.seed(42)
-  samples <- sample(ts_samples(ts)$name, 10)
+  samples <- sample(ts_recorded(ts)$name, 10)
 
   ibd_totals10 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 10)
   tmrca10 <- get_pairs_tmrca(ts, ibd_totals10)

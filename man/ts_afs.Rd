@@ -62,7 +62,7 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 # load the tree-sequence object from disk
 ts <- ts_read(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 
-samples <- ts_samples(ts) \%>\% .[.$pop \%in\% c("AFR", "EUR"), ]
+samples <- ts_recorded(ts) \%>\% .[.$pop \%in\% c("AFR", "EUR"), ]
 
 # compute AFS for the given set of individuals
 ts_afs(ts, sample_sets = list(samples$name))

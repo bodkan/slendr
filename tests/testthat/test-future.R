@@ -30,7 +30,7 @@ test_that("forward models not starting from 1 given the same outcome (resizes, a
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 test_that("forward models starting from 1 give the same outcome (resizes, all samples)", {
@@ -46,7 +46,7 @@ test_that("forward models starting from 1 give the same outcome (resizes, all sa
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 test_that("(truncated) forward models starting from 1 give the same outcome (resizes, all samples)", {
@@ -62,7 +62,7 @@ test_that("(truncated) forward models starting from 1 give the same outcome (res
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 # resizes with defined sampling ---------------------------------------------------------------
@@ -77,12 +77,12 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 1000)
 
-  samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
+  samples <- schedule_recording(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 test_that("forward models not starting from 1 give the same outcome (resizes, defined samples)", {
@@ -95,12 +95,12 @@ test_that("forward models not starting from 1 give the same outcome (resizes, de
 
   model <- compile_model(list(pop1, pop2), generation_time = 20, simulation_length = 3000)
 
-  samples <- schedule_sampling(model, times = c(1, 500, 1000, 1001, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
+  samples <- schedule_recording(model, times = c(1, 500, 1000, 1001, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 # gene-flow events ---------------------------------------------------------------
@@ -117,12 +117,12 @@ test_that("forward models not starting from 1 given the same outcome (gene flows
 
   model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 20, simulation_length = 1000)
 
-  samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
+  samples <- schedule_recording(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 test_that("forward models starting from 1 given the same outcome (gene flows)", {
@@ -137,12 +137,12 @@ test_that("forward models starting from 1 given the same outcome (gene flows)", 
 
   model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 20, simulation_length = 1000)
 
-  samples <- schedule_sampling(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
+  samples <- schedule_recording(model, times = c(1, 500, 1900, 2200, 2500), list(pop1, 2), list(pop2, 2))
 
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, schedule = samples)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 
@@ -164,7 +164,7 @@ test_that("backward models correctly sample by default 'at present' (non-truncat
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })
 
 test_that("backward models correctly sample by default 'at present' (truncated)", {
@@ -179,5 +179,5 @@ test_that("backward models correctly sample by default 'at present' (truncated)"
   tss <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
   tsm <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-  expect_equal(ts_samples(tss), ts_samples(tsm))
+  expect_equal(ts_recorded(tss), ts_recorded(tsm))
 })

@@ -2,8 +2,8 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_samples}
 \alias{ts_samples}
-\title{Extract names and times of individuals of interest in a tree sequence produced
-by a slendr model}
+\title{Extract names and times of individuals of interest recorded in a tree
+sequence produced from a slendr model}
 \usage{
 ts_samples(x, schedule = NULL)
 }
@@ -11,12 +11,12 @@ ts_samples(x, schedule = NULL)
 \item{x}{Either a tree sequence object of the class \code{slendr_ts}, or
 a compiled slendr model of the class \code{slendr_model}}
 
-\item{schedule}{If samples from a model (not yet a tree sequence) are to be
-obtained, this argument can be used to restrict the set of recorded
-individuals}
+\item{schedule}{If individuals from a model (not yet a tree sequence) are to be
+obtained, this argument can be used to only extract those individuals who
+would be simulated from the model}
 }
 \value{
-Table of individuals scheduled for sampling across space and time
+Table of individuals scheduled for recording across space and time
 }
 \description{
 Extracts a table of metadata information about individuals recorded in
@@ -39,6 +39,7 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 # load the tree-sequence object from disk
 ts <- ts_read(slendr_ts, model)
 
-# extract the table of individuals scheduled for simulation and sampling
-ts_samples(ts)
+# extract the table of individuals recorded in the tree sequence
+ts_recorded(ts)
 }
+\keyword{internal}

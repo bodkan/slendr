@@ -1,4 +1,15 @@
+# slendr 1.6.0
+
 # _slendr_ (development version)
+
+- Data frames produces by various $f$-statistics now include a column `statistic`
+  containing a convenient readable name of each triplet, quartet, etc., in the
+  usual naming conventions.
+([#36cb1d14](https://github.com/bodkan/slendr/commit/36cb1d14))
+  
+- `ts_names()` and `ts_recorded()` now properly catch an error when an invalid
+argument `ts` is set (i.e., an object which is not of the class `slendr_ts`).
+([#876114e7](https://github.com/bodkan/slendr/commit/876114e7))
 
 - A new function `ts_replicate()` can be used to automate the computation of a
 given tree-sequence statistical expression across a number of replicates.
@@ -10,6 +21,15 @@ which schedules the recording of the given number of individuals from every
 population at a given time.
 ([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
 
+- The `split = "pop"` or `split = "time"` options of `ts_names()` has been
+retired. In reality, only the `split = "pop"` has any application, which is  why
+the function now operates as either `split = FALSE` (the default, and also
+matching the previous default behavior) or `split = TRUE` (equivalent to `split
+= "pop"`). Note that, of course, the original behaviour can be easily recovered
+by applying the base-R function `split()` on the result of the `ts_recorded()`
+table.
+([#ce28fa21](https://github.com/bodkan/slendr/commit/ce28fa21))
+  
 - The argument `how =` of the `resize()` function is now deprecated. Specifying
 a `time` of a resize event now implies an immediate, step-wise change of the
 population size, specifying also the `end` time automatically now implies an

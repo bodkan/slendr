@@ -94,42 +94,42 @@ cowplot::plot_grid(
 
 ## Scheduling of sampling events
 
-Now that we have defined a model, how do we sample data from it? Ideally, we would like to to schedule sampling events at a given time, sampling a defined number of individuals from a given population. This is why _slendr_ provides a function `schedule_sampling()` which serves to define such sampling schedule automatically and enforces that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) present will be sampled from.
+Now that we have defined a model, how do we sample data from it? Ideally, we would like to to schedule sampling events at a given time, sampling a defined number of individuals from a given population. This is why _slendr_ provides a function `schedule_recording()` which serves to define such sampling schedule automatically and enforces that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) present will be sampled from.
 
 In our example, we want to sample two Neanderthal individuals (the older one being the Altai Neanderthal published by Pruefer _et al._ 2014, the younger one Vindija Neanderthal published by Pruefer _et al._, 2017). These two genomes are what we need to estimate Neanderthal ancestry proportion using a so-called $f_4$-ratio statistic (more on that below, but also see Petr _et al._, PNAS 2019):
 
 ```{r}
-nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
+nea_samples <- schedule_recording(model, times = c(70000, 40000), list(nea, 1))
 nea_samples
 ```
 
-As you can see, the `schedule_sampling()` function simply accepts the vector of times at which remembering should be schedule, and then a list of pairs `(<slendr population>, <number of individuals>)` encoding from which populations should how many individuals be remembered at time points given in the `times` vector.
+As you can see, the `schedule_recording()` function simply accepts the vector of times at which remembering should be schedule, and then a list of pairs `(<slendr population>, <number of individuals>)` encoding from which populations should how many individuals be remembered at time points given in the `times` vector.
 
 Next, we want to sample some present-day individuals: an outgroup representing a chimpanzee, and a couple of Africans and Europeans:
 
 ```{r}
-present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 10))
+present_samples <- schedule_recording(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 10))
 present_samples
 ```
 
-As you can see above, the `schedule_sampling()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of interest to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running doing this:
+As you can see above, the `schedule_recording()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of interest to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running doing this:
 
 ```{r}
-emh_samples <- schedule_sampling(model, times = runif(n = 40, min = 10000, max = 40000), list(eur, 1))
+emh_samples <- schedule_recording(model, times = runif(n = 40, min = 10000, max = 40000), list(eur, 1))
 emh_samples
 ```
 
 This samples a single ancient European individuals at randomly chosen times between 40 and 10 ky ago.
 
-One nice feature of the `schedule_sampling()` function is that it only schedules sampling events for a population, if that population is present in the simulation at a given time. This makes it possible to simply take a wide time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting `strict = TRUE` like this:
+One nice feature of the `schedule_recording()` function is that it only schedules sampling events for a population, if that population is present in the simulation at a given time. This makes it possible to simply take a wide time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting `strict = TRUE` like this:
 
 ```{r, eval = FALSE}
 # this attempts to sample a Neanderthal individual at a point when Neanderthals
 # are already extinct, resulting in an error
-schedule_sampling(model, times = 10000, list(nea, 1), strict = TRUE)
+schedule_recording(model, times = 10000, list(nea, 1), strict = TRUE)
 ```
 
-    Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
+    Error: Cannot schedule recording for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
 
 Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](https://bodkan.net/slendr/articles/vignette-07-engines.html).
 
@@ -149,7 +149,7 @@ Note that we bind the individual sampling schedule data frames using the `rbind`
 
 ## Named samples
 
-In addition to automatically named symbolic names, _slendr_ also supports fully customized sample names (see [here](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) and [here](https://bodkan.net/slendr/reference/schedule_sampling.html) for a bit more detail). This is particularly convenient for referring to simulated individuals by their "real-world names".
+In addition to automatically named symbolic names, _slendr_ also supports fully customized sample names (see [here](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) and [here](https://bodkan.net/slendr/reference/schedule_recording.html) for a bit more detail). This is particularly convenient for referring to simulated individuals by their "real-world names".
 
 ## R interface for *tskit* and *pyslim*
 
@@ -177,7 +177,7 @@ ts_write(ts, output_file)
 output_file
 ```
 
-In case have the tree-sequence output saved in a custom location on disk, we can load the tree sequence using the _slendr_ function `ts_read()`. If we're dealing with a tree sequence produced by the SLiM back end (which is not the case here), we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (recall the sampling schedule we set up with the `schedule_sampling()` function above). Note that we have to provide the `model` object generated by `compile_model()` above in order to have all model annotation information for the simulated tree-sequence data (we have to do this only once, and only during loading):
+In case have the tree-sequence output saved in a custom location on disk, we can load the tree sequence using the _slendr_ function `ts_read()`. If we're dealing with a tree sequence produced by the SLiM back end (which is not the case here), we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (recall the sampling schedule we set up with the `schedule_recording()` function above). Note that we have to provide the `model` object generated by `compile_model()` above in order to have all model annotation information for the simulated tree-sequence data (we have to do this only once, and only during loading):
 
 ```{r}
 ts <- ts_read(output_file, model)
