@@ -19,7 +19,7 @@ import numpy
 import pandas
 import tskit
 
-VERSION = "slendr_1.5.0"
+VERSION = "slendr_1.6.0"
 
 
 def simulate(
@@ -187,7 +187,7 @@ def simulate(
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
-          "version": "slendr_1.5.0",
+          "version": "slendr_1.6.0",
           "backend": "msprime",
           "description": description,
           "sampling": {
