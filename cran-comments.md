@@ -1,7 +1,5 @@
 I made the unit testing suite more efficient to reduce the computational time of
-CRAN checks. The issue of long run times was primarily caused by inefficiencies
-in the process of Python environment activation by the 'reticulate' R package on
-Windows.
+CRAN checks.
 
 # R CMD check results
 
