@@ -12,6 +12,7 @@
 # exhaustive enough -- it's better to put new tests in a separate script so that it's
 # cleare why have these been introduced.
 
+skip_if(!check_dependencies(python = TRUE))
 init_env()
 
 # resizes with default sampling ---------------------------------------------------------------

@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   fig.height = 4,
   fig.cap = "",
   dpi = 80,
-  eval = slendr::check_dependencies(slim = TRUE)
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 set.seed(314159)
 ```

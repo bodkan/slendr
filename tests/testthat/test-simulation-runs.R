@@ -1,4 +1,4 @@
-init_env()
+skip_if(!check_dependencies(python = TRUE))
 
 # Run a given forward/backward simulation with different combinations
 # of start-end and burnin parameters

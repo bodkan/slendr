@@ -1,3 +1,5 @@
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 pop <- population("pop", time = 1000, N = 100)

@@ -1,3 +1,5 @@
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)

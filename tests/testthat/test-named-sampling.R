@@ -1,3 +1,5 @@
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 afr <- population("AFR", time = 100000, N = 30)

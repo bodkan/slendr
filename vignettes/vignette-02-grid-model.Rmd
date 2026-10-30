@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 60,
-  eval = slendr::check_dependencies(slim = TRUE)
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 ```
 

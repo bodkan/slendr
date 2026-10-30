@@ -1,5 +1,7 @@
 msg <- "Cannot schedule recording"
 
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 test_that("sampling from a population which is not present is prevented (forward)", {
@@ -69,6 +71,8 @@ test_that("only locations within world bounds are valid", {
 })
 
 test_that("sampling is as close to the a single specified position as possible", {
+  skip_if(!check_dependencies(python = TRUE))
+
   n_samples <- 5
   times <- c(10, 100)
   locations <- list(c(50, 50))
@@ -124,6 +128,8 @@ test_that("sampling is as close to the a single specified position as possible",
 })
 
 test_that("sampling is as close to the multiple specified positions as possible", {
+  skip_if(!check_dependencies(python = TRUE))
+
   n_samples <- 5
   times <- c(10, 100)
   locations <- list(c(0, 0), c(100, 100))
@@ -223,6 +229,8 @@ test_that("sampling locations may only be given for spatial models", {
 })
 
 test_that("a mix of spatial and non-spatial samplings is not allowed for a single population", {
+  skip_if(!check_dependencies(python = TRUE))
+
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 100)
   p2 <- population(name = "p2", map = map, time = 20, N = 100, center = c(1, 1), radius = 10)
@@ -247,6 +255,8 @@ test_that("a mix of spatial and non-spatial samplings is not allowed for a singl
 })
 
 test_that("sampling table is correctly adjusted after simplification (msprime)", {
+  skip_if(!check_dependencies(python = TRUE))
+
   pop1 <- population("pop1", time = 1, N = 100)
   pop2 <- population("pop2", time = 10, N = 42, parent = pop1)
   model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")
@@ -278,6 +288,8 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
 })
 
 test_that("sampling table is correctly adjusted after simplification (SLiM)", {
+  skip_if(!check_dependencies(python = TRUE))
+
   pop1 <- population("pop1", time = 1, N = 100)
   pop2 <- population("pop2", time = 10, N = 42, parent = pop1)
   model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")

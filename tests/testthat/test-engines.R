@@ -1,3 +1,4 @@
+skip_if(!check_dependencies(python = TRUE))
 init_env()
 
 test_that("only serialized models can be run on the command line", {

@@ -1,5 +1,7 @@
 RERUN <- FALSE
 
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 map <- readRDS("map.rds")
@@ -50,6 +52,8 @@ test_that("interaction parameter change is correctly recorded", {
 })
 
 test_that("SLiM dispersals match expectations laid by R distributions", {
+  skip_if(!check_dependencies(python = TRUE))
+
   seed <- 123
   set.seed(seed)
 

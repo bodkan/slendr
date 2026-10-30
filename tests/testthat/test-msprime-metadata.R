@@ -1,3 +1,5 @@
+skip_if(!check_dependencies(python = TRUE))
+
 init_env()
 
 seed <- 42 # random seed

@@ -2,6 +2,7 @@
 # functions. This is why it loads simulated outputs via the original ts_read() method (which is still
 # valid, so it actually makes sense to test things this way).
 
+skip_if(!check_dependencies(python = TRUE))
 init_env()
 
 RERUN <- FALSE
