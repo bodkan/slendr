@@ -1,6 +1,4 @@
-# slendr 1.6.0
-
-# _slendr_ (development version)
+# _slendr_ 1.6.0
 
 - Data frames produces by various $f$-statistics now include a column `statistic`
   containing a convenient readable name of each triplet, quartet, etc., in the
