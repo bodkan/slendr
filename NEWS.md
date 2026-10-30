@@ -2,18 +2,6 @@
 
 # _slendr_ (development version)
 
-- The `init_env()` function now creates an ephemeral Python environment using
-  the uv tool without the need for any user intervention. In other words, the
-  default behavior `init_env(uv = FALSE)`, which originally required a prior set
-  up of a Python environment using the `setup_env()` function, is now replaced
-  by a new default of `init_env(uv = TRUE)`. This change has been made because
-  in practice, most daily work with _slendr_ happens in an exploratory,
-  interactive setting which makes the new behavior more convenient. In HPC
-  inference settings (involving potentially millions of simulations across many
-  different machines where ephemeral Python environments might turn out to be
-  wasteful), the old behavior is therefore still available.
-([#adb0de99](https://github.com/bodkan/slendr/commit/adb0de99))
-
 - Data frames produces by various $f$-statistics now include a column `statistic`
   containing a convenient readable name of each triplet, quartet, etc., in the
   usual naming conventions.
