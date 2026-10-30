@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,7 +154,7 @@ applicable, its just the presentation which has changed.</p>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span> <span class="op">/</span> <span class="va">scaling</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
 <span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
 <span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
@@ -263,7 +263,7 @@ applicable, its just the presentation which has changed.</p>
 <span></span>
 <span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">heterozygosity</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">heterozygosity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pi <span class="op">=</span> <span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">name</span><span class="op">)</span><span class="op">$</span><span class="va">diversity</span><span class="op">)</span></span>
@@ -584,22 +584,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.5691825</td>
+<td align="right">5.2967474</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">11.8799151</td>
+<td align="right">12.2490469</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">3.4621296</td>
+<td align="right">2.1362580</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.6819432</td>
+<td align="right">0.6121509</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

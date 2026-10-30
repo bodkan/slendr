@@ -9,7 +9,7 @@ in tskit."><meta property="og:image" content="https://bodkan.net/slendr/logo.png
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -162,61 +162,61 @@ broadly compatible with raw tskit methods.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"AFR_1"</span>, B <span class="op">=</span> <span class="st">"EUR_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A     B           f2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 0.000<span style="text-decoration: underline;">022</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A     B     statistic             f2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 f2(AFR_1;EUR_1) 0.000<span style="text-decoration: underline;">022</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f2 for two sets of individuals</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_3"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A           B                 f2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2 EUR_1+EUR_3 0.000<span style="text-decoration: underline;">021</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A           B           statistic                         f2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2 EUR_1+EUR_3 f2(AFR_1+AFR_2;EUR_1+EUR_3) 0.000<span style="text-decoration: underline;">021</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f3 for two individuals in a previously loaded tree sequence</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"NEA_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A     B     C           f3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 0.000<span style="text-decoration: underline;">002</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A     B     C     statistic                   f3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 f3(EUR_1;AFR_1,NEA_1) 0.000<span style="text-decoration: underline;">002</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f3 for two sets of individuals</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A                       B           C           f3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2+EUR_1+EUR_2 NEA_1+NEA_2 CH_1  0.000<span style="text-decoration: underline;">153</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A                       B           C     statistic                         f3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2+EUR_1+EUR_2 NEA_1+NEA_2 CH_1  f3(AFR_1+AFR_2+EUR_1+EUR_2;… 1.53<span style="color: #949494;">e</span><span style="color: #BB0000;">-4</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f4 for single individuals</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="st">"EUR_1"</span>, X <span class="op">=</span> <span class="st">"AFR_1"</span>, Y <span class="op">=</span> <span class="st">"NEA_1"</span>, Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   W     X     Y     Z           f4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 CH_1  0.000<span style="text-decoration: underline;">002</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   W     X     Y     Z     statistic                        f4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 CH_1  f4(EUR_1,AFR_1;NEA_1,CH_1) 0.000<span style="text-decoration: underline;">002</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f4 for sets of individuals</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          Y <span class="op">=</span> <span class="st">"NEA_1"</span>,</span></span>
 <span class="r-in"><span>          Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   W           X           Y     Z            f4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1+EUR_2 AFR_1+AFR_2 NEA_1 CH_1  0.000<span style="text-decoration: underline;">025</span>5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   W           X           Y     Z     statistic                               f4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1+EUR_2 AFR_1+AFR_2 NEA_1 CH_1  f4(EUR_1+EUR_2,AFR_1+AFR_2;NEA_1,… 2.55<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># calculate f4-ratio for a given set of target individuals X</span></span></span>
 <span class="r-in"><span><span class="fu">ts_f4ratio</span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"EUR_4"</span>, <span class="st">"EUR_5"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>               A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   X     A     B     C     O      alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 NEA_1 NEA_2 AFR_1 CH_1  0.011<span style="text-decoration: underline;">5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> EUR_2 NEA_1 NEA_2 AFR_1 CH_1  0.282 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> EUR_4 NEA_1 NEA_2 AFR_1 CH_1  0.218 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> EUR_5 NEA_1 NEA_2 AFR_1 CH_1  0.086<span style="text-decoration: underline;">2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   X     A     B     C     O     statistic                               alpha</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 NEA_1 NEA_2 AFR_1 CH_1  f4-ratio(EUR_1;NEA_1,NEA_2,AFR_1,CH_1) 0.011<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> EUR_2 NEA_1 NEA_2 AFR_1 CH_1  f4-ratio(EUR_2;NEA_1,NEA_2,AFR_1,CH_1) 0.282 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> EUR_4 NEA_1 NEA_2 AFR_1 CH_1  f4-ratio(EUR_4;NEA_1,NEA_2,AFR_1,CH_1) 0.218 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> EUR_5 NEA_1 NEA_2 AFR_1 CH_1  f4-ratio(EUR_5;NEA_1,NEA_2,AFR_1,CH_1) 0.086<span style="text-decoration: underline;">2</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

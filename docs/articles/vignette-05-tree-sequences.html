@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,8 +123,8 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/.virtualenvs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.14.5 (v3.14.5:5607950ef23, May 10 2026, 07:38:09) [Clang 21.0.0 (clang-2100.0.123.102)] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.12.16 (main, Oct 26 2026, 11:31:43) [Clang 21.1.8 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
 <span><span class="co">#&gt;  - tskit: version 1.0.2 ✓ </span></span>
@@ -397,7 +397,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//RtmpS6LuTw/file10cf243716fa"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/7f/n68ck8q969z_d628zqqnl4ch0000gn/T//Rtmp9zqnVw/file123791a7d5cff"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -800,32 +800,32 @@ which calculate the well-known set of Patterson’s
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># f2 is a measure of the branch length connecting A and B</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f2</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   A     B            f2</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 0.000<span style="text-decoration: underline;">044</span>8</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   A     B     statistic              f2</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 f2(EUR_1;AFR_1) 0.000<span style="text-decoration: underline;">044</span>8</span></span></code></pre>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># f4 is a measure of the drift shared between A and B after their split from C</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
-<span><span class="co">#&gt;   A     B     C            f3</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 CH_1  0.000<span style="text-decoration: underline;">013</span>0</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   A     B     C     statistic                   f3</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 CH_1  f3(EUR_1;AFR_1,CH_1) 0.000<span style="text-decoration: underline;">013</span>0</span></span></code></pre>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be very close to zero (no introgression in Africans)</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"NEA_1"</span>, <span class="st">"CH_1"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1  -<span style="color: #BB0000;">118.</span></span></span></code></pre>
+<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
+<span><span class="co">#&gt;   W     X     Y     Z     statistic                     f4</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1  f4(AFR_1,AFR_2;NEA_1,CH_1) -<span style="color: #BB0000;">118.</span></span></span></code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be significantly negative (many more ABBA sites</span></span>
 <span><span class="co"># compared to BABA site due to the introgression into Europeans)</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"CH_1"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1  -<span style="color: #BB0000;">741.</span></span></span></code></pre>
+<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
+<span><span class="co">#&gt;   W     X     Y     Z     statistic                     f4</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1  f4(AFR_1,EUR_1;NEA_1,CH_1) -<span style="color: #BB0000;">741.</span></span></span></code></pre>
 <p>These functions accept a <code>mode =</code> argument, specifying
 whether the statistics should be calculated using mutation site patterns
 (<code>mode = "site"</code>, the default), branch lengths
@@ -842,9 +842,9 @@ which individuals are which based on the specified sampling schedule
 (the names are assigned to individuals based on the order of their
 sampling). We can get an overview of the individuals scheduled for
 sampling (i.e. permanently remembered) and their names with a helper
-function <code>ts_samples()</code>:</p>
+function <code><a href="../reference/ts_samples.html">ts_samples()</a></code>:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
 <span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
 <span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
@@ -879,7 +879,7 @@ statistic implemented in the <code><a href="../reference/ts_f4ratio.html">ts_f4r
 version of the statistic in Petr <em>et al.</em>, PNAS 2019):</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first get a table of simulated African and European individuals in the tree-sequence</span></span>
-<span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
 <span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
 <span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
@@ -1130,7 +1130,7 @@ character vectors for each group (which is what functions such as
 <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code> expects as an input):</p>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get sampled individuals from all populations</span></span>
-<span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>

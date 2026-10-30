@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -623,7 +623,7 @@ Anatolians split from the ancestral population of Eurasians in Anatolia
 and then expanded in a wave to Europe. We have sampled the following
 individuals:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"ANA"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"ANA"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
 <span><span class="co">#&gt; as the function has been renamed in a wider effort to clarify</span></span>
 <span><span class="co">#&gt; the naming of various modeling components across the package.</span></span>
@@ -681,7 +681,7 @@ locations and times of ancestral nodes of sampled individuals, focusing
 on the following subset of columns:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lineages</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">ts_samples</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="va">.</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning in ts_samples(ts): Starting with slendr v2.0, please use `ts_recorded()` instead,</span></span>
