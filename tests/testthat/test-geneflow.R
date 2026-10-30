@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("non-overlapping geneflow leads to error", {
   map <- readRDS("map.rds")
   pop1 <- population("pop1", N = 100, time = 10000,

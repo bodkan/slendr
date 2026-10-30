@@ -23,6 +23,8 @@ test_that("non-integer population split time is rounded", {
   expect_true(attr(pop, "history")[[1]]$N == 101)
 })
 
+skip_on_cran()
+
 test_that("parent cannot be scheduled for removal before a daughter splits (forward)", {
   error_msg <- "Parent population will be removed"
 

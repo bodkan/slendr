@@ -1,3 +1,5 @@
+skip_on_cran()
+
 # This long script generates from simple slendr models:
 #  - constant N
 #  - step reduction of N

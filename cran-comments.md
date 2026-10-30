@@ -1,5 +1,5 @@
-Minor code refactoring and bugfixes, renaming a few functions to improve
-consistency.
+I modified the unit testing suite so that less important tests are only ran on
+my local test machines but are skipped on CRAN to reduce computational time.
 
 # R CMD check results
 

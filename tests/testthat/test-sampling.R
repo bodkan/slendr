@@ -1,5 +1,6 @@
 msg <- "Cannot schedule recording"
 
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 init_env()

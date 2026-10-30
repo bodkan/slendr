@@ -1,3 +1,5 @@
+skip_on_cran()
+
 skip_if(!check_dependencies(python = TRUE))
 
 map <- readRDS("map.rds")

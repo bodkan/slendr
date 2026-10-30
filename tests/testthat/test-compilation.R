@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("name of a population can only be a scalar character value", {
   error_msg <- "A population name must be a character scalar value"
   expect_error(population(name = c("asd", "xyz"), time = 1, N = 100), error_msg)
