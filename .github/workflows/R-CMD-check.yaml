@@ -172,8 +172,6 @@ jobs:
             paste0(
               "PATH=D:/a/_temp/msys64/ucrt64/bin",
               "\n",
-              "SLENDR_UV=FALSE",
-              "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
               "\n",
               "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
@@ -181,29 +179,29 @@ jobs:
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
-      - name: Setup dedicated Python environment for slendr
-        if: runner.os == 'Windows'
-        run: |
-          install.packages(c("magrittr", "reticulate"), repos = "http://cran.rstudio.com")
-          library(magrittr)
-
-          path <- file.path(Sys.getenv("GITHUB_WORKSPACE"), "inst/deps")
-          DEPS <- list(
-            python = scan(file.path(path, "python-version.txt"), what = "character", quiet = TRUE),
-            modules = readLines(file.path(path, "requirements.txt")),
-            slim = scan(file.path(path, "slim-version.txt"), what = character())
-          )
-          DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c(paste0("Python-", DEPS$python), .) %>% paste(collapse = "_")
-
-          reticulate::install_miniconda()
-
-          reticulate::conda_create(DEPS$env, python_version = DEPS$python)
-          reticulate::use_condaenv(DEPS$env, required = TRUE)
-
-          pip_only <- grepl("tspop|pyslim", DEPS$modules)
-          reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[!pip_only], pip = FALSE)
-          reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[pip_only], pip = TRUE)
-        shell: Rscript {0}
+      # - name: Setup dedicated Python environment for slendr
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     install.packages(c("magrittr", "reticulate"), repos = "http://cran.rstudio.com")
+      #     library(magrittr)
+      #
+      #     path <- file.path(Sys.getenv("GITHUB_WORKSPACE"), "inst/deps")
+      #     DEPS <- list(
+      #       python = scan(file.path(path, "python-version.txt"), what = "character", quiet = TRUE),
+      #       modules = readLines(file.path(path, "requirements.txt")),
+      #       slim = scan(file.path(path, "slim-version.txt"), what = character())
+      #     )
+      #     DEPS$env <- DEPS$modules %>% gsub("==", "-", .) %>% c(paste0("Python-", DEPS$python), .) %>% paste(collapse = "_")
+      #
+      #     reticulate::install_miniconda()
+      #
+      #     reticulate::conda_create(DEPS$env, python_version = DEPS$python)
+      #     reticulate::use_condaenv(DEPS$env, required = TRUE)
+      #
+      #     pip_only <- grepl("tspop|pyslim", DEPS$modules)
+      #     reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[!pip_only], pip = FALSE)
+      #     reticulate::conda_install(envname = DEPS$env, packages = DEPS$modules[pip_only], pip = TRUE)
+      #   shell: Rscript {0}
 
         # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
         # is actually not the first time this happened, interesting:
