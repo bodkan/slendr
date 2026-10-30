@@ -1,64 +1,28 @@
 # _slendr_ 1.6.0
 
-- Data frames produces by various $f$-statistics now include a column `statistic`
-  containing a convenient readable name of each triplet, quartet, etc., in the
-  usual naming conventions.
-([#36cb1d14](https://github.com/bodkan/slendr/commit/36cb1d14))
+- Data frames produces by various $f$-statistics now include a column `statistic` containing a convenient readable name of each triplet, quartet, etc., in the usual naming conventions. ([#36cb1d14](https://github.com/bodkan/slendr/commit/36cb1d14))
+
+- `ts_names()` and `ts_recorded()` now properly catch an error when an invalid argument `ts` is set (i.e., an object which is not of the class `slendr_ts`). ([#876114e7](https://github.com/bodkan/slendr/commit/876114e7))
+
+- A new function `ts_replicate()` can be used to automate the computation of a given tree-sequence statistical expression across a number of replicates. ([#f83d6d9c](https://github.com/bodkan/slendr/commit/f83d6d9c))
+
+- Functions `schedule_recording()` and `ts_recorded()` are now substitutes for functions `schedule_sampling()` and `ts_samples()`, respectively, in an effort to improve naming consistency across the _slendr_ package (especially on the road to an upcoming _slendr_ 2.0 release somewhere in the distant future). Of course, the original functions still work, and a message is reported informing the users of the long-term upcoming changes. ([#8b27db10](https://github.com/bodkan/slendr/commit/8b27db10), [#7263e33e](https://github.com/bodkan/slendr/commit/7263e33e))
+
+- To make quick exploratory computation more convenient, the `schedule_recording()` function now supports a syntax `list("each", <number>)` which schedules the recording of the given number of individuals from every population at a given time. ([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
+
+- The `split = "pop"` or `split = "time"` options of `ts_names()` has been retired. In reality, only the `split = "pop"` has any application, which is  why the function now operates as either `split = FALSE` (the default, and also matching the previous default behavior) or `split = TRUE` (equivalent to `split = "pop"`). Note that, of course, the original behaviour can be easily recovered by applying the base-R function `split()` on the result of the `ts_recorded()` table. ([#ce28fa21](https://github.com/bodkan/slendr/commit/ce28fa21))
   
-- `ts_names()` and `ts_recorded()` now properly catch an error when an invalid
-argument `ts` is set (i.e., an object which is not of the class `slendr_ts`).
-([#876114e7](https://github.com/bodkan/slendr/commit/876114e7))
+- The argument `how =` of the `resize()` function is now deprecated. Specifying a `time` of a resize event now implies an immediate, step-wise change of the population size, specifying also the `end` time automatically now implies an exponential change. Thus, both of these modes of operation remain unchanged, but setting `how = "step"` or `how = "exponential"` is now not needed anymore. ([#7f7269e8](https://github.com/bodkan/slendr/commit/7f7269e8))
 
-- A new function `ts_replicate()` can be used to automate the computation of a
-given tree-sequence statistical expression across a number of replicates.
-([#f83d6d9c](https://github.com/bodkan/slendr/commit/f83d6d9c))
+- An issue with visualization of "truncated" models (i.e., models compiled with the `simulation_length` argument shorter than the default duration of the model) which introduced awkward gaps in places of "missing" populations has been fixed. ([#00fa2bee](https://github.com/bodkan/slendr/commit/00fa2bee))
 
-- To make quick exploratory computation more convenient, the
-`schedule_sampling()` function now supports a syntax `list("each", <number>)`
-which schedules the recording of the given number of individuals from every
-population at a given time.
-([#04e6fa6b](https://github.com/bodkan/slendr/commit/04e6fa6b))
+- The `quiet =` argument of `init_env()` is now deprecated, as the function is "quiet" by default. ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
 
-- The `split = "pop"` or `split = "time"` options of `ts_names()` has been
-retired. In reality, only the `split = "pop"` has any application, which is  why
-the function now operates as either `split = FALSE` (the default, and also
-matching the previous default behavior) or `split = TRUE` (equivalent to `split
-= "pop"`). Note that, of course, the original behaviour can be easily recovered
-by applying the base-R function `split()` on the result of the `ts_recorded()`
-table.
-([#ce28fa21](https://github.com/bodkan/slendr/commit/ce28fa21))
-  
-- The argument `how =` of the `resize()` function is now deprecated. Specifying
-a `time` of a resize event now implies an immediate, step-wise change of the
-population size, specifying also the `end` time automatically now implies an
-exponential change. Thus, both of these modes of operation remain unchanged, but
-setting `how = "step"` or `how = "exponential"` is now not needed anymore.
-([#7f7269e8](https://github.com/bodkan/slendr/commit/7f7269e8))
+- The `samples =` argument of `msprime()` and `slim()` (as well as `plot_model()` and other functions) is now deprecated in favor of `schedule =`. This is in order to keep the naming of things a bit more consistent and to avoid clumsy issues with the meaning (and typical use) of the the downstream `ts_samples()` and various `ts_*()` statistical functions. ([PR #200](https://github.com/bodkan/slendr/pull/200))
 
-- An issue with visualization of "truncated" models (i.e., models compiled with
-the `simulation_length` argument shorter than the default duration of the model)
-which introduced awkward gaps in places of "missing" populations has been fixed.
-([#00fa2bee](https://github.com/bodkan/slendr/commit/00fa2bee))
+- The `ts_recorded()` function now allows extracting sample metatada not just from a given _slendr_ tree sequence, but also from a compiled model. This is useful for workflows which need to operate with such information before a potentially large simulation is even executed. ([#8ef6750d](https://github.com/bodkan/slendr/commit/8ef6750d))
 
-- The `quiet =` argument of `init_env()` is now deprecated, as the function is
-"quiet" by default.
-([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
-
-- The `samples =` argument of `msprime()` and `slim()` (as well as
-`plot_model()` and other functions) is now deprecated in favor of `schedule =`.
-This is in order to keep the naming of things a bit more consistent and to avoid
-clumsy issues with the meaning (and typical use) of the the downstream
-`ts_samples()` and various `ts_*()` statistical functions.
-([PR #200](https://github.com/bodkan/slendr/pull/200))
-
-- The `ts_samples()` function now allows extracting sample metatada not just
-from a given _slendr_ tree sequence, but also from a compiled model. This is
-useful for workflows which need to operate with such information before a
-potentially large simulation is even executed.
-([#8ef6750d](https://github.com/bodkan/slendr/commit/8ef6750d))
-
-- The `ts_names()` function has been updated in the same way as `ts_samples()`
-described above ([#1d27bc0f](https://github.com/bodkan/slendr/commit/1d27bc0f))
+- The `ts_names()` function has been updated in the same way as `ts_recorded()` described above  ([#1d27bc0f](https://github.com/bodkan/slendr/commit/1d27bc0f))
 
 # _slendr_ 1.5.0
 
