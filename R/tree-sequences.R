@@ -1438,7 +1438,7 @@ ts_recorded <- function(x, schedule = NULL) {
            "function ts_nodes().\n", call. = FALSE)
     }
   } else if (inherits(x, "slendr_model")) {
-    init_env()
+    init_env(uv = TRUE)
     x <- msprime(x, sequence_length = 1, recombination_rate = 0, schedule = schedule)
   } else {
     stop("Information about recorded individuals can only be obtained from\n",
