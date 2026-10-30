@@ -1,3 +1,6 @@
+Minor code refactoring and bugfixes, renaming a few functions to improve
+consistency.
+
 # R CMD check results
 
 There were no ERRORs, no WARNINGs, no NOTEs.
