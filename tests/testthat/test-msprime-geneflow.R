@@ -50,6 +50,11 @@ gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, proportion = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200)
 
+test_that("proportion and migration rate parameters are compiled correctly", {
+  expect_true(model_gf$proportion == 0.1)
+  expect_true(model_gf$migration_rate == -1)
+})
+
 samples <- schedule_recording(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 ts_slim_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
