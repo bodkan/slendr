@@ -114,9 +114,17 @@ def simulate(
       tstart = length - event.tend_gen + 1
       tend = length - event.tstart_gen + 1
       logging.info(f"Gene flow from {event._1} to {event.to} between {tstart} and {tend}")
+
+      if event.proportion > 0:
+          rate=event.proportion / (tend - tstart)
+      elif event.migration_rate > 0:
+          rate=event.migration_rate
+      else:
+          sys.exit("Invalid proportion and migration rate values")
+
       demography.add_migration_rate_change(
           time=tstart,
-          rate=event.proportion / (tend - tstart),
+          rate=rate,
           source=event.to,
           dest=event._1    # sadly, pandas renames 'from' to '_1'
       )
