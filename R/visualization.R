@@ -562,7 +562,7 @@ plot_model <- function(model, sizes = TRUE, gene_flow = c("all", "arrows", "none
                       aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
   # add gene flow arrows and proportion labels
-  if (gene_flow != "none") {
+  if (!is.null(gf) && gene_flow != "none") {
     p <- p + geom_segment(data = gf,
                           aes(x = x, xend = xend, y = y, yend = yend + log10_ydelta),
                           arrow = arrow(length = unit(0.2, "cm")))
