@@ -2,7 +2,8 @@ skip_on_cran()
 
 # Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
 # functions. This is why it loads simulated outputs via the original ts_read() method (which is still
-# valid, so it actually makes sense to test things this way).
+# valid, so it actually makes sense to test things this way to make sure things
+# continue to work as they always have).
 
 skip_if(!check_dependencies(python = TRUE))
 init_env()
@@ -12,7 +13,7 @@ RERUN <- FALSE
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
 seq_len <- 100e6 # amount of sequence to simulate
-rec_rate <- 1e-8 # uniform recombination rate
+rec_rate <- 1e-7 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
 # Now we define a very simple population model. Note that the Ne of the
