@@ -292,9 +292,9 @@ sort_splits <- function(model) {
 #'
 #' @param model Compiled \code{slendr_model} model object
 #' @param sizes Should population size changes be visualized?
-#' @param gene_flow Should gene-flow arrows be visualized on their own (\code{"arrows"},
-#'   the default), labeled with the associated values (\code{"all"}), or not at all
-#'   (\code{"none"})?
+#' @param gene_flow Should gene-flow arrows be labeled with the associated values 
+#'   (\code{"all"}, the default), only on their own (\code{"arrows"}), or not at
+#'   all (\code{"none"})?
 #' @param log Should the y-axis be plotted on a log scale? Useful for models
 #'   over very long time-scales.
 #' @param order Order of the populations along the x-axis, given as a character
@@ -304,9 +304,7 @@ sort_splits <- function(model) {
 #' @param file Output file for a figure saved via \code{ggsave}
 #' @param schedule Recording schedule to be visualized over the model
 #' @param ... Optional argument which will be passed to \code{ggsave}
-#' @param proportions Should gene flow proportions be visualized (\code{FALSE}
-#'   by default to prevent cluttering and overplotting). Deprecated (see
-#'   the \code{gene_flow} argument).
+#' @param proportions Deprecated (see the \code{gene_flow} argument).
 #'
 #' @return A ggplot2 object with the visualized slendr model
 #'
@@ -324,7 +322,7 @@ sort_splits <- function(model) {
 #' @importFrom ggplot2 geom_polygon geom_label scale_y_continuous scale_color_discrete
 #' @importFrom ggplot2 scale_fill_discrete labs geom_segment arrow
 #' @export
-plot_model <- function(model, sizes = TRUE, gene_flow = c("arrows", "all", "none"),
+plot_model <- function(model, sizes = TRUE, gene_flow = c("all", "arrows", "none"),
                        log = FALSE, order = NULL, file = NULL, schedule = NULL, ...,
                        proportions = NULL) {
   if (!is.null(proportions)) {
@@ -333,7 +331,7 @@ plot_model <- function(model, sizes = TRUE, gene_flow = c("arrows", "all", "none
             call. = FALSE)
   }
 
-  gene_flow <- match.arg(gene_flow, c("arrows", "all", "none"))
+  gene_flow <- match.arg(gene_flow, c("all", "arrows", "none"))
   populations <- model$populations
 
   oldest_time <- get_oldest_time(populations, model$direction)
