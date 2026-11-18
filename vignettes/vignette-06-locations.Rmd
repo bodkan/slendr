@@ -322,7 +322,7 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 <!--
 ```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/x.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
+# for (i in ts_recorded(ts) %>% filter(pop == "EUR") %>% pull(name)) {
 
 # ancestors <- ts_ancestors(ts, i, verbose = TRUE)
 #   p_ancestors <- ggplot() +
@@ -374,13 +374,13 @@ nodes <- unique(lineages[!is.na(lineages$name), ]$node_id)
 Let's look at the spatial ancestry of another sample. For instance, we know that the simulated history of the Anatolian population in our model is much simpler. According to the demographic graph above, Anatolians split from the ancestral population of Eurasians in Anatolia and then expanded in a wave to Europe. We have sampled the following individuals:
 
 ```{r}
-ts_samples(ts) %>% filter(pop == "ANA")
+ts_recorded(ts) %>% filter(pop == "ANA")
 ```
 
 
 ```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/z.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% pull(name)) {
+# for (i in ts_recorded(ts) %>% filter(pop == "ANA") %>% pull(name)) {
 
 # ancestors <- ts_ancestors(ts, i, verbose = TRUE)
 #   p_ancestors <- ggplot() +
@@ -401,7 +401,7 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ```
 
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(name == "ANA_45")
+ana_ind <- ts_recorded(ts) %>% filter(name == "ANA_45")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
@@ -432,7 +432,7 @@ Lets take one more look at the `sf` object with the locations and times of ances
 
 ```{r}
 lineages <-
-  ts_samples(ts) %>%
+  ts_recorded(ts) %>%
   pull(name) %>%
   ts_ancestors(ts, x = .)
 

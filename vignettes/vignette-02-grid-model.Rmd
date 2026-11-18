@@ -304,7 +304,7 @@ model <- compile_model(
 We can make sure the demographic model is specified correctly by quickly visualizing it:
 
 ```{r, model_america}
-plot_model(model)
+plot_model(model, gene_flow = "arrows")
 ```
 
 We can also plot the spatial organization of our demes on a map in all of its glory, including all gene flow events (one arrow per each unidirectional gene flow). Note that we get a warning message stating that the (non-spatial) ancestral population won't be visualized on a map:

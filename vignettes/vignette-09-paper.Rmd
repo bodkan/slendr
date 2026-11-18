@@ -97,7 +97,7 @@ plot_model(model, sizes = FALSE) # panel B
 ts <- msprime(model, sequence_length = 100e6 / scaling, recombination_rate = 1e-8, random_seed = SEED) %>%
   ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
 
-samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
+samples <- ts_recorded(ts) %>% group_by(pop) %>% sample_n(100)
 
 # panel C
 divergence <- ts_divergence(ts, split(samples$name, samples$pop))
@@ -204,7 +204,7 @@ ts <-
 
 locations <- ts_nodes(ts) %>% filter(time == max(time))
 
-heterozygosity <- ts_samples(ts) %>%
+heterozygosity <- ts_recorded(ts) %>%
   group_by(pop) %>%
   sample_n(100) %>%
   mutate(pi = ts_diversity(ts, name)$diversity)
@@ -416,7 +416,7 @@ ggsave("/Users/mp/Documents/KU/archive/slendr-paper/preprint_models_v0.5/ex3.pdf
 ```
 
 ```{r, include = FALSE, eval = FALSE}
-# eurs <- ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)
+# eurs <- ts_recorded(ts) %>% filter(pop == "EUR") %>% pull(name)
 # # eurs <- c("EUR_542", "EUR_549", "EUR_567", "EUR_581", "EUR_582")
 # eurs <- e <- c("EUR_578")
 

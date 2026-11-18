@@ -157,7 +157,7 @@ Let's first extract all individuals from populations `x1` and `x2` and estimate 
 
 ```{r}
 # extract vector of names of the "test individuals" in populations `x1` and `x2`
-X <- ts_samples(slim_gf) %>% filter(pop %in% c("x1", "x2")) %>% pull(name)
+X <- ts_recorded(slim_gf) %>% filter(pop %in% c("x1", "x2")) %>% pull(name)
 X
 ```
 
