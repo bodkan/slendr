@@ -13,7 +13,7 @@ RERUN <- FALSE
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
 seq_len <- 100e6 # amount of sequence to simulate
-rec_rate <- 1e-7 # uniform recombination rate
+rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
 # Now we define a very simple population model. Note that the Ne of the
