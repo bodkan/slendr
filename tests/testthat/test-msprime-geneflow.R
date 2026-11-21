@@ -1,4 +1,6 @@
 skip_on_cran()
+# TODO: Remove this as soon as the Windows VM starts working again
+skip_if(Sys.info()[["sysname"]] == "Windows")
 
 # Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
 # functions. This is why it loads simulated outputs via the original ts_read() method (which is still
