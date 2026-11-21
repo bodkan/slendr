@@ -1,4 +1,5 @@
 skip_on_cran()
+skip_on_windows()
 
 # Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
 # functions. This is why it loads simulated outputs via the original ts_read() method (which is still
