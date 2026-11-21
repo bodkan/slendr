@@ -29,11 +29,11 @@ mut_rate <- 1e-8 # mutation rate
 # (Of course, this is all done for demonstration purposes only and to speed up
 # the SLiM simulations by making the Ne of the other populations smaller.)
 o <- population("o", time = 1, N = 1)
-b <- population("b", parent = o, time = 500, N = 1)
-c <- population("c", parent = b, time = 1000, N = 1)
+b <- population("b", parent = o, time = 500, N = 10)
+c <- population("c", parent = b, time = 1000, N = 10)
 x1 <- population("x1", parent = c, time = 2000, N = 10000)
 x2 <- population("x2", parent = c, time = 2000, N = 10000)
-a <- population("a", parent = b, time = 1500, N = 1)
+a <- population("a", parent = b, time = 1500, N = 10)
 
 # no gene flow model
 model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200)
