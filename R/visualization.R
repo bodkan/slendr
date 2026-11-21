@@ -292,9 +292,9 @@ sort_splits <- function(model) {
 #'
 #' @param model Compiled \code{slendr_model} model object
 #' @param sizes Should population size changes be visualized?
-#' @param proportions Should gene flow proportions be visualized (\code{FALSE}
-#'   by default to prevent cluttering and overplotting)
-#' @param gene_flow Should gene-flow arrows be visualized (default \code{TRUE}).
+#' @param gene_flow Should gene-flow arrows be labeled with the associated values 
+#'   (\code{"all"}, the default), only on their own (\code{"arrows"}), or not at
+#'   all (\code{"none"})?
 #' @param log Should the y-axis be plotted on a log scale? Useful for models
 #'   over very long time-scales.
 #' @param order Order of the populations along the x-axis, given as a character
@@ -304,6 +304,7 @@ sort_splits <- function(model) {
 #' @param file Output file for a figure saved via \code{ggsave}
 #' @param schedule Recording schedule to be visualized over the model
 #' @param ... Optional argument which will be passed to \code{ggsave}
+#' @param proportions Deprecated (see the \code{gene_flow} argument).
 #'
 #' @return A ggplot2 object with the visualized slendr model
 #'
@@ -321,8 +322,16 @@ sort_splits <- function(model) {
 #' @importFrom ggplot2 geom_polygon geom_label scale_y_continuous scale_color_discrete
 #' @importFrom ggplot2 scale_fill_discrete labs geom_segment arrow
 #' @export
-plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE,
-                       order = NULL, file = NULL, schedule = NULL, ...) {
+plot_model <- function(model, sizes = TRUE, gene_flow = c("all", "arrows", "none"),
+                       log = FALSE, order = NULL, file = NULL, schedule = NULL, ...,
+                       proportions = NULL) {
+  if (!is.null(proportions)) {
+    warning("The argument `proportions` will be deprecated in the future. Its\n",
+            "function is implemented as part of the `gene_flow = \"all\"` argument.",
+            call. = FALSE)
+  }
+
+  gene_flow <- match.arg(gene_flow, c("all", "arrows", "none"))
   populations <- model$populations
 
   oldest_time <- get_oldest_time(populations, model$direction)
@@ -485,17 +494,21 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
 
   # generate a table of gene flow events to be used for plotting gene flow
   # arrows
-  if (!is.null(model$geneflow) && gene_flow) {
-    gene_flow <- model$geneflow %>%
+  if (!is.null(model$geneflow) && gene_flow != "none") {
+    gf <- model$geneflow %>%
       dplyr::filter(from %in% pop_names, to %in% pop_names) %>% # take care of truncation first
       dplyr::mutate(
         x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
         xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
         y = tstart_orig,
-        yend = tend_orig
+        yend = tend_orig,
+        value = ifelse(proportion == -1,
+                       as.character(migration_rate),
+                       sprintf("%s%%", 100 * proportion))
       )
-  } else
-    gene_flow <- NULL
+  } else {
+    gf <- NULL
+  }
 
   ylabel <- "time"
   if (model$time_units != "") ylabel <- sprintf("%s (%s)", ylabel, model$time_units)
@@ -549,14 +562,14 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
                       aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
   # add gene flow arrows and proportion labels
-  if (!is.null(gene_flow)) {
-    p <- p + geom_segment(data = gene_flow,
+  if (!is.null(gf) && gene_flow != "none") {
+    p <- p + geom_segment(data = gf,
                           aes(x = x, xend = xend, y = y, yend = yend + log10_ydelta),
                           arrow = arrow(length = unit(0.2, "cm")))
-    p <- p + geom_point(data = gene_flow, aes(x = x, y = y))
-    if (proportions) {
-      p <- p + geom_label(data = gene_flow,
-                          aes(label = sprintf("%s%%", 100 * proportion),
+    p <- p + geom_point(data = gf, aes(x = x, y = y))
+    if (gene_flow == "all") {
+      p <- p + geom_label(data = gf,
+                          aes(label = sprintf("%s", value),
                               x = xend - (xend - x) / 2,
                               y = y + (yend + log10_ydelta - y) / 2), size = 3)
     }

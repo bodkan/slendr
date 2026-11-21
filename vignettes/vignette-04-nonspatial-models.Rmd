@@ -150,11 +150,11 @@ ts <- msprime(model, sequence_length = 100000, recombination_rate = 0, schedule 
 When we inspect the table of all recorded individuals, we can see that the Ust'-Ishim individual is stored under its proper symbolic name:
 
 ```{r, eval=FALSE}
-ts_samples(ts)
+ts_recorded(ts)
 ```
 
 ```{r, echo=FALSE}
-ts_samples(ts) %>% as.data.frame()
+ts_recorded(ts) %>% as.data.frame()
 ```
 
 When we later compute summary statistics on tree sequences, this makes referring to specific individuals even more convenient:

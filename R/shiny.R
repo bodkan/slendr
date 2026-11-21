@@ -247,7 +247,7 @@ the demographic history encapsulated in your model.",
       } else return(NULL)
     }, sanitize.text.function = identity)
 
-    output$slendr_graph <- shiny::renderPlot({ plot_model(model, proportions = TRUE) }, height = 600)
+    output$slendr_graph <- shiny::renderPlot({ plot_model(model, gene_flow = "all") }, height = 600)
 
   }
 

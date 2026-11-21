@@ -394,7 +394,7 @@ model_for_plot <- compile_model(
   gene_flow = gf, generation_time = 30
 )
 
-plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
+plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"))
 ```
 
 Let's also assume we have the following "SLiM snippet file" (this line gets the path to an example SLiM extension packaged with _slendr_):
@@ -732,8 +732,8 @@ model <- compile_model(
 
 ```{r introgression_model, echo=FALSE, fig.width=6, fig.height=4}
 cowplot::plot_grid(
-  plot_model(model, sizes = FALSE, proportions = TRUE),
-  plot_model(model, sizes = FALSE, log = TRUE, proportions = TRUE),
+  plot_model(model, sizes = FALSE),
+  plot_model(model, sizes = FALSE, log = TRUE),
   nrow = 1
 )
 ```

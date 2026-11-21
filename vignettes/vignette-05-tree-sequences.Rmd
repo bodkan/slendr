@@ -300,10 +300,10 @@ ts_f4(ts, "AFR_1", "EUR_1", "NEA_1", "CH_1", mode = "branch")
 
 These functions accept a `mode =` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default), branch lengths (`mode = "branch"`), or for each node (`mode = "node"`), as well as the `windows` argument, similarly to other "multiway" statistics implemented by tskit. See the [relevant](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode) [sections](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-sample-sets-multi-way) of the official *tskit* documentation for more on this topic.
 
-Note that in the previous chunk we referred to individuals by their names (not numeric IDs of nodes as you would do it with *tskit* in Python). We allow this for readability and to make it easier to see which individuals are which based on the specified sampling schedule (the names are assigned to individuals based on the order of their sampling). We can get an overview of the individuals scheduled for sampling (i.e. permanently remembered) and their names with a helper function `ts_samples()`:
+Note that in the previous chunk we referred to individuals by their names (not numeric IDs of nodes as you would do it with *tskit* in Python). We allow this for readability and to make it easier to see which individuals are which based on the specified sampling schedule (the names are assigned to individuals based on the order of their sampling). We can get an overview of the individuals scheduled for sampling (i.e. permanently remembered) and their names with a helper function `ts_recorded()`:
 
 ```{r}
-ts_samples(ts)
+ts_recorded(ts)
 ```
 
 That said, if you would like to run some statistics on nodes rather than on individuals, you can do it simply by using integer IDs instead of character names in each function's interface.
@@ -314,7 +314,7 @@ Let's try to put these new tools to practice and estimate the proportion of Nean
 
 ```{r}
 # first get a table of simulated African and European individuals in the tree-sequence
-inds <- ts_samples(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
+inds <- ts_recorded(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
 
 # estimate the amounts of Neanderthal ancestry in these individuals and add
 # these values to the table
@@ -480,7 +480,7 @@ First we extract individuals from all populations, creating a list of character 
 
 ```{r}
 # get sampled individuals from all populations
-sample_sets <- ts_samples(ts) %>%
+sample_sets <- ts_recorded(ts) %>%
   split(., .$pop) %>%
   lapply(function(pop) pop$name)
 
