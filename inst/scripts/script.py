@@ -115,9 +115,9 @@ def simulate(
       tend = length - event.tstart_gen + 1
       logging.info(f"Gene flow from {event._1} to {event.to} between {tstart} and {tend}")
 
-      if event.proportion > 0:
+      if event.proportion >= 0:
           rate=event.proportion / (tend - tstart)
-      elif event.migration_rate > 0:
+      elif event.migration_rate >= 0:
           rate=event.migration_rate
       else:
           sys.exit("Invalid proportion and migration rate values")

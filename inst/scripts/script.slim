@@ -593,13 +593,13 @@ function (void) set_geneflow(object<Dictionary> event) {
     proportion = event.getValue("proportion");
     migration_rate = event.getValue("migration_rate");
 
-    if (proportion > 0) {
+    if (proportion >= 0) {
         span = event.getValue("tend_gen") - event.getValue("tstart_gen");
         rate = proportion / span;
         write_log("started gene flow " + from + "(p" + from_id + ")" +
                   " -> " + to + "(p" + to_id + ")" +
                   " (" + proportion + "% over " + span + " generations)");
-    } else if (migration_rate > 0) {
+    } else if (migration_rate >= 0) {
         rate = migration_rate;
         write_log("started gene flow " + from + "(p" + from_id + ")" +
                   " -> " + to + "(p" + to_id + ")" +
