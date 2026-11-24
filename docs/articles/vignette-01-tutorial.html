@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -574,16 +574,16 @@ collecting all the geneflow parameters for the
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gf</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;   from_name to_name tstart tend proportion overlap</span></span>
-<span><span class="co">#&gt; 1       ANA     YAM   6500 6400        0.5   FALSE</span></span>
+<span><span class="co">#&gt;   from_name to_name tstart tend proportion migration_rate overlap</span></span>
+<span><span class="co">#&gt; 1       ANA     YAM   6500 6400        0.5             -1   FALSE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt;   from_name to_name tstart tend proportion overlap</span></span>
-<span><span class="co">#&gt; 1       ANA     EUR   8000 6000        0.5    TRUE</span></span>
+<span><span class="co">#&gt;   from_name to_name tstart tend proportion migration_rate overlap</span></span>
+<span><span class="co">#&gt; 1       ANA     EUR   8000 6000        0.5             -1    TRUE</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt;   from_name to_name tstart tend proportion overlap</span></span>
-<span><span class="co">#&gt; 1       YAM     EUR   4000 3000       0.75    TRUE</span></span></code></pre>
+<span><span class="co">#&gt;   from_name to_name tstart tend proportion migration_rate overlap</span></span>
+<span><span class="co">#&gt; 1       YAM     EUR   4000 3000       0.75             -1    TRUE</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="compile-the-whole-model-and-load-it-in-slim">Compile the whole model and load it in SLiM<a class="anchor" aria-label="anchor" href="#compile-the-whole-model-and-load-it-in-slim"></a>
@@ -656,14 +656,14 @@ graphically above, namely:</p>
 </ul>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model_dir</span>, <span class="st">"geneflow.tsv"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;   from  to proportion overlap tstart_gen tstart_orig tend_gen tend_orig from_id</span></span>
-<span><span class="co">#&gt; 1  ANA YAM       0.50       0       1518        6500     1521      6400       3</span></span>
-<span><span class="co">#&gt; 2  ANA EUR       0.50       1       1468        8000     1534      6000       3</span></span>
-<span><span class="co">#&gt; 3  YAM EUR       0.75       1       1601        4000     1634      3000       5</span></span>
-<span><span class="co">#&gt;   to_id</span></span>
-<span><span class="co">#&gt; 1     5</span></span>
-<span><span class="co">#&gt; 2     4</span></span>
-<span><span class="co">#&gt; 3     4</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;   from  to proportion migration_rate overlap tstart_gen tstart_orig tend_gen</span></span>
+<span><span class="co">#&gt; 1  ANA YAM       0.50             -1       0       1518        6500     1521</span></span>
+<span><span class="co">#&gt; 2  ANA EUR       0.50             -1       1       1468        8000     1534</span></span>
+<span><span class="co">#&gt; 3  YAM EUR       0.75             -1       1       1601        4000     1634</span></span>
+<span><span class="co">#&gt;   tend_orig from_id to_id</span></span>
+<span><span class="co">#&gt; 1      6400       3     5</span></span>
+<span><span class="co">#&gt; 2      6000       3     4</span></span>
+<span><span class="co">#&gt; 3      3000       5     4</span></span></code></pre>
 <ul>
 <li>and finally, the table of populations whose spatial maps will be
 updated throughout the simulation, as well as the times of those updates
@@ -705,7 +705,7 @@ assigning a color to each population, and different nodes of the same
 color represent snapshots in time when a demographic event affecting
 that population happens.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, proportions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" class="r-plt" alt="" width="360"></p>
 </div>
 <div class="section level2">
@@ -772,7 +772,7 @@ user:</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     1│ 43.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│     1│ 44.4 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>

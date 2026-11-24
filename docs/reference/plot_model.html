@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,13 +55,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_model</span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  sizes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  proportions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  gene_flow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  gene_flow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"arrows"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  schedule <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  proportions <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -77,13 +77,10 @@
 <dd><p>Should population size changes be visualized?</p></dd>
 
 
-<dt id="arg-proportions">proportions<a class="anchor" aria-label="anchor" href="#arg-proportions"></a></dt>
-<dd><p>Should gene flow proportions be visualized (<code>FALSE</code>
-by default to prevent cluttering and overplotting)</p></dd>
-
-
 <dt id="arg-gene-flow">gene_flow<a class="anchor" aria-label="anchor" href="#arg-gene-flow"></a></dt>
-<dd><p>Should gene-flow arrows be visualized (default <code>TRUE</code>).</p></dd>
+<dd><p>Should gene-flow arrows be labeled with the associated values
+(<code>"all"</code>, the default), only on their own (<code>"arrows"</code>), or not at
+all (<code>"none"</code>)?</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
@@ -108,6 +105,10 @@ most recent using an in-order tree traversal.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Optional argument which will be passed to <code>ggsave</code></p></dd>
+
+
+<dt id="arg-proportions">proportions<a class="anchor" aria-label="anchor" href="#arg-proportions"></a></dt>
+<dd><p>Deprecated (see the <code>gene_flow</code> argument).</p></dd>
 
 </dl></div>
     <div class="section level2">

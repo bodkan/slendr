@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,11 +198,11 @@ only be allowed to exchange migrants with its neighbor to the right
 (population number 2) and its neighbor above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">set_geneflow</span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, proportion <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;   from_name to_name tstart tend proportion overlap</span></span>
-<span><span class="co">#&gt; 1      pop1    pop2      2 1000        0.1   FALSE</span></span>
-<span><span class="co">#&gt; 2      pop2    pop1      2 1000        0.1   FALSE</span></span>
-<span><span class="co">#&gt; 3      pop1    pop6      2 1000        0.1   FALSE</span></span>
-<span><span class="co">#&gt; 4      pop6    pop1      2 1000        0.1   FALSE</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;   from_name to_name tstart tend proportion migration_rate overlap</span></span>
+<span><span class="co">#&gt; 1      pop1    pop2      2 1000        0.1             -1   FALSE</span></span>
+<span><span class="co">#&gt; 2      pop2    pop1      2 1000        0.1             -1   FALSE</span></span>
+<span><span class="co">#&gt; 3      pop1    pop6      2 1000        0.1             -1   FALSE</span></span>
+<span><span class="co">#&gt; 4      pop6    pop1      2 1000        0.1             -1   FALSE</span></span></code></pre>
 <p>Looks right! Let’s generate the entire set of continuous gene flow
 events:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -258,7 +258,7 @@ function.</p>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│   25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│    1│ 43.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│    1│ 44.3 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │    0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═════╧═════════╧════════════╝</span></span></code></pre>
@@ -436,7 +436,7 @@ of interest, but the location of each subpopulation is.</p>
 <p>We can make sure the demographic model is specified correctly by
 quickly visualizing it:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, gene_flow <span class="op">=</span> <span class="st">"arrows"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" class="r-plt" alt="" width="360"></p>
 <p>We can also plot the spatial organization of our demes on a map in
 all of its glory, including all gene flow events (one arrow per each
@@ -486,7 +486,7 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     11│605 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│      1│ 13.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│ 13.7 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>

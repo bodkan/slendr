@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -404,7 +404,7 @@ simulation first):</p>
 <em>slendr</em> and extract ancestry tracts from it using
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/reticulate/reference/py.html" class="external-link">py</a></span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/reticulate/man/py.html" class="external-link">py</a></span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">squashed_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">sim_ts</span>, census <span class="op">=</span> <span class="fl">100.01</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
