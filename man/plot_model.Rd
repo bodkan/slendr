@@ -7,13 +7,13 @@
 plot_model(
   model,
   sizes = TRUE,
-  proportions = FALSE,
-  gene_flow = TRUE,
+  gene_flow = c("all", "arrows", "none"),
   log = FALSE,
   order = NULL,
   file = NULL,
   schedule = NULL,
-  ...
+  ...,
+  proportions = NULL
 )
 }
 \arguments{
@@ -21,10 +21,9 @@ plot_model(
 
 \item{sizes}{Should population size changes be visualized?}
 
-\item{proportions}{Should gene flow proportions be visualized (\code{FALSE}
-by default to prevent cluttering and overplotting)}
-
-\item{gene_flow}{Should gene-flow arrows be visualized (default \code{TRUE}).}
+\item{gene_flow}{Should gene-flow arrows be labeled with the associated values
+(\code{"all"}, the default), only on their own (\code{"arrows"}), or not at
+all (\code{"none"})?}
 
 \item{log}{Should the y-axis be plotted on a log scale? Useful for models
 over very long time-scales.}
@@ -39,6 +38,8 @@ most recent using an in-order tree traversal.}
 \item{schedule}{Recording schedule to be visualized over the model}
 
 \item{...}{Optional argument which will be passed to \code{ggsave}}
+
+\item{proportions}{Deprecated (see the \code{gene_flow} argument).}
 }
 \value{
 A ggplot2 object with the visualized slendr model

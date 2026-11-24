@@ -50,12 +50,13 @@ test_that("rate argument is correctly distributed into an overall proportion", {
   model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 1)
 
   # make sure the aggregate proportion is encoded in the serialized model
-  expect_true(model$geneflow$proportion[1] == abs(tend - tstart) * rate)
+  expect_true(model$geneflow$proportion[1] == -1)
+  expect_true(model$geneflow$migration_rate[1] == rate)
 
   # and to doubple check this, make sure that the original migration rate is
   # also given in the log output of the slim run
   log <- suppressMessages(capture.output(slim(model, sequence_length = 1, recombination_rate = 0, verbose = TRUE)))
-  expect_true(sum(grepl("0.012% over 10 generations", log)) == 1)
+  expect_true(sum(grepl("0.012 per generation", log)) == 1)
 })
 
 test_that("`samples` argument is deprecated in favour of `schedule`", {

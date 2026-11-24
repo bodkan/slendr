@@ -191,7 +191,7 @@ s2 late() /* Geneflow events */ {
     events = filter_rows(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
-        set_geneflow(event, event.getValue("proportion"));
+        set_geneflow(event);
     }
 }
 
@@ -199,7 +199,7 @@ s3 late() /* Stopping geneflow */ {
     events = filter_rows(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
-        set_geneflow(event, 0.0);
+        stop_geneflow(event);
     }
 }
 
@@ -586,24 +586,41 @@ function (void) create_pop(object<Dictionary> pop) {
     population(pop_id).setValue("spatial", spatial_tag);
 }
 
-// Start or stop geneflow
-function (void) set_geneflow(object<Dictionary> event, f$ proportion) {
+// Start gene flow
+function (void) set_geneflow(object<Dictionary> event) {
+    from = event.getValue("from"); to = event.getValue("to");
+    from_id = event.getValue("from_id"); to_id = event.getValue("to_id");
+    proportion = event.getValue("proportion");
+    migration_rate = event.getValue("migration_rate");
+
+    if (proportion >= 0) {
+        span = event.getValue("tend_gen") - event.getValue("tstart_gen");
+        rate = proportion / span;
+        write_log("started gene flow " + from + "(p" + from_id + ")" +
+                  " -> " + to + "(p" + to_id + ")" +
+                  " (" + proportion + "% over " + span + " generations)");
+    } else if (migration_rate >= 0) {
+        rate = migration_rate;
+        write_log("started gene flow " + from + "(p" + from_id + ")" +
+                  " -> " + to + "(p" + to_id + ")" +
+                  " (" + rate + " per generation)");
+    } else {
+        stop("Invalid proportion and migration rate values for gene flow " +
+             from + "(p" + from_id + ") -> " + to + "(p" + to_id + ")");
+ }
+
+    population(to_id).setMigrationRates(from_id, rate);
+}
+
+// Stop gene flow
+function (void) stop_geneflow(object<Dictionary> event) {
     from = event.getValue("from"); to = event.getValue("to");
     from_id = event.getValue("from_id"); to_id = event.getValue("to_id");
 
-    if (proportion > 0) {
-        span = event.getValue("tend_gen") - event.getValue("tstart_gen");
-        rate = proportion / span;
-        write_log("geneflow " + from + "(p" + from_id + ")" +
-                             " -> " + to + "(p" + to_id + ")" +
-                             " (" + rate + "% over " + span + " generations)");
-    } else {
-        rate = 0.0;
-        write_log("geneflow " + from + "(p" + from_id + ")" +
-                             " -> " + to + "(p" + to_id + ")" + " set to 0%");
-    }
+    population(to_id).setMigrationRates(from_id, 0.0);
 
-    population(to_id).setMigrationRates(from_id, rate);
+    write_log("stopped gene flow " + from + "(p" + from_id + ")" +
+              " -> " + to + "(p" + to_id + ")");
 }
 
 // Distribute individuals uniformly within the boundary of the given population
@@ -829,7 +846,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("proportion", "competition", "mating", "dispersal", "n",
+    float = c("proportion", "migration_rate", "competition", "mating", "dispersal", "n",
               "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 

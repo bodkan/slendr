@@ -663,8 +663,12 @@ gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = 
          "for details.", call. = FALSE)
   }
 
-  if (is.null(proportion)) {
-    proportion <- migration_rate * abs(start - end)
+  if (!is.null(proportion) && (proportion < 0 || proportion > 1)) {
+    stop("The proportion of ancestry must be between 0 and 1", call. = FALSE)
+  }
+
+  if (!is.null(migration_rate) && migration_rate < 0) {
+    stop("The rate of migration must be a positive number", call. = FALSE)
   }
 
   if (!inherits(from, "slendr_pop") || !inherits(to, "slendr_pop"))
@@ -677,12 +681,6 @@ gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = 
 
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
-
-  # make sure that gene flow has a sensible value between 0 and 1
-  if (proportion < 0 || proportion > 1) {
-    stop("The total amount of ancestry of the `to` population coming\n",
-         "from the `from` population must be between 0 and 1", call. = FALSE)
-  }
 
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
@@ -758,7 +756,11 @@ gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = 
     to_name = to_name,
     tstart = start,
     tend = end,
-    proportion = proportion,
+    # we now allow either total proportion of ancestry or migration rate
+    # to be specified -- whichever was not specified is set to -1 (which
+    # is to be picked up on the engine side)
+    proportion = ifelse(is.null(proportion), -1, proportion),
+    migration_rate = ifelse(is.null(migration_rate), -1, migration_rate),
     overlap = overlap,
     stringsAsFactors = FALSE
   )

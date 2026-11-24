@@ -1,8 +1,11 @@
 skip_on_cran()
+# TODO: Remove this as soon as the Windows VM starts working again
+skip_if(Sys.info()[["sysname"]] == "Windows")
 
 # Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
 # functions. This is why it loads simulated outputs via the original ts_read() method (which is still
-# valid, so it actually makes sense to test things this way).
+# valid, so it actually makes sense to test things this way to make sure things
+# continue to work as they always have).
 
 skip_if(!check_dependencies(python = TRUE))
 init_env()
@@ -48,6 +51,11 @@ msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sc
 gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, proportion = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200)
+
+test_that("proportion and migration rate parameters are compiled correctly", {
+  expect_true(model_gf$geneflow$proportion == 0.1)
+  expect_true(model_gf$geneflow$migration_rate == -1)
+})
 
 samples <- schedule_recording(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 

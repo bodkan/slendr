@@ -102,7 +102,7 @@ Before running the simulations, let's first make sure both models are set up cor
 
 ```{r}
 plot_model(model_nogf, sizes = FALSE)
-plot_model(model_gf, sizes = FALSE, proportions = TRUE)
+plot_model(model_gf, sizes = FALSE)
 ```
 
 Now we will run both models (with and without gene flow) in the two _slendr_ backends, SLiM and msprime:
@@ -157,7 +157,7 @@ Let's first extract all individuals from populations `x1` and `x2` and estimate 
 
 ```{r}
 # extract vector of names of the "test individuals" in populations `x1` and `x2`
-X <- ts_samples(slim_gf) %>% filter(pop %in% c("x1", "x2")) %>% pull(name)
+X <- ts_recorded(slim_gf) %>% filter(pop %in% c("x1", "x2")) %>% pull(name)
 X
 ```
 

@@ -68,7 +68,7 @@ local-webapp:
 ifndef PORT
 	$(error PORT variable must be set explicitly)
 endif
-	chromium --app=http://localhost:$(PORT) &
+	$(WEBAPP_CMD) http://localhost:$(PORT)
 
 remote-webapp:
 ifndef SERVER
@@ -87,7 +87,7 @@ endif
 		exit 1; \
 	    }; \
 	fi; \
-	chromium --app=http://localhost:$(PORT) &
+	$(WEBAPP_CMD) http://localhost:$(PORT)
 
 port-forward:
 ifndef SERVER
