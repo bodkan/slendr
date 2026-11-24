@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- The behavior of the `migration_rate =` argument of the `gene_flow()` function is now more flexible, allowing gene flow to potentially go even beyond complete "genetic replacement", rather than being effectively capped at 100% (which was equivalent to setting `proportion = 1.0` in previous versions of _slendr_). Other minor updates matching this change have been introduced to function `plot_model()` which can now also visualize not just ancestry proportions from a given gene-flow event, but also migration rates. [PR #204](https://github.com/bodkan/slendr/pull/204))
+
 # _slendr_ 1.6.0
 
 - Data frames produces by various $f$-statistics now include a column `statistic` containing a convenient readable name of each triplet, quartet, etc., in the usual naming conventions. ([#36cb1d14](https://github.com/bodkan/slendr/commit/36cb1d14))
@@ -20,7 +22,7 @@
 
 - The `quiet =` argument of `init_env()` is now deprecated, as the function is "quiet" by default. ([#c21e5d6f](https://github.com/bodkan/slendr/commit/c21e5d6f))
 
-- The `samples =` argument of `msprime()` and `slim()` (as well as `plot_model()` and other functions) is now deprecated in favor of `schedule =`. This is in order to keep the naming of things a bit more consistent and to avoid clumsy issues with the meaning (and typical use) of the the downstream `ts_samples()` and various `ts_*()` statistical functions. ([PR #200](https://github.com/bodkan/slendr/pull/200))
+- The `samples =` argument of `msprime()` and `slim()` (as well as `plot_model()` and other functions) is now deprecated in favor of `schedule =`. This is in order to keep the naming of things a bit more consistent and to avoid clumsy issues with the meaning (and typical use) of the the downstream `ts_samples()` and various `ts_*()` statistical functions. [PR #200](https://github.com/bodkan/slendr/pull/200))
 
 - The `ts_recorded()` function now allows extracting sample metatada not just from a given _slendr_ tree sequence, but also from a compiled model. This is useful for workflows which need to operate with such information before a potentially large simulation is even executed. ([#8ef6750d](https://github.com/bodkan/slendr/commit/8ef6750d))
 
